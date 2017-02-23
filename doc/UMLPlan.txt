@@ -1,0 +1,15 @@
+Classes: MoodContainer, Mood, Person
+Views: LoginActivity, CreateAccountActivity, MainActivity, MapActivity, CreateMoodActivity, EditMoodActivity, ViewProfileActivity
+Model: MoodModel
+Controller: Every view has its own controller (i.e. MainController has an adapter, filter variables, response to embedded menus)
+
+LoginActivity:
+Variables: - accountName, - androidID (possibly?)
+Functions: - createAccount, -fetchProfileData, -loginAccount
+
+CreateAccountActivity:
+Variables: - accountName, - androidID
+Functions: - createAccount
+
+MainActivity:
+Variables: - name, - moodList, - followList, - filters (?), 
