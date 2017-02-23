@@ -12,4 +12,21 @@ Variables: - accountName, - androidID
 Functions: - createAccount
 
 MainActivity:
-Variables: - name, - moodList, - followList, - filters (?), 
+Variables: - name, - moodList, - followList, - filters (?), - sortingBy
+Functions: - createMood, - editMood, - deleteMood, - searchMood, - sortMood, -goToMap, - viewProfile, - logOut, + getMoodList (?)
+
+MapActivity:
+Variables: - filters, - moodList
+Functions: - filterMap, - viewMood, - goToMain
+
+CreateMoodActivity:
+Variables: - emotion, - location, - picture, - trigger, - date, - situation
+Function: - getLocation, - getPicture, - returnToMain
+
+EditMoodActivity:
+Variables: - emotion, - location, - picture, - trigger, - date, - situation
+Function: - getLocation, - getPicture, - deleteMood, - returnToMain, + getters and setters
+
+ViewProfileActivity:
+Variables: - name, - followList, - followedList
+Function: - follow, - unfollow, +getters and setters
