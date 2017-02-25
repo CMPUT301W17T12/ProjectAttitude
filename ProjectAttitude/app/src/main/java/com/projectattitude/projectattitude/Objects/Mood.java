@@ -5,4 +5,6 @@ package com.projectattitude.projectattitude.Objects;
  */
 
 public class Mood {
+    public Mood(String s) {
+    }
 }
