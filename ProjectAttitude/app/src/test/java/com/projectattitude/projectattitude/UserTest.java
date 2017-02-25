@@ -5,6 +5,8 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Objects.User;
 
+import java.util.ArrayList;
+
 /**
  * Created by Boris on 25/02/2017.
  */
@@ -26,6 +28,38 @@ public class UserTest extends ActivityInstrumentationTestCase2{
         assertEquals("newUserName", user.getUserName());
     }
 
+    public void testGetFollowList(){
+        User user = new User("UserName");
+        ArrayList<String> testArray = new ArrayList<String>();
 
+        assertEquals(null, user.getFollowList());
+        user.addFollow("followName");
+        testArray.add("followName");
+        assertEquals(user.getFollowList(), testArray);
+    }
+
+    public void testGetFollowedList(){
+        User user = new User("UserName");
+        ArrayList<String> testArray = new ArrayList<String>();
+
+        assertEquals(null, user.getFollowedList());
+        user.addFollowed("followedName");
+        testArray.add("followedName");
+        assertEquals(user.getFollowedList(), testArray);
+    }
+
+    public void testAddFollow(){
+        User user = new User("UserName");
+
+        user.addFollow("followName");
+        assertTrue(user.getFollowList() != null);
+    }
+
+    public void testAddFollowed(){
+        User user = new User("UserName");
+
+        user.addFollowed("followedName");
+        assertTrue(user.getFollowedList() != null);
+    }
 
 }

@@ -52,8 +52,10 @@ public class MoodListTest extends ActivityInstrumentationTestCase2{
     public void testGetMoodList(){
         MoodList moods = new MoodList();
         Mood mood = new Mood("test mood");
+        ArrayList<Mood> testMoodList = new ArrayList<Mood>();
+        testMoodList.add(mood);
 
         moods.addMood(mood);
-        //assertEquals(moods.getMoodList(), new ArrayList<Mood> testMoodList); //TODO not sure how to properly check
+        assertEquals(moods.getMoodList(), testMoodList); //TODO not sure if this is the proper way to check this
     }
 }
