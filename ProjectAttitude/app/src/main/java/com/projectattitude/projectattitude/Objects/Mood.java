@@ -15,7 +15,7 @@ public class Mood {
     private String geoLocation;
     private String trigger;
     private String explanation;
-    private ContactsContract.Contacts.Photo photograph;
+    private ContactsContract.Contacts.Photo photograph; //Maybe make this an Image?
     private String socialSituation;
 
     public Mood(String s) {
