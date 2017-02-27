@@ -8,7 +8,11 @@ import java.util.ArrayList;
 
 public class MoodList {
     private int count = 0;
-    private ArrayList<Mood> records;
+
+    //fix for submission
+//    private ArrayList<Mood> records;
+
+    private ArrayList<Mood> moods;
 
     public MoodList(){
     }
@@ -31,7 +35,12 @@ public class MoodList {
         return null;
     }
 
+    //fix for submission
+//    public ArrayList<Mood> getMoodList() {
+//        return records;
+//    }
+
     public ArrayList<Mood> getMoodList() {
-        return records;
+        return moods;
     }
 }

@@ -2,13 +2,14 @@ package com.projectattitude.projectattitude.Objects;
 
 import android.provider.ContactsContract;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Chris on 2/24/2017.
  */
 
-public class Mood {
+public class Mood implements Serializable {
 
     private Date moodDate;
     private String emotionState;
@@ -18,7 +19,10 @@ public class Mood {
     private ContactsContract.Contacts.Photo photograph; //Maybe make this an Image?
     private String socialSituation;
 
-    public Mood(String s) {
+//    public Mood(String s) {
+//    }
+
+    public Mood() {
     }
 
     public void setMoodDate(Date moodDate) {

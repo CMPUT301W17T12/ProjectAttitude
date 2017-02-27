@@ -1,28 +1,50 @@
 package com.projectattitude.projectattitude.Activities;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ListView;
 
+import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.R;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity {
+
+    protected MoodList moodList;
+    private MoodMainAdapter moodAdapter;
+    private ListView moodListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Button addMoodButton = (Button) findViewById(R.id.addMoodButton);
+        moodAdapter = new MoodMainAdapter(this, moodList.getMoodList());
+        moodListView.setAdapter(moodAdapter);
+
+
+        //on click listener for adding moods
+        addMoodButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                createMood();
+            }
+        });
     }
+
+
 
     //TODO Build these functions
     /**
      * This method will take the user to the Create Mood view
      */
     private void createMood(){
-
+        Intent createMoodIntent = new Intent(MainActivity.this, CreateAccountActivity.class);
+        startActivityForResult(createMoodIntent, 0);
     }
 
     /**
@@ -74,6 +96,22 @@ public class MainActivity extends AppCompatActivity {
      */
     private void logOut(){
 
+    }
+
+    //accept returned information from activities
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Mood returnedMood;
+
+        //AddRecordActivity results, updating mood listview, and saving to file
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
+                moodList.addMood(returnedMood);
+                moodAdapter.notifyDataSetChanged();
+
+            }
+        }
     }
 
 

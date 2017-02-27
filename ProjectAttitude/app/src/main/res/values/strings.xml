@@ -14,4 +14,11 @@
         completions."
     </string>
     <string name="title_activity_map">Map</string>
+
+    <!-- Strings related to MainActivity-->
+    <string name="mood_text">Moods</string>
+
+    <!-- Strings related to CreateAccountActivity-->
+    <string name="complete_button">Complete</string>
+    <string name="emotional_state">Emotional State</string>
 </resources>
