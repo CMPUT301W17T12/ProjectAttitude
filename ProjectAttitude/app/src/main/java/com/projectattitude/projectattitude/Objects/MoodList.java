@@ -15,9 +15,11 @@ public class MoodList {
     private ArrayList<Mood> moods;
 
     public MoodList(){
+        moods = new ArrayList<Mood>();
     }
 
     public void addMood(Mood mood) {
+        moods.add(mood);
     }
 
     public boolean hasMood(Mood mood) {

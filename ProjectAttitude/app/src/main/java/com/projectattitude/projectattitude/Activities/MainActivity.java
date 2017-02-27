@@ -2,9 +2,9 @@ package com.projectattitude.projectattitude.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
@@ -23,7 +23,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button addMoodButton = (Button) findViewById(R.id.addMoodButton);
+        moodList = new MoodList();
+        moodListView = (ListView) findViewById(R.id.moodListView);
+        FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
         moodAdapter = new MoodMainAdapter(this, moodList.getMoodList());
         moodListView.setAdapter(moodAdapter);
 
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
      * This method will take the user to the Create Mood view
      */
     private void createMood(){
-        Intent createMoodIntent = new Intent(MainActivity.this, CreateAccountActivity.class);
+        Intent createMoodIntent = new Intent(MainActivity.this, CreateMoodActivity.class);
         startActivityForResult(createMoodIntent, 0);
     }
 
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This deletes a selected mood.
-     * @param mood the mood the user wants to get rid of
+     * @param mood the mood the user wants to get rid of0
      */
     private void deleteMood(Mood mood){
 
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Mood returnedMood;
 
-        //AddRecordActivity results, updating mood listview, and saving to file
+        //CreateMoodActivity results, updating mood listview
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");

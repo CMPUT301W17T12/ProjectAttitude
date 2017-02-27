@@ -25,6 +25,7 @@ public class CreateMoodActivity extends MoodActivity {
 
         completeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                newMood = new Mood();
                 newMood.setEmotionState(emotionalState.getText().toString());
                 Intent returnCreateMoodIntent = new Intent();
                 returnCreateMoodIntent.putExtra("addMoodIntent", newMood);
