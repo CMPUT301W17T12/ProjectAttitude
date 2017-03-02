@@ -14,4 +14,10 @@
         completions."
     </string>
     <string name="title_activity_map">Map</string>
+    <string-array name="social_situations">
+        <item>Alone</item>
+        <item>With one other person</item>
+        <item>With two to several people</item>
+        <item>With a crowd</item>
+    </string-array>
 </resources>

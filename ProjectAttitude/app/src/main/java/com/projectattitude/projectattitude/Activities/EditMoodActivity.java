@@ -7,6 +7,8 @@ import com.projectattitude.projectattitude.R;
 
 public class EditMoodActivity extends MoodActivity {
 
+    //https://www.mkyong.com/android/android-spinner-drop-down-list-example/
+    //Resourse for the spinner I made
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
