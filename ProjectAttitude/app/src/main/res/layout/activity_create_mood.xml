@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/spinner"
                 android:entries="@array/social_situations"
-                android:prompt="Social Situation"/>
+                android:prompt="@string/spinner"/>
 
             <ImageView
                 android:layout_width="match_parent"
