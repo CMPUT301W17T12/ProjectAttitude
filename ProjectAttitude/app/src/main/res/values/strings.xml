@@ -20,4 +20,5 @@
         <item>With two to several people</item>
         <item>With a crowd</item>
     </string-array>
+    <string name="spinner">Social Situations</string>
 </resources>
