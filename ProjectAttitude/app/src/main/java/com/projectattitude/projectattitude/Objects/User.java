@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 /**
  * Created by Chris on 2/24/2017.
+ 
+ The User class represents a personal account held by an individual for the purpose
+ of interacting with the application. This class is used for handling information
+ about each user as well as storing information for the follower and followed lists.
  */
 
 public class User {
