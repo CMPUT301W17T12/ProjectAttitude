@@ -12,9 +12,9 @@ import java.util.ArrayList;
 
 public class User {
 
-    private String userName;
-    private ArrayList<String> followList;
-    private ArrayList<String> followedList;
+    private String userName;    //name of user
+    private ArrayList<String> followList;    //arrayList of people that are following this user
+    private ArrayList<String> followedList;    //arrayList of people that this user is following
 
     public User(String s){
     }
