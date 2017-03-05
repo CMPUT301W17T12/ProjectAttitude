@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/timeOption"
+        android:title="@string/time_option"
+        android:onClick="filterMood"/>
+    <item android:id="@+id/followingOption"
+        android:title="@string/following_option"
+        android:onClick="filterMood"/>
+    <item android:id="@+id/allOption"
+        android:title="@string/all_option"
+        android:onClick="filterMood"/>
+</menu>

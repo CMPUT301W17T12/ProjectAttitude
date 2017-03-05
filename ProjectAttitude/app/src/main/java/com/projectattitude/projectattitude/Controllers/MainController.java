@@ -30,10 +30,18 @@ public class MainController {
     }
 
     /**
+     * I Guess this is where the bulk of the sorting gets done?
+     * @param intent
+     */
+    public void sortList(Intent intent){
+
+    }
+
+    /**
      * I Guess this is where the bulk of the filtering gets done?
      * @param intent
      */
-    private void filterList(Intent intent){
+    public void filterList(Intent intent){
 
     }
 

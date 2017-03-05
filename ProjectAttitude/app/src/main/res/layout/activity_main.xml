@@ -16,19 +16,19 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/menuButton"
         android:text="@string/main_title"
         android:textColor="black"
         android:textSize="35sp"
         />
 
     <ImageButton
-        android:id="@+id/menu_button"
+        android:id="@+id/menuButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_right="@id/title"
         android:src="@drawable/menu_button"
         android:layout_alignParentRight="true"
-        android:onClick="popMenu"
+        android:onClick="sortMenu"
         />
 
     <EditText
@@ -36,19 +36,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
-        android:layout_toLeftOf="@id/filter_button"
+        android:layout_toLeftOf="@id/filterButton"
         android:layout_alignParentLeft="true"
         android:hint="@string/search_bar"
         />
 
     <ImageButton
-        android:id="@+id/filter_button"
+        android:id="@+id/filterButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
         android:src="@drawable/filter_button"
         android:layout_alignParentRight="true"
-        android:onClick="popMenu"
+        android:onClick="openSFMenu"
         />
 
     <ListView
@@ -65,7 +65,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:backgroundTint="@color/wallet_holo_blue_light"
-        android:borderColor="@color/wallet_holo_blue_light"
         android:src="@drawable/add_button" />
 
 
