@@ -13,6 +13,8 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="main_title">Moods</string>
+    <string name="search_bar">Search</string>
     <string name="title_activity_map">Map</string>
     <string-array name="social_situations">
         <item>Alone</item>
