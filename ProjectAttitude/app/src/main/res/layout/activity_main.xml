@@ -12,15 +12,7 @@
     android:orientation="vertical"
     tools:context="com.projectattitude.projectattitude.Activities.MainActivity">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/menuButton"
-        android:text="@string/main_title"
-        android:textColor="black"
-        android:textSize="35sp"
-        />
+
 
     <ImageButton
         android:id="@+id/menuButton"
@@ -31,14 +23,13 @@
         android:onClick="sortMenu"
         />
 
-    <EditText
-        android:id="@+id/searchBar"
+    <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title"
-        android:layout_toLeftOf="@id/filterButton"
-        android:layout_alignParentLeft="true"
-        android:hint="@string/search_bar"
+        android:layout_toLeftOf="@id/menuButton"
+        android:text="@string/main_title"
+        android:textSize="35sp"
         />
 
     <ImageButton
@@ -49,6 +40,16 @@
         android:src="@drawable/filter_button"
         android:layout_alignParentRight="true"
         android:onClick="openSFMenu"
+        />
+
+    <EditText
+        android:id="@+id/searchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_toLeftOf="@id/filterButton"
+        android:layout_alignParentLeft="true"
+        android:hint="@string/search_bar"
         />
 
     <ListView
