@@ -13,7 +13,19 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="main_title">Moods</string>
+    <string name="search_bar">Search</string>
     <string name="title_activity_map">Map</string>
+    <string name="sort_menu">Sort</string>
+    <string name="filter_menu">Filter</string>
+    <string name="date_option">Date</string>
+    <string name="reverse_date_option">Reverse Date</string>
+    <string name="time_option">Time</string>
+    <string name="following_option">Following</string>
+    <string name="all_option">All Moods</string>
+    <string name="day_option">Day</string>
+    <string name="month_option">Month</string>
+    <string name="year_option">Year</string>
     <string-array name="social_situations">
         <item>Alone</item>
         <item>With one other person</item>
