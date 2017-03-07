@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,6 +51,19 @@ public class MainActivity extends AppCompatActivity {
                 createMood();
             }
         });
+
+        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
+        getMoodsTask.execute("");
+
+        try{
+            moodList = getMoodsTask.get();
+        }
+        catch(Exception e){
+            Log.d("Error", "Failed to get the moods from the async object");
+        }
+
+        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodList);
+        moodListView.setAdapter(adapter);
     }
 
 
@@ -193,6 +207,26 @@ public class MainActivity extends AppCompatActivity {
                 return super.onContextItemSelected(item);
         }
     }
+
+//    @Override
+//    protected void onStart(){
+//        super.onStart();
+//
+//        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
+//        getMoodsTask.execute("");
+//
+//        try{
+//            moodList = getMoodsTask.get();
+//        }
+//        catch(Exception e){
+//            Log.d("Error", "Failed to get the moods from the async object");
+//        }
+//
+//        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodList);
+//        moodListView.setAdapter(adapter);
+//
+//
+//    }
 
 
 

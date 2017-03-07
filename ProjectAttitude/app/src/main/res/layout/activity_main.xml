@@ -22,13 +22,14 @@
         android:id="@+id/moodTextView" />
 
     <ListView
+        android:id="@+id/moodListView"
+        style="@style/Widget.AppCompat.ListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/moodListView"
-        android:layout_below="@+id/moodTextView"
+        android:layout_above="@+id/addMoodButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/addMoodButton" />
+        android:layout_below="@+id/moodTextView" />
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
