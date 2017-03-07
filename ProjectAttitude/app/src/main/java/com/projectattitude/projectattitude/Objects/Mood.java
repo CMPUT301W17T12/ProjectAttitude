@@ -5,6 +5,8 @@ import android.provider.ContactsContract;
 import java.io.Serializable;
 import java.util.Date;
 
+import io.searchbox.annotations.JestId;
+
 /**
  * Created by Chris on 2/24/2017.
  */
@@ -18,6 +20,9 @@ public class Mood implements Serializable {
     private String explanation;
     private ContactsContract.Contacts.Photo photograph; //Maybe make this an Image?
     private String socialSituation;
+
+    @JestId
+    private String id;
 
 //    public Mood(String s) {
 //    }
@@ -93,4 +98,11 @@ public class Mood implements Serializable {
         return(emotionState);
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }

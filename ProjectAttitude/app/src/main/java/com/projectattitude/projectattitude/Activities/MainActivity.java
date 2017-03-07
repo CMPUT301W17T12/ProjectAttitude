@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
+import com.projectattitude.projectattitude.Controllers.ElasticSearchController;
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.MoodList;
@@ -125,6 +126,9 @@ public class MainActivity extends AppCompatActivity {
                 moodList.add(returnedMood);
                 adapter.notifyDataSetChanged();
 
+                //add newly created mood to DB
+                ElasticSearchController.AddMoodsTask addMoodsTask = new ElasticSearchController.AddMoodsTask();
+                addMoodsTask.execute(returnedMood);
             }
         }
     }
