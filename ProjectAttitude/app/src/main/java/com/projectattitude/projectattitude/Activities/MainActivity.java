@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //return all moods from db, so it can populate view on start
         ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
         getMoodsTask.execute("");
 
