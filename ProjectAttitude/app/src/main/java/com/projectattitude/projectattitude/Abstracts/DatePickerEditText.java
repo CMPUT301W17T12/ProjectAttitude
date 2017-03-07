@@ -11,7 +11,10 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 /**
@@ -37,8 +40,8 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         this.year = year;
-        month = monthOfYear;
-        day = dayOfMonth;
+        this.month = monthOfYear;
+        this.day = dayOfMonth;
         updateDisplay();
     }
     @Override
@@ -52,9 +55,18 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
 
     }
 
+    public Date getDate(){
+        String date_str = editText.getText().toString();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return sdf.parse(date_str);
+        } catch (ParseException e) {
+            return new Date();
+        }
+    }
+
     // updates the date in the birth date EditText
     private void updateDisplay() {
-
         editText.setText(new StringBuilder()
                 // Month is 0 based so add 1
                 .append(year).append("-").append(month + 1).append("-").append(day));
