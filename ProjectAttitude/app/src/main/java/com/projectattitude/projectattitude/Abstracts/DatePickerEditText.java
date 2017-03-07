@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -57,7 +58,7 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
 
     public Date getDate(){
         String date_str = editText.getText().toString();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA);
         try {
             return sdf.parse(date_str);
         } catch (ParseException e) {

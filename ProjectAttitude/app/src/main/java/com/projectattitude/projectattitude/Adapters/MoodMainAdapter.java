@@ -35,8 +35,10 @@ public class MoodMainAdapter extends ArrayAdapter<Mood> {
         }
 
         TextView tvEmotionalState = (TextView) convertView.findViewById(R.id.emotionalStateTextView);
+        TextView tvDate = (TextView) convertView.findViewById(R.id.dateTextView);
 
         tvEmotionalState.setText(mood.getEmotionState());
+        tvDate.setText(mood.getMoodDate().toString());
 
         return convertView;
     }

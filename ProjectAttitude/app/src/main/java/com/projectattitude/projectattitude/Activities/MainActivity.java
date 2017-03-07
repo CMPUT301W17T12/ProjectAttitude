@@ -2,24 +2,21 @@ package com.projectattitude.projectattitude.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import android.support.v7.widget.PopupMenu;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchController;
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Objects.Mood;
-import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.R;
 
 import java.util.ArrayList;
@@ -27,9 +24,9 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     protected ArrayList<Mood> moodList = new ArrayList<Mood>();
-    private MoodMainAdapter moodAdapter; //Not used anymore
+    private MoodMainAdapter moodAdapter;
     private ListView moodListView;
-    private ArrayAdapter<Mood> adapter;
+    //private ArrayAdapter<Mood> adapter;
     private MainController controller;
 
     private  int listItem; //This is the index of the item pressed in the list
@@ -42,8 +39,10 @@ public class MainActivity extends AppCompatActivity {
 
         moodListView = (ListView) findViewById(R.id.moodListView);
         FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
-        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodList);
-        moodListView.setAdapter(adapter);
+        //adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodList);
+        moodAdapter = new MoodMainAdapter(this, moodList);
+//        moodListView.setAdapter(adapter);
+        moodListView.setAdapter(moodAdapter);
 
         registerForContextMenu(moodListView);
 
@@ -66,8 +65,11 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Error", "Failed to get the moods from the async object");
         }
 
-        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodList);
-        moodListView.setAdapter(adapter);
+//        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodList);
+//        moodListView.setAdapter(adapter);
+
+        moodAdapter = new MoodMainAdapter(this, moodList);
+        moodListView.setAdapter(moodAdapter);
     }
 
 
@@ -203,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
                 moodList.add(returnedMood);
-                adapter.notifyDataSetChanged();
+                moodAdapter.notifyDataSetChanged();
 
                 //add newly created mood to DB
                 ElasticSearchController.AddMoodsTask addMoodsTask = new ElasticSearchController.AddMoodsTask();
@@ -266,7 +268,8 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.delete: //When delete is pressed the item is removed, and everything is updated
                 moodList.remove(itemPosition);
-                adapter.notifyDataSetChanged();
+//                adapter.notifyDataSetChanged();
+                moodAdapter.notifyDataSetChanged();
                 return true;
             default:
                 return super.onContextItemSelected(item);
