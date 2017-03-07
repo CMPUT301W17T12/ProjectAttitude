@@ -2,6 +2,8 @@ package com.projectattitude.projectattitude.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import android.support.v7.widget.PopupMenu;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         controller = new MainController();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         moodListView = (ListView) findViewById(R.id.moodListView);
         FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
         adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodList);
@@ -103,10 +106,56 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Handles sorting the list, may need several functions for each type of sort.
-     * @param moods the moodlist that is to be sorted
+     * @param item - identifies which item has been clicked
      */
-    private void sortMood(MoodList moods){
+    public void sortMood(MenuItem item){
+        switch (item.getItemId()) {
+            case R.id.dateOption:
+                //TODO: Enter extras in sending intent, parceables for sortMood
+                controller.sortList(getIntent());
 
+            case R.id.reverseDateOption:
+                controller.sortList(getIntent());
+        }
+    }
+
+    /**
+     * Handles filtering the list
+     * @param item
+     */
+    public void filterMood(MenuItem item){
+        switch (item.getItemId()) {
+            case R.id.timeOption:
+                //TODO: Enter extras in sending intent, parceables, for filterMood
+                PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.time_menu, popup.getMenu());
+                popup.show();
+
+            case R.id.followingOption:
+                controller.filterList(getIntent());
+
+            case R.id.allOption:
+                controller.filterList(getIntent());
+        }
+    }
+
+    /**
+     * Handles filtering the list, but specifically for the time menu
+     * @param item
+     */
+    public void filterMoodsByTime(MenuItem item){
+        switch (item.getItemId()) {
+            case R.id.dayOption:
+                //TODO: Enter extras in sending intent, parceables, for filterMoodsByTime
+                controller.filterList(getIntent());
+
+            case R.id.monthOption:
+                controller.filterList(getIntent());
+
+            case R.id.yearOption:
+                controller.filterList(getIntent());
+        }
     }
 
     /**
@@ -127,6 +176,21 @@ public class MainActivity extends AppCompatActivity {
      */
     private void logOut(){
 
+    }
+
+
+    /**
+     * OpenSFMenu - Open Sort/Filter Menu
+     * Is used when the sort/filter button is pressed to display a menu
+     * @param view
+     */
+  //TODO: Resolve SF Menu vs sort and filter menu function below
+    public void openSFMenu(View view){
+        //TODO: Test all this popupmenu crap
+        PopupMenu popup = new PopupMenu(this, view);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.sort_filter_menu, popup.getMenu());
+        popup.show();
     }
 
     //accept returned information from activities
@@ -229,6 +293,17 @@ public class MainActivity extends AppCompatActivity {
 //
 //    }
 
+    public void openSortMenu(MenuItem view){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.sort_menu, popup.getMenu());
+        popup.show();
+    }
 
-
+    public void openFilterMenu(MenuItem view){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.filter_menu, popup.getMenu());
+        popup.show();
+    }
 }

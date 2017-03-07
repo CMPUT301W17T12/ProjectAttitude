@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/dayOption"
+        android:title="@string/day_option"
+        android:onClick="filterMoodsByTime"/>
+    <item android:id="@+id/monthOption"
+        android:title="@string/month_option"
+        android:onClick="filterMoodsByTime"/>
+    <item android:id="@+id/yearOption"
+        android:title="@string/year_option"
+        android:onClick="filterMoodsByTime"/>
+</menu>
