@@ -27,4 +27,13 @@
     <!-- Strings related to CreateAccountActivity-->
     <string name="complete_button">Complete</string>
     <string name="emotional_state">Emotional State</string>
+
+    <!-- Strings for create mood activity -->
+    <string name="mood_label">Mood:</string>
+    <string name="date_label">Date:</string>
+    <string name="emotional_state_label">Emotional State:</string>
+    <string name="trigger_label">Trigger:</string>
+    <string name="save_button">Save</string>
+    <string name="cancel_button">Cancel</string>
+
 </resources>

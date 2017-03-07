@@ -20,8 +20,8 @@ public class CreateMoodActivity extends MoodActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_mood);
 
-        Button completeButton = (Button) findViewById(R.id.completeButton);
-        emotionalState = (EditText) findViewById(R.id.emotionalSateEditText);
+        Button completeButton = (Button) findViewById(R.id.saveButton);
+        emotionalState = (EditText) findViewById(R.id.emotionalStateField);
 
         completeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
