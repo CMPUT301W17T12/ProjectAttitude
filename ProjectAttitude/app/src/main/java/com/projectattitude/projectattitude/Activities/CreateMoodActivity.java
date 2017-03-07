@@ -22,13 +22,14 @@ public class CreateMoodActivity extends MoodActivity {
         setContentView(R.layout.activity_create_mood);
 
         Button completeButton = (Button) findViewById(R.id.saveButton);
-        DatePickerEditText date = new DatePickerEditText(this, R.id.dateField);
+        final DatePickerEditText date = new DatePickerEditText(this, R.id.dateField);
         emotionalState = (EditText) findViewById(R.id.emotionalStateField);
 
         completeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 newMood = new Mood();
                 newMood.setEmotionState(emotionalState.getText().toString());
+                newMood.setMoodDate(date.getDate());
                 Intent returnCreateMoodIntent = new Intent();
                 returnCreateMoodIntent.putExtra("addMoodIntent", newMood);
                 setResult(RESULT_OK, returnCreateMoodIntent);
