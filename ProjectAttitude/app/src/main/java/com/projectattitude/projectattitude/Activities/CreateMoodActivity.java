@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.projectattitude.projectattitude.Abstracts.DatePickerEditText;
 import com.projectattitude.projectattitude.Abstracts.MoodActivity;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
@@ -21,6 +22,7 @@ public class CreateMoodActivity extends MoodActivity {
         setContentView(R.layout.activity_create_mood);
 
         Button completeButton = (Button) findViewById(R.id.saveButton);
+        DatePickerEditText date = new DatePickerEditText(this, R.id.dateField);
         emotionalState = (EditText) findViewById(R.id.emotionalStateField);
 
         completeButton.setOnClickListener(new View.OnClickListener() {
