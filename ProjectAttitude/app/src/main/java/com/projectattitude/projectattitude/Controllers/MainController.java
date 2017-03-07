@@ -39,6 +39,7 @@ public class MainController {
      */
     public void sortList(Intent intent){
         //TODO: Test this function
+        //TODO: Notify the list that it has changed
         //Taken from http://stackoverflow.com/questions/2839137/how-to-use-comparator-in-java-to-sort
         //Date: 3/6/2017
 
@@ -76,7 +77,7 @@ public class MainController {
      * @param intent
      */
     public void filterList(Intent intent){
-
+        //need to filter
     }
 
     /**
