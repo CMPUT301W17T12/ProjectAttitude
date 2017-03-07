@@ -1,0 +1,18 @@
+For runnin ES.
+1. Download elastic search 5.2.2, https://www.elastic.co/downloads/past-releases
+2. Run the elasticsearch.bat
+3. Download Postman (chrome app for helping use rest api)
+4. Requests you can call in Postman
+* get all indices from Hindles server;
+  GET http://cmput301.softwareprocess.es:8080/_cat/indices?v
+  We are index cmput301w17t12
+
+* get what objects are stored in the teams indicie
+  GET http://cmput301.softwareprocess.es:8080/cmput301w17t12
+  
+* get each individual object in the teams indicie 
+  GET http://cmput301.softwareprocess.es:8080/cmput301w17t12/_search
+
+5. Using branch addMoodsChrisES, you can add new moods that will appear on the DB, using above instructions.
+6. Follow this tutorial, https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html
+but instead of crud, we are using postman, and use localhost:9200 instead of Hindles server to follow through the tutorial
