@@ -8,12 +8,18 @@ import java.util.ArrayList;
 
 public class MoodList {
     private int count = 0;
-    private ArrayList<Mood> records;
+
+    //fix for submission
+//    private ArrayList<Mood> records;
+
+    private ArrayList<Mood> moods;
 
     public MoodList(){
+        moods = new ArrayList<Mood>();
     }
 
     public void addMood(Mood mood) {
+        moods.add(mood);
     }
 
     public boolean hasMood(Mood mood) {
@@ -28,10 +34,15 @@ public class MoodList {
     }
 
     public Mood getMood(int i) {
-        return null;
+       return moods.get(i);
     }
 
+    //fix for submission
+//    public ArrayList<Mood> getMoodList() {
+//        return records;
+//    }
+
     public ArrayList<Mood> getMoodList() {
-        return records;
+        return moods;
     }
 }

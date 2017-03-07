@@ -1,16 +1,38 @@
 package com.projectattitude.projectattitude.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.projectattitude.projectattitude.Abstracts.MoodActivity;
+import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
 
 public class CreateMoodActivity extends MoodActivity {
+
+    private Mood newMood;
+    private EditText emotionalState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_mood);
+
+        Button completeButton = (Button) findViewById(R.id.completeButton);
+        emotionalState = (EditText) findViewById(R.id.emotionalSateEditText);
+
+        completeButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                newMood = new Mood();
+                newMood.setEmotionState(emotionalState.getText().toString());
+                Intent returnCreateMoodIntent = new Intent();
+                returnCreateMoodIntent.putExtra("addMoodIntent", newMood);
+                setResult(RESULT_OK, returnCreateMoodIntent);
+                finish();
+            }
+        });
     }
 
     /**

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -12,8 +13,6 @@
     android:orientation="vertical"
     tools:context="com.projectattitude.projectattitude.Activities.MainActivity">
 
-
-
     <ImageButton
         android:id="@+id/menuButton"
         android:layout_width="wrap_content"
@@ -22,21 +21,23 @@
         android:layout_alignParentRight="true"
         android:onClick="sortMenu"
         />
-
+  
     <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
+        android:id="@+id/moodTextView" 
+        android:text="@string/mood_text"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_toLeftOf="@id/menuButton"
-        android:text="@string/main_title"
-        android:textSize="35sp"
-        />
+        android:textSize="35sp"/>
 
     <ImageButton
         android:id="@+id/filterButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title"
+        android:layout_below="@id/moodTextView"
         android:src="@drawable/filter_button"
         android:layout_alignParentRight="true"
         android:onClick="openSFMenu"
@@ -46,27 +47,37 @@
         android:id="@+id/searchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title"
+        android:layout_below="@id/moodTextView"
         android:layout_toLeftOf="@id/filterButton"
         android:layout_alignParentLeft="true"
         android:hint="@string/search_bar"
         />
 
     <ListView
-        android:id="@+id/moodList"
+        android:id="@+id/moodListView"
+        style="@style/Widget.AppCompat.ListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/searchBar"
+        android:layout_above="@+id/addMoodButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:scrollbars="vertical">
-    </ListView>
+        android:layout_below="@+id/searchBar" />
+
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:clickable="true"
+        app:fabSize="mini"
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:id="@+id/addMoodButton"
+        app:backgroundTint="@color/colorPrimary"
+        app:rippleColor="@android:color/white"
         android:layout_alignParentBottom="true"
-        android:backgroundTint="@color/wallet_holo_blue_light"
-        android:src="@drawable/add_button" />
-
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
+
+

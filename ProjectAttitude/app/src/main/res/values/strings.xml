@@ -33,4 +33,11 @@
         <item>With a crowd</item>
     </string-array>
     <string name="spinner">Social Situations</string>
+
+    <!-- Strings related to MainActivity-->
+    <string name="mood_text">Moods</string>
+
+    <!-- Strings related to CreateAccountActivity-->
+    <string name="complete_button">Complete</string>
+    <string name="emotional_state">Emotional State</string>
 </resources>
