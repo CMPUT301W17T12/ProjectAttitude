@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/menu_button"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:onClick="sortMenu"
         />
   
@@ -31,6 +32,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_toLeftOf="@id/menuButton"
+        android:layout_toStartOf="@+id/menuButton"
         android:textSize="35sp"/>
 
     <ImageButton
@@ -40,6 +42,7 @@
         android:layout_below="@id/moodTextView"
         android:src="@drawable/filter_button"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:onClick="openSFMenu"
         />
 
@@ -49,7 +52,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/moodTextView"
         android:layout_toLeftOf="@id/filterButton"
+        android:layout_toStartOf="@+id/filterButton"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:hint="@string/search_bar"
         />
 
@@ -68,11 +73,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        app:fabSize="mini"
         app:srcCompat="@android:drawable/ic_input_add"
         android:id="@+id/addMoodButton"
-        app:backgroundTint="@color/colorPrimary"
-        app:rippleColor="@android:color/white"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
