@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
+import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.R;
@@ -25,11 +26,13 @@ public class MainActivity extends AppCompatActivity {
     private MoodMainAdapter moodAdapter; //Not used anymore
     private ListView moodListView;
     private ArrayAdapter<Mood> adapter;
+    private MainController controller;
 
     private  int listItem; //This is the index of the item pressed in the list
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        controller = new MainController();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         moodListView = (ListView) findViewById(R.id.moodListView);
@@ -160,7 +163,8 @@ public class MainActivity extends AppCompatActivity {
         //This bool fixes that
         switch(item.getItemId()) {
             case R.id.view:
-                //TODO Make this MVC. Use a controller that calls this code
+                //TODO Make this MVC. Use a controller that calls this code?
+                //On second though this is all UI so it doenst need a controller?
                 edit = false;//Makes it so the edit window will not pop up
                 Intent intentView = new Intent(MainActivity.this, ViewMoodActivity.class);
                 intentView.putExtra("mood", moodList.get(itemPosition));

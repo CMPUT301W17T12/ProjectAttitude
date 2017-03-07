@@ -82,4 +82,15 @@ public class Mood implements Serializable {
         return moodDate;
     }
 
+    /**
+     * This is what the list view shows, we can edit this later
+     * @return a string currently containing the emotionState
+     * @updated on 3/6/17
+     */
+    @Override
+    public String toString(){
+        //TODO Probably make a real ui here
+        return(emotionState);
+    }
+
 }
