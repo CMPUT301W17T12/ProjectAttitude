@@ -38,34 +38,35 @@ public class MainController {
      * @param intent
      */
     public void sortList(Intent intent){
-        //TODO: Replace with checking if is sort or reverseSort
+        //TODO: Test this function
+        //Taken from http://stackoverflow.com/questions/2839137/how-to-use-comparator-in-java-to-sort
+        //Date: 3/6/2017
+
+        class dateComparator implements Comparator<Mood> {
+            @Override
+            public int compare(Mood mood1, Mood mood2) {
+                return (int)(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime());
+            }
+        }
+
+        class reverseDateComparator implements Comparator<Mood> {
+            @Override
+            public int compare(Mood mood1, Mood mood2) {
+                return (int)-(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime());
+            }
+        }
+
         if(true){//Sort
             if(displayingMyMoodList) {//myMoodList being displayed
-                //Collections.sort(myMoodList, new Comparator<Mood>(){
-                    //public int compare(Mood mood1, Mood mood2){
-                    //    return mood1.getMoodDate().getTime() - mood2.getMoodDate().getTime(); //TODO: Use when mood class is finished
-                    //}
-                //});
+                Collections.sort(myMoodList.getMoodList(), new dateComparator());
             }else {//followedMoodList being displayed
-                //Collections.sort(followedMoodList, new Comparator<Mood>(){
-                //public int compare(Mood mood1, Mood mood2){
-                //    return mood1.getMoodDate().getTime() - mood2.getMoodDate().getTime();
-                //}
-                //});
+                Collections.sort(followedMoodList.getMoodList(), new dateComparator());
             }
         }else{//Reverse Sort
             if(displayingMyMoodList) {//myMoodList being displayed
-                //Collections.sort(myMoodList, new Comparator<Mood>(){
-                //public int compare(Mood mood1, Mood mood2){
-                //    return -(mood1.getMoodDate().getTime() - mood2.getMoodDate().getTime());
-                //}
-                //}); //Should check which list to sort through!
+                Collections.sort(myMoodList.getMoodList(), new reverseDateComparator());
             }else {//followedMoodList being displayed
-                //Collections.sort(followedMoodList, new Comparator<Mood>(){
-                //public int compare(Mood mood1, Mood mood2){
-                //    return -(mood1.getMoodDate().getTime() - mood2.getMoodDate().getTime());
-                //}
-                //}); //Should check which list to sort through!
+                Collections.sort(followedMoodList.getMoodList(), new reverseDateComparator());
             }
         }
     }
