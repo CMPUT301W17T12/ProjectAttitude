@@ -13,6 +13,6 @@ For runnin ES.
 * get each individual object in the teams indicie 
   GET http://cmput301.softwareprocess.es:8080/cmput301w17t12/_search
 
-5. Using branch addMoodsChrisES, you can add new moods that will appear on the DB, using above instructions.
+5. Using branch addMoodsChrisES, you can add new moods that will appear on the DB, using above instructions to view them.
 6. Follow this tutorial, https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html
 but instead of crud, we are using postman, and use localhost:9200 instead of Hindles server to follow through the tutorial
