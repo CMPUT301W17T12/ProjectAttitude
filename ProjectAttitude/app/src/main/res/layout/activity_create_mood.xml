@@ -113,11 +113,11 @@
                 android:text="Save"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/save"
+                android:id="@+id/saveButton"
                 android:layout_weight=".05"/>
 
             <Button
-                android:text="Cancle"
+                android:text="Cancel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/cancle" />

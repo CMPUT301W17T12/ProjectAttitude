@@ -2,13 +2,16 @@ package com.projectattitude.projectattitude.Objects;
 
 import android.provider.ContactsContract;
 
+import java.io.Serializable;
 import java.util.Date;
+
+import io.searchbox.annotations.JestId;
 
 /**
  * Created by Chris on 2/24/2017.
  */
 
-public class Mood {
+public class Mood implements Serializable {
 
     private Date moodDate;
     private String emotionState;
@@ -18,7 +21,13 @@ public class Mood {
     private ContactsContract.Contacts.Photo photograph; //Maybe make this an Image?
     private String socialSituation;
 
-    public Mood(String s) {
+    @JestId
+    private String id;
+
+//    public Mood(String s) {
+//    }
+
+    public Mood() {
     }
 
     public void setMoodDate(Date moodDate) {
@@ -78,4 +87,22 @@ public class Mood {
         return moodDate;
     }
 
+    /**
+     * This is what the list view shows, we can edit this later
+     * @return a string currently containing the emotionState
+     * @updated on 3/6/17
+     */
+    @Override
+    public String toString(){
+        //TODO Probably make a real ui here
+        return(emotionState);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }
