@@ -34,7 +34,7 @@ public class MoodList {
     }
 
     public Mood getMood(int i) {
-        return null;
+       return moods.get(i);
     }
 
     //fix for submission
