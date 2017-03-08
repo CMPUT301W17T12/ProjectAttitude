@@ -1,6 +1,7 @@
 package com.projectattitude.projectattitude.Adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 
 public class MoodMainAdapter extends ArrayAdapter<Mood> {
 
+    public static Resources resources;
+
     public MoodMainAdapter(Context context, ArrayList<Mood> moods){
         super(context, 0, moods);
     }
@@ -36,9 +39,28 @@ public class MoodMainAdapter extends ArrayAdapter<Mood> {
 
         TextView tvEmotionalState = (TextView) convertView.findViewById(R.id.emotionalStateTextView);
         TextView tvDate = (TextView) convertView.findViewById(R.id.dateTextView);
+        TextView tvTrigger = (TextView) convertView.findViewById(R.id.triggerTextView);
+        TextView tvSocialSituation = (TextView) convertView.findViewById(R.id.socialSituationTextView);
 
+        //emotional state will never be null because we error check for it in the CreateMoodActivity
         tvEmotionalState.setText(mood.getEmotionState());
         tvDate.setText(mood.getMoodDate().toString());
+
+        if(mood.getTrigger().equalsIgnoreCase("")){
+            tvTrigger.setVisibility(View.GONE);
+        }
+        else{
+            //fix this hardcoded string with string resources, I don't know how to -VUK
+            tvTrigger.setText("Reason: " + mood.getTrigger());
+        }
+
+        if(mood.getSocialSituation().equalsIgnoreCase("Select an social situation")){
+            tvSocialSituation.setVisibility(View.GONE);
+        }
+        else{
+            //fix this hardcoded string with string resources, I don't know how to -VUK
+            tvSocialSituation.setText("Situation: " + mood.getSocialSituation());
+        }
 
         return convertView;
     }

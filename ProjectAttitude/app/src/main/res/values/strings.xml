@@ -27,6 +27,7 @@
     <string name="month_option">Month</string>
     <string name="year_option">Year</string>
     <string-array name="social_situations">
+        <item>Select an social situation</item>
         <item>Alone</item>
         <item>With one other person</item>
         <item>With two to several people</item>
@@ -48,6 +49,7 @@
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
     <string name="emotion_state_error">Emotional state is a mandatory field</string>
+    <string name="social_situation_label">Social Situation:</string>
 
     <string-array name="emotional_state">
         <item>Select an emotional state</item>
@@ -61,5 +63,9 @@
         <item>Surprise</item>
     </string-array>
     <string name="emotionSpinner">Emotional State</string>
+
+    <!-- Strings for MoodMainAdapter -->
+    <string name="trigger_prefix">Reason: %1$s</string>
+    <string name="social_situation_prefix">Situation: %1$s</string>
 
 </resources>
