@@ -21,8 +21,8 @@ public class MainController {
     private User user;
     private ArrayList<User> followList; //The people the user follows?
     private ArrayList<User> followedList; //The people that follow the user?
-    private MoodList myMoodList;
-    private MoodList followedMoodList;
+    //private MoodList myMoodList; - not really needed
+    //private MoodList followedMoodList; - not really needed
     private boolean displayingMyMoodList = true; //Which list is being displayed currently. 1 = myMoodList, 0 = followedMoodList
 
     /**
@@ -36,12 +36,14 @@ public class MainController {
     }
 
     /**
-     * I Guess this is where the bulk of the sorting gets done?
+     * Sorts an array list holding moods depending on its date.
+     * @param moodList: Arraylist containing moods.
      * @param sortOrder: "Sort" if sorting in normal order, "Reverse Sort" if sorting in reverse order.
+     *
+     * Postcondition: List is sorted, but arrayAdapter needs to be notified.
      */
-    public MoodList sortList(String sortOrder){
+    public void sortList(ArrayList<Mood> moodList, String sortOrder){
         //TODO: Test this function
-        //TODO: Notify the list that it has changed
         //Taken from http://stackoverflow.com/questions/2839137/how-to-use-comparator-in-java-to-sort
         //Date: 3/6/2017
 
@@ -60,23 +62,11 @@ public class MainController {
         }
 
         if(sortOrder.equals("Sort")){//Sort
-            if(displayingMyMoodList) {//myMoodList being displayed
-                Collections.sort(myMoodList.getMoodList(), new dateComparator());
-                return myMoodList;
-            }else {//followedMoodList being displayed
-                Collections.sort(followedMoodList.getMoodList(), new dateComparator());
-                return followedMoodList;
-            }
-        }else{//Reverse Sort
-            if(displayingMyMoodList) {//myMoodList being displayed
-                Collections.sort(myMoodList.getMoodList(), new reverseDateComparator());
-                return myMoodList;
-            }else {//followedMoodList being displayed
-                Collections.sort(followedMoodList.getMoodList(), new reverseDateComparator());
-                return followedMoodList;
-            }
+            Collections.sort(moodList, new dateComparator());
+        }else if (sortOrder.equals("Reverse Sort")){//Reverse Sort
+            Collections.sort(moodList, new reverseDateComparator());
         }
-
+        //else, don't sort or anything.
 
     }
 
@@ -84,7 +74,7 @@ public class MainController {
      * I Guess this is where the bulk of the filtering gets done?
      * @param intent
      */
-    public void filterList(Intent intent){
+    public void filterListByTime(){
         //need to filter
     }
 

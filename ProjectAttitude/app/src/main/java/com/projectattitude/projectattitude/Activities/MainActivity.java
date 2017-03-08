@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private MoodMainAdapter moodAdapter;
     private ListView moodListView;
     private MainController controller;
+    private boolean viewingMyList;
 
     private  int listItem; //This is the index of the item pressed in the list
 
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
         moodAdapter = new MoodMainAdapter(this, moodList);
         moodListView.setAdapter(moodAdapter);
+        viewingMyList = false;
 
         registerForContextMenu(moodListView);
 
@@ -102,18 +104,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Handles sorting the list, may need several functions for each type of sort.
-     * @param item - identifies which item has been clicked
+     * Handles sorting the list, called when an item in the sortMenu is pressed
+     * @param item - identifies which item has been pressed on
      */
     public void sortMood(MenuItem item){
         switch (item.getItemId()) {
             case R.id.dateOption:
-                //TODO: Enter extras in sending intent, parceables for sortMood
-                controller.sortList("Sort"); //True = sorting by date
-
+                controller.sortList(moodList, "Sort"); //True = sorting by date
             case R.id.reverseDateOption:
-                controller.sortList("Reverse Sort"); //False = sorting by reverse date
+                controller.sortList(moodList, "Reverse Sort"); //False = sorting by reverse date
         }
+        moodAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -130,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 popup.show();
 
             case R.id.followingOption:
-                controller.filterList(getIntent());
+                controller.changeList(getIntent());
 
             case R.id.allOption:
                 controller.filterList(getIntent());
@@ -145,13 +146,13 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.dayOption:
                 //TODO: Enter extras in sending intent, parceables, for filterMoodsByTime
-                controller.filterList(getIntent());
+                controller.filterListByTime(getIntent());
 
             case R.id.monthOption:
-                controller.filterList(getIntent());
+                controller.filterListByTime(getIntent());
 
             case R.id.yearOption:
-                controller.filterList(getIntent());
+                controller.filterListByTime(getIntent());
         }
     }
 

@@ -7,7 +7,6 @@ import java.util.ArrayList;
  */
 
 public class MoodList {
-    private int count = 0;
 
     //fix for submission
 //    private ArrayList<Mood> records;
@@ -27,7 +26,7 @@ public class MoodList {
     }
 
     public int getCount() {
-        return count;
+        return moods.size();
     }
 
     public void deleteMood(Mood mood) {
