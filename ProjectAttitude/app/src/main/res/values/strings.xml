@@ -47,5 +47,19 @@
     <string name="trigger_label">Trigger:</string>
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
+    <string name="emotion_state_error">Emotional state is a mandatory field</string>
+
+    <string-array name="emotional_state">
+        <item>Select an emotional state</item>
+        <item>Anger</item>
+        <item>Confusion</item>
+        <item>Disgust</item>
+        <item>Fear</item>
+        <item>Happiness</item>
+        <item>Sadness</item>
+        <item>Shame</item>
+        <item>Surprise</item>
+    </string-array>
+    <string name="emotionSpinner">Emotional State</string>
 
 </resources>
