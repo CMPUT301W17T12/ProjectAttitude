@@ -11,7 +11,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.projectattitude.projectattitude.Activities.MainActivity">
+    tools:context="com.projectattitude.projectattitude.Activities.MainActivity"
+    android:focusableInTouchMode="true">
 
     <ImageButton
         android:id="@+id/menuButton"
