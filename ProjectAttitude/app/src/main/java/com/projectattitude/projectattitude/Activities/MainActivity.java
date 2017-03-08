@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     protected ArrayList<Mood> moodList = new ArrayList<Mood>();
     private MoodMainAdapter moodAdapter;
     private ListView moodListView;
-    //private ArrayAdapter<Mood> adapter;
     private MainController controller;
 
     private  int listItem; //This is the index of the item pressed in the list
@@ -41,9 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         moodListView = (ListView) findViewById(R.id.moodListView);
         FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
-        //adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodList);
         moodAdapter = new MoodMainAdapter(this, moodList);
-//        moodListView.setAdapter(adapter);
         moodListView.setAdapter(moodAdapter);
 
         registerForContextMenu(moodListView);
@@ -65,9 +62,6 @@ public class MainActivity extends AppCompatActivity {
         catch(Exception e){
             Log.d("Error", "Failed to get the moods from the async object");
         }
-
-//        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodList);
-//        moodListView.setAdapter(adapter);
 
         moodAdapter = new MoodMainAdapter(this, moodList);
         moodListView.setAdapter(moodAdapter);
@@ -283,7 +277,6 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.delete: //When delete is pressed the item is removed, and everything is updated
                 moodList.remove(itemPosition);
-//                adapter.notifyDataSetChanged();
                 moodAdapter.notifyDataSetChanged();
                 return true;
             default:
@@ -310,5 +303,4 @@ public class MainActivity extends AppCompatActivity {
 //
 //
 //    }
-
 }
