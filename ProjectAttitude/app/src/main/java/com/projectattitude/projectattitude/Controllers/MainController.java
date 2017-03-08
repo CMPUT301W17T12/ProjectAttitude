@@ -1,7 +1,9 @@
 package com.projectattitude.projectattitude.Controllers;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
 
+import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.Objects.User;
@@ -35,9 +37,9 @@ public class MainController {
 
     /**
      * I Guess this is where the bulk of the sorting gets done?
-     * @param intent
+     * @param sortOrder: "Sort" if sorting in normal order, "Reverse Sort" if sorting in reverse order.
      */
-    public void sortList(Intent intent){
+    public MoodList sortList(String sortOrder){
         //TODO: Test this function
         //TODO: Notify the list that it has changed
         //Taken from http://stackoverflow.com/questions/2839137/how-to-use-comparator-in-java-to-sort
@@ -57,19 +59,25 @@ public class MainController {
             }
         }
 
-        if(true){//Sort
+        if(sortOrder.equals("Sort")){//Sort
             if(displayingMyMoodList) {//myMoodList being displayed
                 Collections.sort(myMoodList.getMoodList(), new dateComparator());
+                return myMoodList;
             }else {//followedMoodList being displayed
                 Collections.sort(followedMoodList.getMoodList(), new dateComparator());
+                return followedMoodList;
             }
         }else{//Reverse Sort
             if(displayingMyMoodList) {//myMoodList being displayed
                 Collections.sort(myMoodList.getMoodList(), new reverseDateComparator());
+                return myMoodList;
             }else {//followedMoodList being displayed
                 Collections.sort(followedMoodList.getMoodList(), new reverseDateComparator());
+                return followedMoodList;
             }
         }
+
+
     }
 
     /**
@@ -90,7 +98,10 @@ public class MainController {
         return array;
     }
 
+
 }
+
+
 
 
 //    //function to add moods to elastic search

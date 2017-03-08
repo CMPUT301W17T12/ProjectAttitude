@@ -1,6 +1,8 @@
 package com.projectattitude.projectattitude.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -45,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
         moodListView.setAdapter(moodAdapter);
 
         registerForContextMenu(moodListView);
-
 
         //on click listener for adding moods
         addMoodButton.setOnClickListener(new View.OnClickListener() {
@@ -114,10 +115,10 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.dateOption:
                 //TODO: Enter extras in sending intent, parceables for sortMood
-                controller.sortList(getIntent());
+                controller.sortList("Sort"); //True = sorting by date
 
             case R.id.reverseDateOption:
-                controller.sortList(getIntent());
+                controller.sortList("Reverse Sort"); //False = sorting by reverse date
         }
     }
 
@@ -192,6 +193,20 @@ public class MainActivity extends AppCompatActivity {
         PopupMenu popup = new PopupMenu(this, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.sort_filter_menu, popup.getMenu());
+        popup.show();
+    }
+
+    public void openSortMenu(MenuItem view){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.sort_menu, popup.getMenu());
+        popup.show();
+    }
+
+    public void openFilterMenu(MenuItem view){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.filter_menu, popup.getMenu());
         popup.show();
     }
 
@@ -296,17 +311,4 @@ public class MainActivity extends AppCompatActivity {
 //
 //    }
 
-    public void openSortMenu(MenuItem view){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.sort_menu, popup.getMenu());
-        popup.show();
-    }
-
-    public void openFilterMenu(MenuItem view){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.filter_menu, popup.getMenu());
-        popup.show();
-    }
 }
