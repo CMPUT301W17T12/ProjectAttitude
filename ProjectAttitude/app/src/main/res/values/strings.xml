@@ -27,7 +27,7 @@
     <string name="month_option">Month</string>
     <string name="year_option">Year</string>
     <string-array name="social_situations">
-        <item>Select an social situation</item>
+        <item>Select a social situation</item>
         <item>Alone</item>
         <item>With one other person</item>
         <item>With two to several people</item>

@@ -12,64 +12,45 @@
     tools:context="com.projectattitude.projectattitude.Activities.ViewMoodActivity">
 
     <TextView
+        android:id="@+id/DateView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16pt"
+        android:text="Date here"
+        android:layout_below="@+id/dateLabel"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
         android:id="@+id/EmotionStateView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/emotionStateLabel"
         android:text="We gonna color this with an emotion"
-        android:textSize="16pt"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:id="@+id/DateView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/EmotionStateView"
-        android:textSize="16pt"
-        android:text="Date here"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:textSize="16pt" />
 
     <TextView
         android:id="@+id/TriggerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/DateView"
         android:text="Trigger goes here"
         android:textSize="16pt"
 
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:id="@+id/ExplanationView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Explanation"
-        android:textSize="16pt"
-        android:layout_below="@+id/SocialSituationView"
+        android:layout_below="@+id/triggerLabel"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:id="@+id/SocialSituationView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Social Situation"
-        android:layout_below="@+id/TriggerView"
+        android:layout_below="@+id/socialSituationLabel"
+        android:textSize="16pt"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentStart="true" />
 
     <Button
         android:id="@+id/EditButton"
@@ -93,13 +74,47 @@
         android:id="@+id/imageView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_menu_gallery"
         android:layout_above="@+id/EditButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        app:srcCompat="@android:drawable/ic_menu_gallery"
+        android:layout_below="@+id/SocialSituationView"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/ExplanationView" />
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/dateLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date:"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/EmotionStateView" />
+
+    <TextView
+        android:id="@+id/socialSituationLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Social Situation:"
+        android:layout_below="@+id/TriggerView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/triggerLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trigger:"
+        android:layout_below="@+id/DateView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/emotionStateLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Emotional State:"
+        android:layout_alignParentTop="true" />
 
 
 </RelativeLayout>
