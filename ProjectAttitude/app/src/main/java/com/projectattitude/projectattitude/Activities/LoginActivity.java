@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.LoginFilter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText usernameView;
     private EditText passwordView;
 
+    private View titleView;
     private View loginFormView;
     private View progressView;
 
@@ -42,17 +44,13 @@ public class LoginActivity extends AppCompatActivity {
                 String username = usernameView.getText().toString();
                 String password = passwordView.getText().toString();
 
-                if (authenticate(username, password)) {
-                    // Login was successful
-
-                    finish();
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                }
+                authenticate(username, password);
             }
         });
 
         loginFormView = findViewById(R.id.login_form);
         progressView = findViewById(R.id.login_progress);
+        titleView = findViewById(R.id.title_label);
     }
 
     /**
@@ -65,6 +63,15 @@ public class LoginActivity extends AppCompatActivity {
         // the progress spinner.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            titleView.setVisibility(show ? View.GONE : View.VISIBLE);
+            titleView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    titleView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
 
             loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
             loginFormView.animate().setDuration(shortAnimTime).alpha(
@@ -98,31 +105,44 @@ public class LoginActivity extends AppCompatActivity {
      * @param password
      * @return
      */
-    private boolean authenticate (String username, String password) {
+    private void authenticate (String username, String password) {
         // If username exists continue with log in, otherwise create new account
         if (checkUsernameExists(username)) {
 
+            // Find if username exists in database
+
             // Check if password for username matches
-            if (BCrypt.checkpw(password, getHashedPasswordFromServer())){
+            if (BCrypt.checkpw(password, getHashedPasswordFromServer(username))){
                 // Now logged into account, switch to mainactivity
-                return true;
+
+                finish();
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
             }
             // Password was incorrect
             else {
                 passwordView.setError("Incorrect Password");
             }
         }
-        // Create New account with username password
+        // Create New account in database with username password
         else {
-            return false;
+            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         }
-        return false;
     }
 
-    private String getHashedPasswordFromServer() {
+    /**
+     * Retrieve the salted hash of username's password
+     * @param username
+     * @return hashed
+     */
+    private String getHashedPasswordFromServer(String username) {
         return BCrypt.hashpw("test", BCrypt.gensalt());
     }
 
+    /**
+     * Checks if there exists an account in the database with name username
+     * @param username
+     * @return
+     */
     private boolean checkUsernameExists (String username) {
         // Check username with elasticsearch server
 
