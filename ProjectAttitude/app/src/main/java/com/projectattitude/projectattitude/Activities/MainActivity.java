@@ -196,6 +196,9 @@ public class MainActivity extends AppCompatActivity {
 
     //accept returned information from activities
     @Override
+    // requestCode 0 = Add mood
+    // requestCode 1 = View mood -- resultCode 2 = delete, 3 = Edit Mood
+    // requestCode 2 = Edit Mood
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Mood returnedMood;
 
