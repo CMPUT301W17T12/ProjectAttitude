@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         moodAdapter = new MoodMainAdapter(this, moodList);
 //        moodListView.setAdapter(adapter);
         moodListView.setAdapter(moodAdapter);
+        Button viewMapButton = (Button) findViewById(R.id.viewMapButton);
 
         registerForContextMenu(moodListView);
 
@@ -51,6 +53,13 @@ public class MainActivity extends AppCompatActivity {
         addMoodButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 createMood();
+            }
+        });
+
+        //on click listener for viewing map
+        viewMapButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                goToMap();
             }
         });
 
@@ -164,6 +173,8 @@ public class MainActivity extends AppCompatActivity {
      * When the user clicks the map button this takes them to the map view
      */
     private void goToMap(){
+        Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
+        startActivityForResult(viewMapIntent, 0);
     }
 
     /**

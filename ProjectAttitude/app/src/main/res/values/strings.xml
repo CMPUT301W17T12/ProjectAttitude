@@ -48,4 +48,6 @@
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
 
+    <!-- Strings for map activity -->
+    <string name="google_maps_key">AIzaSyCvXpLfGeIYr7BAMHg3GD9hYxU0izDRA</string>
 </resources>
