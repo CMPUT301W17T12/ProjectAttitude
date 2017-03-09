@@ -10,6 +10,102 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.projectattitude.projectattitude.Activities.EditMoodActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:text="@string/mood_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/moodLabel"
+                android:labelFor="@+id/moodField"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:id="@+id/moodField"/>
+
+            <TextView
+                android:text="@string/date_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/dateLabel"
+                android:labelFor="@+id/dateField"/>
+
+            <EditText
+                android:id="@+id/dateField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:inputType="date"
+                android:hint="Select Date..." />
+
+            <TextView
+                android:text="@string/emotional_state_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/emotionalStateLabel"
+                android:labelFor="@+id/emotionalStateField"/>
+
+            <Spinner
+                android:id="@+id/emotionSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/emotional_state"
+                android:prompt="@string/emotionSpinner"
+                android:paddingTop="@dimen/activity_vertical_margin"/>
+
+            <TextView
+                android:text="@string/trigger_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/triggerLabel"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/triggerField"/>
+
+            <TextView
+                android:id="@+id/socialSituationLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/social_situation_label" />
+
+            <Spinner
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner"
+                android:entries="@array/social_situations"
+                android:prompt="@string/spinner"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/quantum_ic_art_track_grey600_48"
+                android:id="@+id/imageView" />
+
+            <Button
+                android:text="@string/save_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/saveButton"
+                android:layout_weight=".05"/>
+
+            <Button
+                android:text="@string/cancel_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/cancelButton" />
+        </LinearLayout>
+    </ScrollView>
 
 
 </RelativeLayout>

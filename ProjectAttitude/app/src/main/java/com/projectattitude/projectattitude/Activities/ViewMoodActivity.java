@@ -2,6 +2,7 @@ package com.projectattitude.projectattitude.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -80,12 +81,14 @@ public class ViewMoodActivity extends MoodActivity {
      * @param mood the mood to be changed
      */
     private void editMood(Mood mood){
-        Intent i2 = new Intent(ViewMoodActivity.this, EditMoodActivity.class);
-        i2.putExtra("mood", mood);
+        Intent intentEdit = new Intent(ViewMoodActivity.this, EditMoodActivity.class);
+        intentEdit.putExtra("mood", mood);
+        startActivityForResult(intentEdit, 0); //Handled in the results section
         //TODO make edit mood
 
 
     }
+
 
     /**
      * Deletes a given mood
@@ -97,6 +100,25 @@ public class ViewMoodActivity extends MoodActivity {
         Intent returnToMain = new Intent();
         setResult(2, returnToMain);
         finish();
+
+    }
+    @Override
+    // requestCode 0 = Add mood
+    // requestCode 1 = View mood -- resultCode 2 = delete, 3 = Edit Mood
+    // requestCode 2 = Edit Mood
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Mood returnedMood;
+
+        if (requestCode == 0){
+            if (resultCode == RESULT_OK){
+                Mood newMood = (Mood) data.getSerializableExtra("mood");
+                Intent returnCreateMoodIntent = new Intent();
+                returnCreateMoodIntent.putExtra("newMood", newMood);
+                setResult(3, returnCreateMoodIntent);
+                finish();
+            }
+
+        }
 
     }
 

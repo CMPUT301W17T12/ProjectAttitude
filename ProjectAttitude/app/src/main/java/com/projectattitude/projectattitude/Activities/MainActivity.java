@@ -221,6 +221,20 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == 2){
                 deleteMood(itemPosition);
             }
+            //ViewMoodActivity says edit
+            if (resultCode == 3){
+                returnedMood = (Mood) data.getSerializableExtra("newMood");
+                moodList.set(itemPosition,returnedMood);
+                moodAdapter.notifyDataSetChanged();
+            }
+        }
+        //EditMoodActivity results
+        if (requestCode == 2){
+            if (resultCode == RESULT_OK) {
+                returnedMood = (Mood) data.getSerializableExtra("mood");
+                moodList.set(itemPosition,returnedMood);
+                moodAdapter.notifyDataSetChanged();
+            }
         }
     }
 
