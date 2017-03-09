@@ -74,12 +74,14 @@ public class MainController {
      * Filters an array list of moods, resulting in the moodList but with only current dates
      * @param moodList - moods to be filtered
      */
-    public void filterListByTime(ArrayList<Mood> moodList, String timeParameter){
-        switch(timeParameter){
-            case "Day":
-
-            case "Month":
-            case "Year":
+    public void filterListByTime(ArrayList<Mood> moodList, long timeParameter){
+        long currentTime = new Date().getTime();
+        for(int i = 0; i < moodList.size(); ++i) {
+            //If time is greater than timeParameter, remove it from moodList
+            long moodTime = ((Date)moodList.get(i).getMoodDate()).getTime();
+            if(currentTime - moodTime > timeParameter){
+                moodList.remove(i);
+            }
         }
     }
 

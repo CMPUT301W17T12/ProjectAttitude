@@ -2,6 +2,7 @@ package com.projectattitude.projectattitude.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.icu.util.TimeUnit;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -22,6 +23,7 @@ import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -142,15 +144,17 @@ public class MainActivity extends AppCompatActivity {
      * @param item
      */
     public void filterMoodsByTime(MenuItem item){
+        //TODO: Make sure moods are up to date?
+        Long milliseconds = new Date().getTime();
         switch (item.getItemId()) {
             case R.id.dayOption:
-                controller.filterListByTime(moodList, "Day");
+                controller.filterListByTime(moodList, milliseconds - (long)8.64e+7); //1 day's worth of milliseconds
 
             case R.id.monthOption:
-                controller.filterListByTime(moodList, "Month");
+                controller.filterListByTime(moodList, milliseconds - (long)2.628e+9); //1 month's worth of milliseconds approximately
 
             case R.id.yearOption:
-                controller.filterListByTime(moodList, "Year");
+                controller.filterListByTime(moodList, milliseconds - (long)3.154e+10); //1 year's worth of milliseconds approximately
         }
         moodAdapter.notifyDataSetChanged();
     }
