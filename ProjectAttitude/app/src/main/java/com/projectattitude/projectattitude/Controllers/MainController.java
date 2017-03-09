@@ -21,9 +21,8 @@ public class MainController {
     private User user;
     private ArrayList<User> followList; //The people the user follows?
     private ArrayList<User> followedList; //The people that follow the user?
-    //private MoodList myMoodList; - not really needed
-    //private MoodList followedMoodList; - not really needed
-    private boolean displayingMyMoodList = true; //Which list is being displayed currently. 1 = myMoodList, 0 = followedMoodList
+    private MoodList myMoodList;
+    private MoodList followedMoodList;
 
     /**
      * Gets the username of a given user
@@ -71,8 +70,10 @@ public class MainController {
     }
 
     /**
-     * Filters an array list of moods, resulting in the moodList but with only current dates
+     * Filters an array list of moods, resulting in the moodList but by moods' date
+     * Removes moods from moodList that don't have times less than what's specified in the timeParameter
      * @param moodList - moods to be filtered
+     * @param timeParameter - time in milliseconds to filter by
      */
     public void filterListByTime(ArrayList<Mood> moodList, long timeParameter){
         long currentTime = new Date().getTime();
@@ -80,6 +81,20 @@ public class MainController {
             //If time is greater than timeParameter, remove it from moodList
             long moodTime = ((Date)moodList.get(i).getMoodDate()).getTime();
             if(currentTime - moodTime > timeParameter){
+                moodList.remove(i);
+            }
+        }
+    }
+
+    /**
+     * Filters an array list of moods, resulting in the moodList but by moods' emotional state
+     * Removes moods from moodList that don't have the correct emotional state
+     * @param moodList - moods to be filtered
+     * @param emotion - String of mood's emotional state
+     */
+    public void filterListByEmotion(ArrayList<Mood> moodList, String emotion){
+        for(int i = 0; i < moodList.size(); ++i){
+            if(!(moodList.get(i).getEmotionState().equals(emotion))){ //If mood's emotion is not equal to emotion Parameter
                 moodList.remove(i);
             }
         }

@@ -113,8 +113,10 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.dateOption:
                 controller.sortList(moodList, "Sort"); //True = sorting by date
+                break;
             case R.id.reverseDateOption:
                 controller.sortList(moodList, "Reverse Sort"); //False = sorting by reverse date
+                break;
         }
         moodAdapter.notifyDataSetChanged();
     }
@@ -130,14 +132,32 @@ public class MainActivity extends AppCompatActivity {
                 MenuInflater inflater = popup.getMenuInflater();
                 inflater.inflate(R.menu.time_menu, popup.getMenu());
                 popup.show();
+                break;
 
             case R.id.followingOption:
                 //TODO: Following
                 viewingMyList = !viewingMyList;
+                break;
+
+            case R.id.emotionOption:
+                PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.mood_menu, popup.getMenu());
+                popup.show();
+                break;
 
             case R.id.allOption:
-                refreshMood();
-                moodAdapter.notifyDataSetChanged();
+                ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
+                getMoodsTask.execute("");
+
+                try{
+                    moodList = getMoodsTask.get();
+                }
+                catch(Exception e){
+                    Log.d("Error", "Failed to get the moods from the async object");
+                }
+                 moodAdapter.notifyDataSetChanged();
+                break;
         }
     }
 
@@ -151,15 +171,62 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.dayOption:
                 controller.filterListByTime(moodList, milliseconds - (long)8.64e+7); //1 day's worth of milliseconds
+                break;
 
             case R.id.monthOption:
                 controller.filterListByTime(moodList, milliseconds - (long)2.628e+9); //1 month's worth of milliseconds approximately
+                break;
 
             case R.id.yearOption:
                 controller.filterListByTime(moodList, milliseconds - (long)3.154e+10); //1 year's worth of milliseconds approximately
+                break;
         }
         moodAdapter.notifyDataSetChanged();
     }
+
+    /**
+     * Handles filtering the list, but specifically for the mood menu
+     * @param item
+     */
+    public void filterMoodsByEmotion(MenuItem item){
+        //TODO: Spinner or wat?
+        Long milliseconds = new Date().getTime();
+        switch (item.getItemId()) {
+            case R.id.angerOption:
+                controller.filterListByEmotion(moodList, "Anger"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.confusionOption:
+                controller.filterListByEmotion(moodList, "Confusion"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.disgustOption:
+                controller.filterListByEmotion(moodList, "Disgust"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.fearOption:
+                controller.filterListByEmotion(moodList, "Fear"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.happinessOption:
+                controller.filterListByEmotion(moodList, "Happiness"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.sadnessOption:
+                controller.filterListByEmotion(moodList, "Sadness"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.shameOption:
+                controller.filterListByEmotion(moodList, "Shame"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.surpriseOption:
+                controller.filterListByEmotion(moodList, "Surprise"); //1 day's worth of milliseconds
+                break;
+        }
+        moodAdapter.notifyDataSetChanged();
+    }
+
 
     /**
      * When the user clicks the map button this takes them to the map view
@@ -185,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
      * refreshMood - Used to refresh the mood list.
      * Currently works by using the global variable moodList
      */
-    public void refreshMood(){
+    public void refreshMoodList(){
         ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
         getMoodsTask.execute("");
 
