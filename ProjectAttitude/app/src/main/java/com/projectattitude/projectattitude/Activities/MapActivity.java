@@ -1,72 +1,69 @@
 package com.projectattitude.projectattitude.Activities;
 
-import android.support.v4.app.FragmentActivity;
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
 
-public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
+import org.osmdroid.api.IMapController;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapEventsReceiver;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
 
-    private GoogleMap mMap;
+public class MapActivity extends Activity implements MapEventsReceiver {
+
+
+    //taken from https://github.com/osmdroid/osmdroid/wiki/How-to-use-the-osmdroid-library
+    //March 8th, 2017 at 5:38PM
+    //MapView map;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Context ctx = getApplicationContext();
+        //important! set your user agent to prevent getting banned from the osm servers
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         setContentView(R.layout.activity_map);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+
+        MapView map = (MapView) findViewById(R.id.map);
+        map.setTileSource(TileSourceFactory.MAPNIK);
+
+        map.setBuiltInZoomControls(true);
+        map.setMultiTouchControls(true);
+
+        IMapController mapController = map.getController();
+        mapController.setZoom(9);
+        GeoPoint startPoint = new GeoPoint(48.8583, 2.2944);    // Paris!
+        mapController.setCenter(startPoint);
+
+        //Handling Map events
+        //MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this, this);
+        //map.getOverlays().add(0, mapEventsOverlay); //inserted at the "bottom" of all overlays
+
+
+    }
+
+    public void onResume(){
+        super.onResume();
+        //this will refresh the osmdroid configuration on resuming.
+        //if you make changes to the configuration, use
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //Configuration.getInstance().save(this, prefs);
+        Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
     }
 
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    public boolean singleTapConfirmedHelper(GeoPoint p) {
+        return false;
     }
 
-    /**
-     * Handles the filtering of moods that are visible on the map
-     */
-    private void filterMap(){
-
+    @Override
+    public boolean longPressHelper(GeoPoint p) {
+        return false;
     }
-
-    /**
-     * When the user clicks on a mood they are brought to the view mood view
-     * @param mood the mood taken from what the user clicked on
-     */
-    private void viewMood(Mood mood){
-
-    }
-
-    /**
-     * Returns the user to the main view, has the same functionality
-     * as if the user pushed the back button.
-     */
-    private void goToMain(){
-
-    }
-
 }
