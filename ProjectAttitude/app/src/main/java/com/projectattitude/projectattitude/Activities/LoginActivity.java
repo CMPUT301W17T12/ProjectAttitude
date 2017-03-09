@@ -4,15 +4,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.LoginFilter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.projectattitude.projectattitude.Controllers.ElasticSearchController;
 import com.projectattitude.projectattitude.R;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -34,17 +33,32 @@ public class LoginActivity extends AppCompatActivity {
         usernameView = (EditText) findViewById(R.id.usernameField);
         passwordView = (EditText) findViewById(R.id.passwordField);
 
-        Button signInButton = (Button) findViewById(R.id.signInButton);
+        final Button signInButton = (Button) findViewById(R.id.signInButton);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Start the authentication process
-                showProgress(true); // show the progress animation
+                usernameView.setError(null);
+                passwordView.setError(null);
 
                 String username = usernameView.getText().toString();
                 String password = passwordView.getText().toString();
 
-                authenticate(username, password);
+                Boolean cancel = false;
+
+                // If username exists continue with log in, otherwise create new account
+                if (username.equals("")){
+                    usernameView.setError(getString(R.string.error_field_required));
+                    cancel = true;
+                }
+
+                if (cancel) {
+                    usernameView.requestFocus();
+                }
+                else {
+                    showProgress(true); // show the progress animation
+                    LoginTask loginTask = new LoginTask(username, password);
+                    loginTask.execute((Void) null);
+                }
             }
         });
 
@@ -99,14 +113,49 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
+     * Login background task, allows us to run the long part of login asynchronously
+     */
+    public class LoginTask extends AsyncTask<Void, Void, Boolean> {
+        private final String username;
+        private final String password;
+
+        LoginTask(String username, String password){
+            this.username = username;
+            this.password = password;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params){
+            return authenticate(username, password);
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            showProgress(false);
+
+            if (success) {
+                finish();
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                LoginActivity.this.startActivity(intent);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            showProgress(false);
+        }
+    }
+
+    /**
      * Login authentication, if given a username that doesn't exist in the database
      * will create a new account for that given username password
+     * returns true if login/signup succeeded
      * @param username
      * @param password
      * @return
      */
-    private void authenticate (String username, String password) {
-        // If username exists continue with log in, otherwise create new account
+    private boolean authenticate (String username, String password) {
+
         if (checkUsernameExists(username)) {
 
             // Find if username exists in database
@@ -115,18 +164,19 @@ public class LoginActivity extends AppCompatActivity {
             if (BCrypt.checkpw(password, getHashedPasswordFromServer(username))){
                 // Now logged into account, switch to mainactivity
 
-                finish();
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                return true;
             }
             // Password was incorrect
             else {
-                passwordView.setError("Incorrect Password");
+                passwordView.setError(getString(R.string.error_incorrect_password));
+                return false;
             }
         }
         // Create New account in database with username password
         else {
             String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         }
+        return true;
     }
 
     /**
