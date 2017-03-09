@@ -20,6 +20,7 @@ import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchController;
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Objects.Mood;
+import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.R;
 
 import java.util.ArrayList;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Error", "Failed to get the moods from the async object");
         }
 
+        controller.setMyMoodList(new MoodList(moodList));
         moodAdapter = new MoodMainAdapter(this, moodList);
         moodListView.setAdapter(moodAdapter);
     }
@@ -126,10 +128,10 @@ public class MainActivity extends AppCompatActivity {
      * @param item
      */
     public void filterMood(MenuItem item){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+        MenuInflater inflater = popup.getMenuInflater();
         switch (item.getItemId()) {
             case R.id.timeOption:
-                PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-                MenuInflater inflater = popup.getMenuInflater();
                 inflater.inflate(R.menu.time_menu, popup.getMenu());
                 popup.show();
                 break;
@@ -140,8 +142,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.emotionOption:
-                PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-                MenuInflater inflater = popup.getMenuInflater();
                 inflater.inflate(R.menu.mood_menu, popup.getMenu());
                 popup.show();
                 break;

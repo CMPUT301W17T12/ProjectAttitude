@@ -2,6 +2,7 @@ package com.projectattitude.projectattitude.Controllers;
 
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.util.Log;
 
 import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Objects.Mood;
@@ -118,7 +119,34 @@ public class MainController {
         return array;
     }
 
+    public MoodList getMyMoodList(boolean viewingMyList) {
+        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
 
+        getMoodsTask.execute("");
+
+        try {
+            //Update myMoodList with new moods
+            ArrayList<Mood> tempList = getMoodsTask.get();
+            myMoodList.setMoodList(new MoodList(tempList));
+        } catch (Exception e) {
+            Log.d("Error", "Failed to get the moods from the async object");
+        }
+
+        return myMoodList.clone();
+    }
+
+    public void setMyMoodList(MoodList myMoodList) {
+        this.myMoodList = myMoodList;
+    }
+
+    public MoodList getFollowedMoodList() {
+        //TODO: Get Followed List
+        return followedMoodList;
+    }
+
+    public void setFollowedMoodList(MoodList followedMoodList) {
+        this.followedMoodList = followedMoodList;
+    }
 }
 
 
