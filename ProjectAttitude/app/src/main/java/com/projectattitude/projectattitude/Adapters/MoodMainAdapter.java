@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.projectattitude.projectattitude.Objects.ColorMap;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
 
@@ -31,16 +32,7 @@ public class MoodMainAdapter extends ArrayAdapter<Mood> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Map<String, Integer> map = new HashMap<String, Integer>();
-        map.put("Anger", rgb(255, 0, 0)); //red
-        map.put("Confusion", rgb(217, 217, 217)); //grey
-        map.put("Disgust", rgb(179, 179, 0)); //green/yellow
-        map.put("Fear", rgb(46, 46, 31)); //black
-        map.put("Happiness", rgb(68, 204, 0)); //green
-        map.put("Sadness", rgb(191, 128, 64)); //brown
-        map.put("Shame", rgb(51, 153, 255)); //blue
-        map.put("Surprise", rgb(204, 51, 255)); //purple
-
+        ColorMap<String, Integer> map = new ColorMap<>();
 
 
         Mood mood = getItem(position);
@@ -59,7 +51,7 @@ public class MoodMainAdapter extends ArrayAdapter<Mood> {
         tvDate.setText(mood.getMoodDate().toString());
 
         //color background
-        Integer val = map.get(mood.getEmotionState());
+        Integer val = (Integer) map.get(mood.getEmotionState());
         convertView.setBackgroundColor(val);
 
         if(mood.getTrigger().equalsIgnoreCase("")){

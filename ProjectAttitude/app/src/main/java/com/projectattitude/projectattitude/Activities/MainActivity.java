@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView moodListView;
     private MainController controller;
     private boolean viewingMyList;
+    private Integer itemPosition;
 
     private  int listItem; //This is the index of the item pressed in the list
 
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         moodAdapter = new MoodMainAdapter(this, moodList);
         moodListView.setAdapter(moodAdapter);
         viewingMyList = false;
+        Button viewMapButton = (Button) findViewById(R.id.viewMapButton);
 
         registerForContextMenu(moodListView);
 
@@ -54,6 +57,13 @@ public class MainActivity extends AppCompatActivity {
         addMoodButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 createMood();
+            }
+        });
+
+        //on click listener for viewing map
+        viewMapButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                goToMap();
             }
         });
 
@@ -93,9 +103,13 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This deletes a selected mood.
-     * @param mood the mood the user wants to get rid of0
+     * @param i, the integer of the moodList to be removed
      */
-    private void deleteMood(Mood mood){
+    private void deleteMood(Integer i){
+        Log.d("deleting", moodList.get(i).toString());
+        moodList.remove(moodList.get(i));
+        Log.d("deleting", moodList.get(i).toString());
+        moodAdapter.notifyDataSetChanged();
 
     }
 
@@ -231,7 +245,10 @@ public class MainActivity extends AppCompatActivity {
     /**
      * When the user clicks the map button this takes them to the map view
      */
-    public void goToMap(MenuItem item){
+
+    private void goToMap(){
+        Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
+        startActivityForResult(viewMapIntent, 0);
     }
 
     /**
@@ -287,6 +304,9 @@ public class MainActivity extends AppCompatActivity {
 
     //accept returned information from activities
     @Override
+    // requestCode 0 = Add mood
+    // requestCode 1 = View mood -- resultCode 2 = delete, 3 = Edit Mood
+    // requestCode 2 = Edit Mood
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Mood returnedMood;
 
@@ -300,6 +320,28 @@ public class MainActivity extends AppCompatActivity {
                 //add newly created mood to DB
                 ElasticSearchController.AddMoodsTask addMoodsTask = new ElasticSearchController.AddMoodsTask();
                 addMoodsTask.execute(returnedMood);
+            }
+        }
+
+        //ViewMoodActivity results
+        if (requestCode == 1){
+            //ViewMoodActivity says delete the mood
+            if (resultCode == 2){
+                deleteMood(itemPosition);
+            }
+            //ViewMoodActivity says edit
+            if (resultCode == 3){
+                returnedMood = (Mood) data.getSerializableExtra("newMood");
+                moodList.set(itemPosition,returnedMood);
+                moodAdapter.notifyDataSetChanged();
+            }
+        }
+        //EditMoodActivity results
+        if (requestCode == 2){
+            if (resultCode == RESULT_OK) {
+                returnedMood = (Mood) data.getSerializableExtra("mood");
+                moodList.set(itemPosition,returnedMood);
+                moodAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -333,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info =
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        int itemPosition = info.position;
+        itemPosition = info.position;
         boolean edit = true; //For some reason view as also bringing up the edit window
         //This bool fixes that
         switch(item.getItemId()) {
@@ -343,7 +385,7 @@ public class MainActivity extends AppCompatActivity {
                 edit = false;//Makes it so the edit window will not pop up
                 Intent intentView = new Intent(MainActivity.this, ViewMoodActivity.class);
                 intentView.putExtra("mood", moodList.get(itemPosition));
-                startActivity(intentView);
+                startActivityForResult(intentView, 1);
 
 
             case R.id.edit: //When edit is pressed
@@ -357,8 +399,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             case R.id.delete: //When delete is pressed the item is removed, and everything is updated
-                moodList.remove(itemPosition);
-                moodAdapter.notifyDataSetChanged();
+                deleteMood(itemPosition);
                 return true;
             default:
                 return super.onContextItemSelected(item);
