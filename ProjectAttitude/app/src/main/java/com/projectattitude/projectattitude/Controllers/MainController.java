@@ -71,10 +71,23 @@ public class MainController {
     }
 
     /**
-     * I Guess this is where the bulk of the filtering gets done?
-     * @param intent
+     * Filters an array list of moods, resulting in the moodList but with only current dates
+     * @param moodList - moods to be filtered
      */
-    public void filterListByTime(){
+    public void filterListByTime(ArrayList<Mood> moodList, String timeParameter){
+        switch(timeParameter){
+            case "Day":
+
+            case "Month":
+            case "Year":
+        }
+    }
+
+    /**
+     * Filters an array list of moods, resulting in the moodList but with only current dates
+     * @param moodList - moods to be filtered
+     */
+    public void changeList(ArrayList<Mood> moodList){
         //need to filter
     }
 

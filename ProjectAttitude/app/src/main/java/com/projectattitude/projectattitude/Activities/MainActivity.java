@@ -124,17 +124,16 @@ public class MainActivity extends AppCompatActivity {
     public void filterMood(MenuItem item){
         switch (item.getItemId()) {
             case R.id.timeOption:
-                //TODO: Enter extras in sending intent, parceables, for filterMood
                 PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
                 MenuInflater inflater = popup.getMenuInflater();
                 inflater.inflate(R.menu.time_menu, popup.getMenu());
                 popup.show();
 
             case R.id.followingOption:
-                controller.changeList(getIntent());
+                controller.changeList(moodList);
 
             case R.id.allOption:
-                controller.filterList(getIntent());
+                //TODO: Just paste in a "update list" thing here
         }
     }
 
@@ -145,34 +144,34 @@ public class MainActivity extends AppCompatActivity {
     public void filterMoodsByTime(MenuItem item){
         switch (item.getItemId()) {
             case R.id.dayOption:
-                //TODO: Enter extras in sending intent, parceables, for filterMoodsByTime
-                controller.filterListByTime(getIntent());
+                controller.filterListByTime(moodList, "Day");
 
             case R.id.monthOption:
-                controller.filterListByTime(getIntent());
+                controller.filterListByTime(moodList, "Month");
 
             case R.id.yearOption:
-                controller.filterListByTime(getIntent());
+                controller.filterListByTime(moodList, "Year");
         }
+        moodAdapter.notifyDataSetChanged();
     }
 
     /**
      * When the user clicks the map button this takes them to the map view
      */
-    private void goToMap(){
+    public void goToMap(MenuItem item){
     }
 
     /**
      * When the user clicks the profile button it will take them to the profile view
      * Later may take a profile as an argument to go to someone elses profile.
      */
-    private void viewProfile(){
+    public void viewProfile(MenuItem item){
     }
 
     /**
      * Logs the current profile out of the application and returns the user to the log in view.
      */
-    private void logOut(){
+    public void logOut(MenuItem item){
 
     }
 
@@ -191,17 +190,10 @@ public class MainActivity extends AppCompatActivity {
         popup.show();
     }
 
-    public void openSortMenu(MenuItem view){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+    public void openMainMenu(View view){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.menuButton));
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.sort_menu, popup.getMenu());
-        popup.show();
-    }
-
-    public void openFilterMenu(MenuItem view){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.filter_menu, popup.getMenu());
         popup.show();
     }
 

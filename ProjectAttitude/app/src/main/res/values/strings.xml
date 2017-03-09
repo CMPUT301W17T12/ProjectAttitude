@@ -14,6 +14,9 @@
         completions."
     </string>
     <string name="main_title">Moods</string>
+    <string name="map_option">Map</string>
+    <string name="profile_option">Profile</string>
+    <string name="logout_option">Logout</string>
     <string name="search_bar">Search</string>
     <string name="title_activity_map">Map</string>
     <string name="sort_menu">Sort</string>

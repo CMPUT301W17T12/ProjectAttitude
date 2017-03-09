@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/mapOption"
+        android:title="@string/map_option"
+        android:onClick="goToMap"/>
+    <item android:id="@+id/profileOption"
+        android:title="@string/profile_option"
+        android:onClick="viewProfile"/>
+    <item android:id="@+id/logoutOption"
+        android:title="@string/logout_option"
+        android:onClick="logOut"/>
+</menu>
