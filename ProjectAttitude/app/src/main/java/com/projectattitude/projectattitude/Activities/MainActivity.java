@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private MoodMainAdapter moodAdapter;
     private ListView moodListView;
     private MainController controller;
+    private Integer itemPosition;
 
     private  int listItem; //This is the index of the item pressed in the list
 
@@ -86,9 +87,13 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This deletes a selected mood.
-     * @param mood the mood the user wants to get rid of0
+     * @param i, the integer of the moodList to be removed
      */
-    private void deleteMood(Mood mood){
+    private void deleteMood(Integer i){
+        Log.d("deleting", moodList.get(i).toString());
+        moodList.remove(moodList.get(i));
+        Log.d("deleting", moodList.get(i).toString());
+        moodAdapter.notifyDataSetChanged();
 
     }
 
@@ -206,6 +211,14 @@ public class MainActivity extends AppCompatActivity {
                 addMoodsTask.execute(returnedMood);
             }
         }
+
+        //ViewMoodActivity results
+        if (requestCode == 1){
+            //ViewMoodActivity says delete the mood
+            if (resultCode == 2){
+                deleteMood(itemPosition);
+            }
+        }
     }
 
 
@@ -237,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info =
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        int itemPosition = info.position;
+        itemPosition = info.position;
         boolean edit = true; //For some reason view as also bringing up the edit window
         //This bool fixes that
         switch(item.getItemId()) {
@@ -247,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                 edit = false;//Makes it so the edit window will not pop up
                 Intent intentView = new Intent(MainActivity.this, ViewMoodActivity.class);
                 intentView.putExtra("mood", moodList.get(itemPosition));
-                startActivity(intentView);
+                startActivityForResult(intentView, 1);
 
 
             case R.id.edit: //When edit is pressed
@@ -261,8 +274,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             case R.id.delete: //When delete is pressed the item is removed, and everything is updated
-                moodList.remove(itemPosition);
-                moodAdapter.notifyDataSetChanged();
+                deleteMood(itemPosition);
                 return true;
             default:
                 return super.onContextItemSelected(item);

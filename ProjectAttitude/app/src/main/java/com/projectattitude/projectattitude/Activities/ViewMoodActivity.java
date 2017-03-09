@@ -2,11 +2,17 @@ package com.projectattitude.projectattitude.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.projectattitude.projectattitude.Abstracts.MoodActivity;
+import com.projectattitude.projectattitude.Objects.ColorMap;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
+
+import java.util.HashMap;
 
 
 public class ViewMoodActivity extends MoodActivity {
@@ -14,9 +20,11 @@ public class ViewMoodActivity extends MoodActivity {
     private TextView emotionState;
     private TextView date;
     private TextView trigger;
-    private TextView explanation;
     private TextView socialSituation;
+    private Button editButton;
+    private Button deleteButton;
 
+    RelativeLayout r1;
     Intent intent;
 
 
@@ -30,10 +38,39 @@ public class ViewMoodActivity extends MoodActivity {
         emotionState = (TextView) findViewById(R.id.EmotionStateView);
         date = (TextView) findViewById(R.id.DateView);
         trigger = (TextView) findViewById(R.id.TriggerView);
-        explanation = (TextView) findViewById(R.id.ExplanationView);
         socialSituation = (TextView) findViewById(R.id.SocialSituationView);
+        editButton = (Button) findViewById(R.id.EditButton);
+        deleteButton = (Button) findViewById(R.id.DeleteButton);
+        r1 = (RelativeLayout) findViewById(R.id.activity_view_mood);
+        emotionState.setText("");
+        date.setText("");
+        trigger.setText("");
+        socialSituation.setText("");
 
         //TODO Set texts from the mood
+        final Mood mood = (Mood) getIntent().getSerializableExtra("mood");
+        emotionState.setText(mood.getEmotionState());
+        date.setText(mood.getMoodDate().toString());
+        trigger.setText(mood.getTrigger());
+        socialSituation.setText(mood.getSocialSituation());
+        //Handle colors
+        ColorMap<String, Integer> map = new ColorMap<>();
+        r1.setBackgroundColor((Integer) map.get(mood.getEmotionState()));
+
+        //on click listener editing moods
+        editButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                editMood(mood);
+            }
+        });
+
+        //on click listener for deleting moods
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                deleteMood(mood);
+            }
+        });
+
     }
 
     /**
@@ -43,6 +80,10 @@ public class ViewMoodActivity extends MoodActivity {
      * @param mood the mood to be changed
      */
     private void editMood(Mood mood){
+        Intent i2 = new Intent(ViewMoodActivity.this, EditMoodActivity.class);
+        i2.putExtra("mood", mood);
+        //TODO make edit mood
+
 
     }
 
@@ -53,6 +94,9 @@ public class ViewMoodActivity extends MoodActivity {
      * @param mood the mood to be deleted
      */
     private void deleteMood(Mood mood){
+        Intent returnToMain = new Intent();
+        setResult(2, returnToMain);
+        finish();
 
     }
 
