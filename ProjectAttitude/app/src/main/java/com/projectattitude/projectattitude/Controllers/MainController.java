@@ -86,11 +86,11 @@ public class MainController {
     }
 
     /**
-     * Filters an array list of moods, resulting in the moodList but with only current dates
+     * Changes to following list...????
      * @param moodList - moods to be filtered
      */
     public void changeList(ArrayList<Mood> moodList){
-        //need to filter
+        //TODO: Implementation of following
     }
 
     /**
