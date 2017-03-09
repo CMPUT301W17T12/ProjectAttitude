@@ -2,6 +2,7 @@ package com.projectattitude.projectattitude.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,7 +48,7 @@ public class ViewMoodActivity extends MoodActivity {
         socialSituation.setText("");
 
         //TODO Set texts from the mood
-        Mood mood = (Mood) getIntent().getSerializableExtra("mood");
+        final Mood mood = (Mood) getIntent().getSerializableExtra("mood");
         emotionState.setText(mood.getEmotionState());
         date.setText(mood.getMoodDate().toString());
         trigger.setText(mood.getTrigger());
@@ -55,6 +56,20 @@ public class ViewMoodActivity extends MoodActivity {
         //Handle colors
         ColorMap<String, Integer> map = new ColorMap<>();
         r1.setBackgroundColor((Integer) map.get(mood.getEmotionState()));
+
+        //on click listener editing moods
+        editButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                editMood(mood);
+            }
+        });
+
+        //on click listener for deleting moods
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                deleteMood(mood);
+            }
+        });
 
     }
 
@@ -65,6 +80,10 @@ public class ViewMoodActivity extends MoodActivity {
      * @param mood the mood to be changed
      */
     private void editMood(Mood mood){
+        Intent i2 = new Intent(ViewMoodActivity.this, EditMoodActivity.class);
+        i2.putExtra("mood", mood);
+        //TODO make edit mood
+
 
     }
 
@@ -75,6 +94,9 @@ public class ViewMoodActivity extends MoodActivity {
      * @param mood the mood to be deleted
      */
     private void deleteMood(Mood mood){
+        Intent returnToMain = new Intent();
+        setResult(2, returnToMain);
+        finish();
 
     }
 
