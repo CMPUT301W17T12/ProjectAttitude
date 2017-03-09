@@ -1,7 +1,10 @@
 package com.projectattitude.projectattitude.Controllers;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.util.Log;
 
+import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.Objects.User;
@@ -21,7 +24,6 @@ public class MainController {
     private ArrayList<User> followedList; //The people that follow the user?
     private MoodList myMoodList;
     private MoodList followedMoodList;
-    private boolean displayingMyMoodList = true; //Which list is being displayed currently. 1 = myMoodList, 0 = followedMoodList
 
     /**
      * Gets the username of a given user
@@ -34,12 +36,14 @@ public class MainController {
     }
 
     /**
-     * I Guess this is where the bulk of the sorting gets done?
-     * @param intent
+     * Sorts an array list holding moods depending on its date.
+     * @param moodList: Arraylist containing moods.
+     * @param sortOrder: "Sort" if sorting in normal order, "Reverse Sort" if sorting in reverse order.
+     *
+     * Postcondition: List is sorted, but arrayAdapter needs to be notified.
      */
-    public void sortList(Intent intent){
+    public void sortList(ArrayList<Mood> moodList, String sortOrder){
         //TODO: Test this function
-        //TODO: Notify the list that it has changed
         //Taken from http://stackoverflow.com/questions/2839137/how-to-use-comparator-in-java-to-sort
         //Date: 3/6/2017
 
@@ -57,27 +61,52 @@ public class MainController {
             }
         }
 
-        if(true){//Sort
-            if(displayingMyMoodList) {//myMoodList being displayed
-                Collections.sort(myMoodList.getMoodList(), new dateComparator());
-            }else {//followedMoodList being displayed
-                Collections.sort(followedMoodList.getMoodList(), new dateComparator());
-            }
-        }else{//Reverse Sort
-            if(displayingMyMoodList) {//myMoodList being displayed
-                Collections.sort(myMoodList.getMoodList(), new reverseDateComparator());
-            }else {//followedMoodList being displayed
-                Collections.sort(followedMoodList.getMoodList(), new reverseDateComparator());
+        if(sortOrder.equals("Sort")){//Sort
+            Collections.sort(moodList, new dateComparator());
+        }else if (sortOrder.equals("Reverse Sort")){//Reverse Sort
+            Collections.sort(moodList, new reverseDateComparator());
+        }
+        //else, don't sort or anything.
+
+    }
+
+    /**
+     * Filters an array list of moods, resulting in the moodList but by moods' date
+     * Removes moods from moodList that don't have times less than what's specified in the timeParameter
+     * @param moodList - moods to be filtered
+     * @param timeParameter - time in milliseconds to filter by
+     */
+    public void filterListByTime(ArrayList<Mood> moodList, long timeParameter){
+        long currentTime = new Date().getTime();
+        for(int i = 0; i < moodList.size(); ++i) {
+            //If time is greater than timeParameter, remove it from moodList
+            long moodTime = ((Date)moodList.get(i).getMoodDate()).getTime();
+            if(currentTime - moodTime > timeParameter){
+                moodList.remove(i);
             }
         }
     }
 
     /**
-     * I Guess this is where the bulk of the filtering gets done?
-     * @param intent
+     * Filters an array list of moods, resulting in the moodList but by moods' emotional state
+     * Removes moods from moodList that don't have the correct emotional state
+     * @param moodList - moods to be filtered
+     * @param emotion - String of mood's emotional state
      */
-    public void filterList(Intent intent){
-        //need to filter
+    public void filterListByEmotion(ArrayList<Mood> moodList, String emotion){
+        for(int i = 0; i < moodList.size(); ++i){
+            if(!(moodList.get(i).getEmotionState().equals(emotion))){ //If mood's emotion is not equal to emotion Parameter
+                moodList.remove(i);
+            }
+        }
+    }
+
+    /**
+     * Changes to following list...????
+     * @param moodList - moods to be filtered
+     */
+    public void changeList(ArrayList<Mood> moodList){
+        //TODO: Implementation of following
     }
 
     /**
@@ -90,7 +119,37 @@ public class MainController {
         return array;
     }
 
+    public MoodList getMyMoodList(boolean viewingMyList) {
+        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
+
+        getMoodsTask.execute("");
+
+        try {
+            //Update myMoodList with new moods
+            ArrayList<Mood> tempList = getMoodsTask.get();
+            myMoodList.setMoodList(new MoodList(tempList));
+        } catch (Exception e) {
+            Log.d("Error", "Failed to get the moods from the async object");
+        }
+
+        return myMoodList.clone();
+    }
+
+    public void setMyMoodList(MoodList myMoodList) {
+        this.myMoodList = myMoodList;
+    }
+
+    public MoodList getFollowedMoodList() {
+        //TODO: Get Followed List
+        return followedMoodList;
+    }
+
+    public void setFollowedMoodList(MoodList followedMoodList) {
+        this.followedMoodList = followedMoodList;
+    }
 }
+
+
 
 
 //    //function to add moods to elastic search

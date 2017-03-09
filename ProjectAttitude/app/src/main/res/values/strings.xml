@@ -11,19 +11,48 @@
     <string name="error_field_required">This field is required</string>
 
     <!-- Main Activity strings -->
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+    <!-- Strings related to mainActivity and menus-->
     <string name="main_title">Moods</string>
     <string name="search_bar">Search</string>
+
+    <!-- Strings related to top right menu-->
+    <string name="map_option">Map</string>
+    <string name="profile_option">Profile</string>
+    <string name="logout_option">Logout</string>
     <string name="title_activity_map">Map</string>
+
+    <!-- Strings related to sort menu -->
     <string name="sort_menu">Sort</string>
-    <string name="filter_menu">Filter</string>
     <string name="date_option">Date</string>
     <string name="reverse_date_option">Reverse Date</string>
+
+    <!-- Strings related to filter menu-->
+    <string name="filter_menu">Filter</string>
     <string name="time_option">Time</string>
     <string name="following_option">Following</string>
+    <string name="emotion_option">Emotions</string>
     <string name="all_option">All Moods</string>
+
+    <!-- Strings related to filter by time menu-->
     <string name="day_option">Day</string>
     <string name="month_option">Month</string>
     <string name="year_option">Year</string>
+
+    <!-- Strings related to filter by emotion menu-->
+    <string name="anger_option">Anger</string>
+    <string name="confusion_option">Confusion</string>
+    <string name="disgust_option">Disgust</string>
+    <string name="fear_option">Fear</string>
+    <string name="happiness_option">Happiness</string>
+    <string name="sadness_option">Sadness</string>
+    <string name="shame_option">Shame</string>
+    <string name="surprise_option">Surprise</string>
+
+
     <string-array name="social_situations">
         <item>Select a social situation</item>
         <item>Alone</item>
