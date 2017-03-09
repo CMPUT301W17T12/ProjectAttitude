@@ -1,6 +1,9 @@
 package com.projectattitude.projectattitude.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.icu.util.TimeUnit;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -18,9 +21,11 @@ import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchController;
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Objects.Mood;
+import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.R;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private MoodMainAdapter moodAdapter;
     private ListView moodListView;
     private MainController controller;
+    private boolean viewingMyList;
     private Integer itemPosition;
 
     private  int listItem; //This is the index of the item pressed in the list
@@ -42,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
         moodAdapter = new MoodMainAdapter(this, moodList);
         moodListView.setAdapter(moodAdapter);
+        viewingMyList = false;
         Button viewMapButton = (Button) findViewById(R.id.viewMapButton);
 
         registerForContextMenu(moodListView);
-
 
         //on click listener for adding moods
         addMoodButton.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Error", "Failed to get the moods from the async object");
         }
 
+        controller.setMyMoodList(new MoodList(moodList));
         moodAdapter = new MoodMainAdapter(this, moodList);
         moodListView.setAdapter(moodAdapter);
     }
@@ -115,18 +122,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Handles sorting the list, may need several functions for each type of sort.
-     * @param item - identifies which item has been clicked
+     * Handles sorting the list, called when an item in the sortMenu is pressed
+     * @param item - identifies which item has been pressed on
      */
     public void sortMood(MenuItem item){
         switch (item.getItemId()) {
             case R.id.dateOption:
-                //TODO: Enter extras in sending intent, parceables for sortMood
-                controller.sortList(getIntent());
-
+                controller.sortList(moodList, "Sort"); //True = sorting by date
+                break;
             case R.id.reverseDateOption:
-                controller.sortList(getIntent());
+                controller.sortList(moodList, "Reverse Sort"); //False = sorting by reverse date
+                break;
         }
+        moodAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -134,19 +142,36 @@ public class MainActivity extends AppCompatActivity {
      * @param item
      */
     public void filterMood(MenuItem item){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+        MenuInflater inflater = popup.getMenuInflater();
         switch (item.getItemId()) {
             case R.id.timeOption:
-                //TODO: Enter extras in sending intent, parceables, for filterMood
-                PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-                MenuInflater inflater = popup.getMenuInflater();
                 inflater.inflate(R.menu.time_menu, popup.getMenu());
                 popup.show();
+                break;
 
             case R.id.followingOption:
-                controller.filterList(getIntent());
+                //TODO: Following
+                viewingMyList = !viewingMyList;
+                break;
+
+            case R.id.emotionOption:
+                inflater.inflate(R.menu.mood_menu, popup.getMenu());
+                popup.show();
+                break;
 
             case R.id.allOption:
-                controller.filterList(getIntent());
+                ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
+                getMoodsTask.execute("");
+
+                try{
+                    moodList = getMoodsTask.get();
+                }
+                catch(Exception e){
+                    Log.d("Error", "Failed to get the moods from the async object");
+                }
+                 moodAdapter.notifyDataSetChanged();
+                break;
         }
     }
 
@@ -155,22 +180,72 @@ public class MainActivity extends AppCompatActivity {
      * @param item
      */
     public void filterMoodsByTime(MenuItem item){
+        //TODO: Make sure moods are up to date?
+        Long milliseconds = new Date().getTime();
         switch (item.getItemId()) {
             case R.id.dayOption:
-                //TODO: Enter extras in sending intent, parceables, for filterMoodsByTime
-                controller.filterList(getIntent());
+                controller.filterListByTime(moodList, milliseconds - (long)8.64e+7); //1 day's worth of milliseconds
+                break;
 
             case R.id.monthOption:
-                controller.filterList(getIntent());
+                controller.filterListByTime(moodList, milliseconds - (long)2.628e+9); //1 month's worth of milliseconds approximately
+                break;
 
             case R.id.yearOption:
-                controller.filterList(getIntent());
+                controller.filterListByTime(moodList, milliseconds - (long)3.154e+10); //1 year's worth of milliseconds approximately
+                break;
         }
+        moodAdapter.notifyDataSetChanged();
     }
+
+    /**
+     * Handles filtering the list, but specifically for the mood menu
+     * @param item
+     */
+    public void filterMoodsByEmotion(MenuItem item){
+        //TODO: Spinner or wat?
+        Long milliseconds = new Date().getTime();
+        switch (item.getItemId()) {
+            case R.id.angerOption:
+                controller.filterListByEmotion(moodList, "Anger"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.confusionOption:
+                controller.filterListByEmotion(moodList, "Confusion"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.disgustOption:
+                controller.filterListByEmotion(moodList, "Disgust"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.fearOption:
+                controller.filterListByEmotion(moodList, "Fear"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.happinessOption:
+                controller.filterListByEmotion(moodList, "Happiness"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.sadnessOption:
+                controller.filterListByEmotion(moodList, "Sadness"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.shameOption:
+                controller.filterListByEmotion(moodList, "Shame"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.surpriseOption:
+                controller.filterListByEmotion(moodList, "Surprise"); //1 day's worth of milliseconds
+                break;
+        }
+        moodAdapter.notifyDataSetChanged();
+    }
+
 
     /**
      * When the user clicks the map button this takes them to the map view
      */
+
     private void goToMap(){
         Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
         startActivityForResult(viewMapIntent, 0);
@@ -180,16 +255,31 @@ public class MainActivity extends AppCompatActivity {
      * When the user clicks the profile button it will take them to the profile view
      * Later may take a profile as an argument to go to someone elses profile.
      */
-    private void viewProfile(){
+    public void viewProfile(MenuItem item){
     }
 
     /**
      * Logs the current profile out of the application and returns the user to the log in view.
      */
-    private void logOut(){
+    public void logOut(MenuItem item){
 
     }
 
+    /**
+     * refreshMood - Used to refresh the mood list.
+     * Currently works by using the global variable moodList
+     */
+    public void refreshMoodList(){
+        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
+        getMoodsTask.execute("");
+
+        try{
+            moodList = getMoodsTask.get();
+        }
+        catch(Exception e){
+            Log.d("Error", "Failed to get the moods from the async object");
+        }
+    }
 
     /**
      * OpenSFMenu - Open Sort/Filter Menu
@@ -202,6 +292,13 @@ public class MainActivity extends AppCompatActivity {
         PopupMenu popup = new PopupMenu(this, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.sort_filter_menu, popup.getMenu());
+        popup.show();
+    }
+
+    public void openMainMenu(View view){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.menuButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.sort_menu, popup.getMenu());
         popup.show();
     }
 
@@ -309,17 +406,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void openSortMenu(MenuItem view){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.sort_menu, popup.getMenu());
-        popup.show();
-    }
-
-    public void openFilterMenu(MenuItem view){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.filter_menu, popup.getMenu());
-        popup.show();
-    }
+//    @Override
+//    protected void onStart(){
+//        super.onStart();
+//
+//        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
+//        getMoodsTask.execute("");
+//
+//        try{
+//            moodList = getMoodsTask.get();
+//        }
+//        catch(Exception e){
+//            Log.d("Error", "Failed to get the moods from the async object");
+//        }
+//
+//        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodList);
+//        moodListView.setAdapter(adapter);
+//
+//
+//    }
 }
