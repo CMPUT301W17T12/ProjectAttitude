@@ -45,12 +45,14 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
         this.day = dayOfMonth;
         updateDisplay();
     }
+
     public void setDate(int year, int month, int day){
         this.year = year;
         this.month = month;
         this.day = day;
         updateDisplay();
     }
+
     @Override
     public void onClick(View v) {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
@@ -68,7 +70,7 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
         try {
             return sdf.parse(date_str);
         } catch (ParseException e) {
-            return new Date();
+            return new Date(System.currentTimeMillis());
         }
     }
 
