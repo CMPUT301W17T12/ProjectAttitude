@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.projectattitude.projectattitude"
-        minSdkVersion 15
+        minSdkVersion 21
         targetSdkVersion 25
         multiDexEnabled true
         versionCode 1
@@ -33,4 +33,5 @@ dependencies {
     compile 'org.osmdroid:osmdroid-android:5.6.3'
     testCompile 'junit:junit:4.12'
     compile files('src/Include/jest-droid-2.0.1-SNAPSHOT.jar')
+    compile 'org.mindrot:jbcrypt:0.4'
 }
