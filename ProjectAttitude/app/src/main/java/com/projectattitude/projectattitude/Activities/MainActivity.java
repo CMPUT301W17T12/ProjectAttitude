@@ -132,10 +132,12 @@ public class MainActivity extends AppCompatActivity {
                 popup.show();
 
             case R.id.followingOption:
-                controller.changeList(moodList);
+                //TODO: Following
+                viewingMyList = !viewingMyList;
 
             case R.id.allOption:
-                //TODO: Just paste in a "update list" thing here
+                refreshMood();
+                moodAdapter.notifyDataSetChanged();
         }
     }
 
@@ -179,6 +181,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * refreshMood - Used to refresh the mood list.
+     * Currently works by using the global variable moodList
+     */
+    public void refreshMood(){
+        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
+        getMoodsTask.execute("");
+
+        try{
+            moodList = getMoodsTask.get();
+        }
+        catch(Exception e){
+            Log.d("Error", "Failed to get the moods from the async object");
+        }
+    }
 
     /**
      * OpenSFMenu - Open Sort/Filter Menu
