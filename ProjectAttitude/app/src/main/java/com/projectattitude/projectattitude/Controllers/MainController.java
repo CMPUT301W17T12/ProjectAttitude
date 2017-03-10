@@ -102,13 +102,17 @@ public class MainController {
     }
 
     /**
-     * Filters an array list of moods, resulting in the moodList but by moods' emotional state
+     * Filters an array list of moods, resulting in the moodList but by moods' trigger
      * Removes moods from moodList that don't have the correct emotional state
      * @param moodList - moods to be filtered
      * @param reason - Word that filters mood by finding if word is in its' reason field.
      */
-    public void filterListByReason(ArrayList<Mood> moodList, String reason){
-        //TODO:ya
+    public void filterListByTrigger(ArrayList<Mood> moodList, String reason){
+        for(int i = 0; i < moodList.size(); ++i){
+            if(!(moodList.get(i).getTrigger().equals(reason))){ //If mood's trigger is not equal to reason
+                moodList.remove(i);
+            }
+        }
     }
 
     /**

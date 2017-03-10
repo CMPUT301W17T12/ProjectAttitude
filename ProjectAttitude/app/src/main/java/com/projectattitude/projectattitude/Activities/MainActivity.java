@@ -123,9 +123,9 @@ public class MainActivity extends AppCompatActivity {
      * This is the method that handles finding moods with a given keyword
      * Called by pressing the searchButton on main_layout
      */
-    public void filterMoodByReason(View view){
+    public void filterMoodByTrigger(View view){
         //Get text from search bar and then call controller function
-        controller.filterListByReason(moodList, ((EditText)findViewById(R.id.searchBar)).getText().toString());
+        controller.filterListByTrigger(moodList, ((EditText)findViewById(R.id.searchBar)).getText().toString());
         moodAdapter.notifyDataSetChanged();
     }
 

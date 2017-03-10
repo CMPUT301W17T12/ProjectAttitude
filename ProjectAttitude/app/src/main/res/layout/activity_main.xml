@@ -53,7 +53,7 @@
         android:layout_below="@id/moodTextView"
         android:layout_toStartOf="@id/filterButton"
         android:src="@drawable/search_button"
-        android:onClick="filterMoodByReason"
+        android:onClick="filterMoodByTrigger"
         />
 
     <EditText
