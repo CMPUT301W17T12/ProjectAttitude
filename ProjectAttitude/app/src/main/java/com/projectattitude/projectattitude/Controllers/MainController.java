@@ -55,16 +55,20 @@ public class MainController {
         class dateComparator implements Comparator<Mood> {
             @Override
             public int compare(Mood mood1, Mood mood2) {
-                return new BigDecimal(-(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime())).intValueExact();
-                //return toIntExact(-(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime()));
+                long tempValue = -(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime());
+                if (tempValue < 0){ return -1; }
+                if (tempValue > 0){ return 1; }
+                return 0; //else, return 0
             }
         }
 
         class reverseDateComparator implements Comparator<Mood> {
             @Override
             public int compare(Mood mood1, Mood mood2) {
-                return new BigDecimal((((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime())).intValueExact();
-                //return toIntExact((((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime()));
+                long tempValue = ((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime();
+                if (tempValue < 0){ return -1; }
+                if (tempValue > 0){ return 1; }
+                return 0; //else, return 0
             }
         }
 
