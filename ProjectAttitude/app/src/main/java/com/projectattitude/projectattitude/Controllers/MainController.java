@@ -102,6 +102,16 @@ public class MainController {
     }
 
     /**
+     * Filters an array list of moods, resulting in the moodList but by moods' emotional state
+     * Removes moods from moodList that don't have the correct emotional state
+     * @param moodList - moods to be filtered
+     * @param reason - Word that filters mood by finding if word is in its' reason field.
+     */
+    public void filterListByReason(ArrayList<Mood> moodList, String reason){
+        //TODO:ya
+    }
+
+    /**
      * Changes to following list...????
      * @param moodList - moods to be filtered
      */
@@ -119,7 +129,7 @@ public class MainController {
         return array;
     }
 
-    public MoodList getMyMoodList(boolean viewingMyList) {
+    public MoodList getMyMoodList() {
         ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
 
         getMoodsTask.execute("");
@@ -135,8 +145,9 @@ public class MainController {
         return myMoodList.clone();
     }
 
-    public void setMyMoodList(MoodList myMoodList) {
-        this.myMoodList = myMoodList;
+    //Precondition: myMoodList shouldn't be touchable by anyone else
+    public void setMyMoodList(MoodList tempList) {
+        this.myMoodList = tempList.clone();
     }
 
     public MoodList getFollowedMoodList() {
