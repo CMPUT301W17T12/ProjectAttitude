@@ -9,10 +9,13 @@ import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.Objects.User;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+
+import static java.lang.Math.toIntExact;
 
 /**
  * Created by Chris on 2/24/2017.
@@ -47,17 +50,21 @@ public class MainController {
         //Taken from http://stackoverflow.com/questions/2839137/how-to-use-comparator-in-java-to-sort
         //Date: 3/6/2017
 
+        //Taken from http://stackoverflow.com/questions/1590831/safely-casting-long-to-int-in-java
+        //Date: 3/9/2017
         class dateComparator implements Comparator<Mood> {
             @Override
             public int compare(Mood mood1, Mood mood2) {
-                return (int)(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime());
+                return new BigDecimal(-(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime())).intValueExact();
+                //return toIntExact(-(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime()));
             }
         }
 
         class reverseDateComparator implements Comparator<Mood> {
             @Override
             public int compare(Mood mood1, Mood mood2) {
-                return (int)-(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime());
+                return new BigDecimal((((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime())).intValueExact();
+                //return toIntExact((((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime()));
             }
         }
 
