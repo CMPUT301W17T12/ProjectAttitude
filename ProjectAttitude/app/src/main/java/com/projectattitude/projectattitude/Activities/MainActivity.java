@@ -16,10 +16,10 @@ import android.widget.ListView;
 
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchController;
+import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
-import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean viewingMyList;
     private Integer itemPosition;
 
+
     private UserController userController = UserController.getInstance();
 
     private  int listItem; //This is the index of the item pressed in the list
@@ -47,19 +48,20 @@ public class MainActivity extends AppCompatActivity {
 
         //get passed user from LoginActivity
         User user = (User) getIntent().getSerializableExtra("PassUserToMain");
+        userController.setActiveUser(user);
 
         moodListView = (ListView) findViewById(R.id.moodListView);
         FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
         //moodAdapter = new MoodMainAdapter(this, moodList);
         //adapter is fed from moodList inside user
-        moodAdapter = new MoodMainAdapter(this, user.getMoodList());
+        moodAdapter = new MoodMainAdapter(this, userController.getActiveUser().getMoodList());
         moodListView.setAdapter(moodAdapter);
         viewingMyList = false;
         Button viewMapButton = (Button) findViewById(R.id.viewMapButton);
 
         //current instance of user
-        userController.setActiveUser(user);
-        Log.d("what is this", userController.getActiveUser().getUserName());
+//        userController.setActiveUser(user);
+        Log.d("whatisthis", userController.getActiveUser().getUserName());
 
         registerForContextMenu(moodListView);
 
@@ -88,9 +90,9 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Error", "Failed to get the moods from the async object");
         }
 
-        controller.setMyMoodList(new MoodList(moodList));
-        moodAdapter = new MoodMainAdapter(this, moodList);
-        moodListView.setAdapter(moodAdapter);
+//        controller.setMyMoodList(new MoodList(moodList));
+//        moodAdapter = new MoodMainAdapter(this, moodList);
+//        moodListView.setAdapter(moodAdapter);
     }
 
 
@@ -338,12 +340,18 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
-                moodList.add(returnedMood);
+
+                //moodList.add(returnedMood);
+                userController.getActiveUser().getMoodList().add(returnedMood);
                 moodAdapter.notifyDataSetChanged();
 
+                if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+                    addUserTask.execute(UserController.getInstance().getActiveUser());
+                }
                 //add newly created mood to DB
-                ElasticSearchController.AddMoodsTask addMoodsTask = new ElasticSearchController.AddMoodsTask();
-                addMoodsTask.execute(returnedMood);
+//                ElasticSearchController.AddMoodsTask addMoodsTask = new ElasticSearchController.AddMoodsTask();
+//                addMoodsTask.execute(returnedMood);
             }
         }
 

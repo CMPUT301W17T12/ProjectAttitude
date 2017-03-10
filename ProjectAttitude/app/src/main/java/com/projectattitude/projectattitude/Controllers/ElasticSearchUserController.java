@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import io.searchbox.client.JestResult;
+import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
@@ -63,6 +64,12 @@ public class ElasticSearchUserController {
         return  false;
     }
 
+    public boolean deleteUser(User user){
+        DeleteUserTask deleteUserTask = new DeleteUserTask();
+        deleteUserTask.execute(user);
+        return true;
+    }
+
     //add user to ES DB
     public static class AddUserTask extends AsyncTask<User, Void, Boolean> {
 
@@ -89,7 +96,7 @@ public class ElasticSearchUserController {
         }
     }
 
-    //search for username in DB
+    //search for username in DB, and return user, either as null or as the object
     public static class GetUserTask extends AsyncTask<String, Void, User> {
 
         @Override
@@ -106,6 +113,25 @@ public class ElasticSearchUserController {
                 e.printStackTrace();
             }
             return user;
+        }
+    }
+
+    public static class DeleteUserTask extends AsyncTask<User, Void, Boolean>{
+
+        @Override
+        protected Boolean doInBackground(User... search_parameters){
+            verifySettings();
+
+            Delete delete = new Delete.Builder(search_parameters[0].getUserName()).index(INDEX).type(TYPE).id(search_parameters[0].getUserName()).build();
+
+            try{
+                client.execute(delete);
+            }
+            catch(IOException e) {
+
+            }
+
+            return true;
         }
     }
 

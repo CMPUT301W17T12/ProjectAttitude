@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         //creates user using ElasticSearchUserController and switch to MainActivity
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        intent.putExtra("PassNewUserToMain", user);
+                        intent.putExtra("PassUserToMain", user);
                         //LoginActivity.this.startActivity(intent);
                         startActivity(intent);
                         finish();
@@ -76,8 +76,7 @@ public class LoginActivity extends AppCompatActivity {
                         //give error that account already exists
                         //usernameView.setError("this name already exists");
 
-                        //grab user from db and pass to MainActivity
-
+                        //grab user from db and pass to MainActivity, since they exist
                         User user1 = new User();
                         ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
 
@@ -96,9 +95,6 @@ public class LoginActivity extends AppCompatActivity {
                         intent.putExtra("PassUserToMain", user1);
                         startActivity(intent);
                         finish();
-
-
-
                     }
 
 
