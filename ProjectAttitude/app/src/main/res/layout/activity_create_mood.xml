@@ -9,7 +9,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.projectattitude.projectattitude.Activities.CreateMoodActivity">
+    tools:context="com.projectattitude.projectattitude.Activities.CreateMoodActivity"
+    android:focusableInTouchMode="true">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -21,23 +22,12 @@
             android:orientation="vertical" >
 
             <TextView
-                android:text="@string/mood_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/moodLabel"
-                android:labelFor="@+id/moodField"/>
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:id="@+id/moodField"/>
-
-            <TextView
                 android:text="@string/date_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/dateLabel"
                 android:labelFor="@+id/dateField"/>
+
             <EditText
                 android:id="@+id/dateField"
                 android:layout_width="match_parent"
@@ -52,11 +42,15 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/emotionalStateLabel"
                 android:labelFor="@+id/emotionalStateField"/>
-            <EditText
+
+            <Spinner
+                android:id="@+id/emotionSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/emotionalStateField"
-                android:inputType="text"/>
+                android:entries="@array/emotional_state"
+                android:prompt="@string/emotionSpinner"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"/>
 
             <TextView
                 android:text="@string/trigger_label"
@@ -68,6 +62,12 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:id="@+id/triggerField"/>
+
+            <TextView
+                android:id="@+id/socialSituationLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/social_situation_label" />
 
             <Spinner
                 android:paddingTop="@dimen/activity_vertical_margin"

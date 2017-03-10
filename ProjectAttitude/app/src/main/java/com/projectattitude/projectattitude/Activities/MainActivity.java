@@ -1,6 +1,9 @@
 package com.projectattitude.projectattitude.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.icu.util.TimeUnit;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -12,23 +15,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchController;
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Objects.Mood;
+import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.R;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
     protected ArrayList<Mood> moodList = new ArrayList<Mood>();
     private MoodMainAdapter moodAdapter;
     private ListView moodListView;
-    //private ArrayAdapter<Mood> adapter;
     private MainController controller;
+    private boolean viewingMyList;
+    private Integer itemPosition;
 
     private  int listItem; //This is the index of the item pressed in the list
 
@@ -40,14 +47,12 @@ public class MainActivity extends AppCompatActivity {
 
         moodListView = (ListView) findViewById(R.id.moodListView);
         FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
-        //adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodList);
         moodAdapter = new MoodMainAdapter(this, moodList);
-//        moodListView.setAdapter(adapter);
         moodListView.setAdapter(moodAdapter);
+        viewingMyList = false;
         Button viewMapButton = (Button) findViewById(R.id.viewMapButton);
 
         registerForContextMenu(moodListView);
-
 
         //on click listener for adding moods
         addMoodButton.setOnClickListener(new View.OnClickListener() {
@@ -68,15 +73,15 @@ public class MainActivity extends AppCompatActivity {
         getMoodsTask.execute("");
 
         try{
-            moodList = getMoodsTask.get();
+            ArrayList<Mood> tempList = getMoodsTask.get();
+            controller.setMyMoodList(new MoodList(tempList));
+            moodList = controller.getMyMoodList().getMoodList();
         }
         catch(Exception e){
             Log.d("Error", "Failed to get the moods from the async object");
         }
 
-//        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodList);
-//        moodListView.setAdapter(adapter);
-
+        controller.setMyMoodList(new MoodList(moodList));
         moodAdapter = new MoodMainAdapter(this, moodList);
         moodListView.setAdapter(moodAdapter);
     }
@@ -101,33 +106,43 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This deletes a selected mood.
-     * @param mood the mood the user wants to get rid of0
+     * @param i, the integer of the moodList to be removed
      */
-    private void deleteMood(Mood mood){
+    private void deleteMood(Integer i){
+        Log.d("deleting", moodList.get(i).toString());
+        Mood delMood = moodList.get(i);
+        moodList = controller.getMyMoodList().getMoodList();
+        moodList.remove(delMood);
+        controller.setMyMoodList(new MoodList(moodList));
+        Log.d("deleting", moodList.get(i).toString());
+        moodAdapter.notifyDataSetChanged();
 
     }
 
     /**
      * This is the method that handles finding moods with a given keyword
-     * Will probably return a mood list object in time, or set the current one.
+     * Called by pressing the searchButton on main_layout
      */
-    private void searchMood(){
-
+    public void filterMoodByTrigger(View view){
+        //Get text from search bar and then call controller function
+        controller.filterListByTrigger(moodList, ((EditText)findViewById(R.id.searchBar)).getText().toString());
+        moodAdapter.notifyDataSetChanged();
     }
 
     /**
-     * Handles sorting the list, may need several functions for each type of sort.
-     * @param item - identifies which item has been clicked
+     * Handles sorting the list, called when an item in the sortMenu is pressed
+     * @param item - identifies which item has been pressed on
      */
     public void sortMood(MenuItem item){
         switch (item.getItemId()) {
             case R.id.dateOption:
-                //TODO: Enter extras in sending intent, parceables for sortMood
-                controller.sortList(getIntent());
-
+                controller.sortList(moodList, "Sort"); //True = sorting by date
+                break;
             case R.id.reverseDateOption:
-                controller.sortList(getIntent());
+                controller.sortList(moodList, "Reverse Sort"); //False = sorting by reverse date
+                break;
         }
+        moodAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -135,19 +150,37 @@ public class MainActivity extends AppCompatActivity {
      * @param item
      */
     public void filterMood(MenuItem item){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+        MenuInflater inflater = popup.getMenuInflater();
         switch (item.getItemId()) {
             case R.id.timeOption:
-                //TODO: Enter extras in sending intent, parceables, for filterMood
-                PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-                MenuInflater inflater = popup.getMenuInflater();
                 inflater.inflate(R.menu.time_menu, popup.getMenu());
                 popup.show();
+                break;
 
             case R.id.followingOption:
-                controller.filterList(getIntent());
+                //TODO: Following
+                viewingMyList = !viewingMyList;
+                break;
+
+            case R.id.emotionOption:
+                inflater.inflate(R.menu.mood_menu, popup.getMenu());
+                popup.show();
+                break;
 
             case R.id.allOption:
-                controller.filterList(getIntent());
+                //TODO: Add following to allOption
+                ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
+                getMoodsTask.execute("");
+
+                try{
+                    moodList = getMoodsTask.get();
+                }
+                catch(Exception e){
+                    Log.d("Error", "Failed to get the moods from the async object");
+                }
+                 moodAdapter.notifyDataSetChanged();
+                break;
         }
     }
 
@@ -156,22 +189,72 @@ public class MainActivity extends AppCompatActivity {
      * @param item
      */
     public void filterMoodsByTime(MenuItem item){
+        //TODO: Make sure moods are up to date?
+        Long milliseconds = new Date().getTime();
         switch (item.getItemId()) {
             case R.id.dayOption:
-                //TODO: Enter extras in sending intent, parceables, for filterMoodsByTime
-                controller.filterList(getIntent());
+                controller.filterListByTime(moodList, milliseconds - (long)8.64e+7); //1 day's worth of milliseconds
+                break;
 
             case R.id.monthOption:
-                controller.filterList(getIntent());
+                controller.filterListByTime(moodList, milliseconds - (long)2.628e+9); //1 month's worth of milliseconds approximately
+                break;
 
             case R.id.yearOption:
-                controller.filterList(getIntent());
+                controller.filterListByTime(moodList, milliseconds - (long)3.154e+10); //1 year's worth of milliseconds approximately
+                break;
         }
+        moodAdapter.notifyDataSetChanged();
     }
+
+    /**
+     * Handles filtering the list, but specifically for the mood menu
+     * @param item
+     */
+    public void filterMoodsByEmotion(MenuItem item){
+        //TODO: Spinner or wat?
+        Long milliseconds = new Date().getTime();
+        switch (item.getItemId()) {
+            case R.id.angerOption:
+                controller.filterListByEmotion(moodList, "Anger"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.confusionOption:
+                controller.filterListByEmotion(moodList, "Confusion"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.disgustOption:
+                controller.filterListByEmotion(moodList, "Disgust"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.fearOption:
+                controller.filterListByEmotion(moodList, "Fear"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.happinessOption:
+                controller.filterListByEmotion(moodList, "Happiness"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.sadnessOption:
+                controller.filterListByEmotion(moodList, "Sadness"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.shameOption:
+                controller.filterListByEmotion(moodList, "Shame"); //1 day's worth of milliseconds
+                break;
+
+            case R.id.surpriseOption:
+                controller.filterListByEmotion(moodList, "Surprise"); //1 day's worth of milliseconds
+                break;
+        }
+        moodAdapter.notifyDataSetChanged();
+    }
+
 
     /**
      * When the user clicks the map button this takes them to the map view
      */
+
     private void goToMap(){
         Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
         startActivityForResult(viewMapIntent, 0);
@@ -181,23 +264,37 @@ public class MainActivity extends AppCompatActivity {
      * When the user clicks the profile button it will take them to the profile view
      * Later may take a profile as an argument to go to someone elses profile.
      */
-    private void viewProfile(){
+    public void viewProfile(MenuItem item){
     }
 
     /**
      * Logs the current profile out of the application and returns the user to the log in view.
      */
-    private void logOut(){
+    public void logOut(MenuItem item){
 
     }
 
+    /**
+     * refreshMood - Used to refresh the mood list.
+     * Currently works by using the global variable moodList
+     */
+    public void refreshMoodList(){
+        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
+        getMoodsTask.execute("");
+
+        try{
+            moodList = getMoodsTask.get();
+        }
+        catch(Exception e){
+            Log.d("Error", "Failed to get the moods from the async object");
+        }
+    }
 
     /**
      * OpenSFMenu - Open Sort/Filter Menu
      * Is used when the sort/filter button is pressed to display a menu
      * @param view
      */
-  //TODO: Resolve SF Menu vs sort and filter menu function below
     public void openSFMenu(View view){
         //TODO: Test all this popupmenu crap
         PopupMenu popup = new PopupMenu(this, view);
@@ -206,8 +303,32 @@ public class MainActivity extends AppCompatActivity {
         popup.show();
     }
 
+    public void openSortMenu(MenuItem view){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.sort_menu, popup.getMenu());
+        popup.show();
+    }
+
+    public void openFilterMenu(MenuItem view){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.filter_menu, popup.getMenu());
+        popup.show();
+    }
+    
+    public void openMainMenu(View view){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.menuButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.main_menu, popup.getMenu());
+        popup.show();
+    }
+
     //accept returned information from activities
     @Override
+    // requestCode 0 = Add mood
+    // requestCode 1 = View mood -- resultCode 2 = delete, 3 = Edit Mood
+    // requestCode 2 = Edit Mood
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Mood returnedMood;
 
@@ -215,12 +336,42 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
+                moodList = controller.getMyMoodList().getMoodList();
                 moodList.add(returnedMood);
+                controller.setMyMoodList(new MoodList(moodList));
+                //TODO: Only update moodList if displaying myMoodList, not following list, otherwise moodList = followingList
+                //This to-do applies to the viewMoodActivity and EditMoodActivity result too
                 moodAdapter.notifyDataSetChanged();
 
                 //add newly created mood to DB
                 ElasticSearchController.AddMoodsTask addMoodsTask = new ElasticSearchController.AddMoodsTask();
                 addMoodsTask.execute(returnedMood);
+            }
+        }
+
+        //ViewMoodActivity results
+        if (requestCode == 1){
+            //ViewMoodActivity says delete the mood
+            if (resultCode == 2){
+                deleteMood(itemPosition);
+            }
+            //ViewMoodActivity says edit
+            if (resultCode == 3){
+                returnedMood = (Mood) data.getSerializableExtra("newMood");
+                moodList = controller.getMyMoodList().getMoodList();
+                moodList.set(itemPosition,returnedMood);
+                controller.setMyMoodList(new MoodList(moodList));
+                moodAdapter.notifyDataSetChanged();
+            }
+        }
+        //EditMoodActivity results
+        if (requestCode == 2){
+            if (resultCode == RESULT_OK) {
+                returnedMood = (Mood) data.getSerializableExtra("mood");
+                moodList = controller.getMyMoodList().getMoodList();
+                moodList.set(itemPosition,returnedMood);
+                controller.setMyMoodList(new MoodList(moodList));
+                moodAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -254,7 +405,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info =
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        int itemPosition = info.position;
+        itemPosition = info.position;
         boolean edit = true; //For some reason view as also bringing up the edit window
         //This bool fixes that
         switch(item.getItemId()) {
@@ -264,7 +415,7 @@ public class MainActivity extends AppCompatActivity {
                 edit = false;//Makes it so the edit window will not pop up
                 Intent intentView = new Intent(MainActivity.this, ViewMoodActivity.class);
                 intentView.putExtra("mood", moodList.get(itemPosition));
-                startActivity(intentView);
+                startActivityForResult(intentView, 1);
 
 
             case R.id.edit: //When edit is pressed
@@ -278,9 +429,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             case R.id.delete: //When delete is pressed the item is removed, and everything is updated
-                moodList.remove(itemPosition);
-//                adapter.notifyDataSetChanged();
-                moodAdapter.notifyDataSetChanged();
+                deleteMood(itemPosition);
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -306,18 +455,4 @@ public class MainActivity extends AppCompatActivity {
 //
 //
 //    }
-
-    public void openSortMenu(MenuItem view){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.sort_menu, popup.getMenu());
-        popup.show();
-    }
-
-    public void openFilterMenu(MenuItem view){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.filter_menu, popup.getMenu());
-        popup.show();
-    }
 }
