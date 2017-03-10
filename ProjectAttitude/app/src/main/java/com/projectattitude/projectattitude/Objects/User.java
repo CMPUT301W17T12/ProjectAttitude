@@ -1,5 +1,6 @@
 package com.projectattitude.projectattitude.Objects;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -10,11 +11,12 @@ import java.util.ArrayList;
  about each user as well as storing information for the follower and followed lists.
  */
 
-public class User {
+public class User implements Serializable {
 
     private String userName;    //name of user
     private ArrayList<String> followList;    //arrayList of people that are following this user
     private ArrayList<String> followedList;    //arrayList of people that this user is following
+    private ArrayList<Mood> moods;
 
     private String id;
 
@@ -22,7 +24,21 @@ public class User {
 //    }
 
     public User(){
+        this.moods = new ArrayList<Mood>();
     }
+
+//    public void makeMoodList(){
+//        this.moods = new ArrayList<Mood>();
+//    }
+
+    public ArrayList<Mood> getMoodList(){
+        return moods;
+    }
+
+    public void setMoodList(ArrayList<Mood> moodList){
+        this.moods = moodList;
+    }
+
     public String getUserName() {
         return userName;
     }

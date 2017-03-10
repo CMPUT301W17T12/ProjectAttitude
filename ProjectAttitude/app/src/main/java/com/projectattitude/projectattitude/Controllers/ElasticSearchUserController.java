@@ -39,6 +39,7 @@ public class ElasticSearchUserController {
     //index on server
     private static final String INDEX = "cmput301w17t12";
 
+
     public boolean verifyUser(User user) {
         GetUserTask getUserTask = new GetUserTask();
         User temp = new User();
@@ -53,7 +54,7 @@ public class ElasticSearchUserController {
             e.printStackTrace();
         }
 
-        //if user did not exist, create one
+        //if user did not exist, add one
         if(temp == null){
             ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
             addUserTask.execute(user);
@@ -89,7 +90,7 @@ public class ElasticSearchUserController {
     }
 
     //search for username in DB
-    private static class GetUserTask extends AsyncTask<String, Void, User> {
+    public static class GetUserTask extends AsyncTask<String, Void, User> {
 
         @Override
         protected User doInBackground(String... search_parameters) {

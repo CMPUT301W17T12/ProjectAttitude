@@ -1,9 +1,6 @@
 package com.projectattitude.projectattitude.Activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.icu.util.TimeUnit;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -20,8 +17,10 @@ import android.widget.ListView;
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchController;
 import com.projectattitude.projectattitude.Controllers.MainController;
+import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.MoodList;
+import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
 import java.util.ArrayList;
@@ -36,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean viewingMyList;
     private Integer itemPosition;
 
+    private UserController userController = UserController.getInstance();
+
     private  int listItem; //This is the index of the item pressed in the list
 
     @Override
@@ -44,12 +45,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //get passed user from LoginActivity
+        User user = (User) getIntent().getSerializableExtra("PassUserToMain");
+
         moodListView = (ListView) findViewById(R.id.moodListView);
         FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
-        moodAdapter = new MoodMainAdapter(this, moodList);
+        //moodAdapter = new MoodMainAdapter(this, moodList);
+        //adapter is fed from moodList inside user
+        moodAdapter = new MoodMainAdapter(this, user.getMoodList());
         moodListView.setAdapter(moodAdapter);
         viewingMyList = false;
         Button viewMapButton = (Button) findViewById(R.id.viewMapButton);
+
+        //current instance of user
+        userController.setActiveUser(user);
+        Log.d("what is this", userController.getActiveUser().getUserName());
 
         registerForContextMenu(moodListView);
 

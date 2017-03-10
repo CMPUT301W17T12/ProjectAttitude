@@ -15,6 +15,8 @@ import com.projectattitude.projectattitude.Controllers.ElasticSearchUserControll
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
+import java.util.concurrent.ExecutionException;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText usernameView;
@@ -58,18 +60,45 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else {
 //                    showProgress(true); // show the progress animation
-//                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-//                    addUserTask.execute(user);
 
-                    //need to get a static instance
+                    //need to get a static instance, check for existence of user
                     if(ElasticSearchUserController.getInstance().verifyUser(user)){
+
+                        //creates user using ElasticSearchUserController and switch to MainActivity
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        LoginActivity.this.startActivity(intent);
+                        intent.putExtra("PassNewUserToMain", user);
+                        //LoginActivity.this.startActivity(intent);
+                        startActivity(intent);
                         finish();
                     }
 
                     else{
-                        usernameView.setError("this name already exists");
+                        //give error that account already exists
+                        //usernameView.setError("this name already exists");
+
+                        //grab user from db and pass to MainActivity
+
+                        User user1 = new User();
+                        ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+
+                        try {
+                            user1 = getUserTask.execute(user.getUserName()).get();
+                        }
+
+                        catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("PassUserToMain", user1);
+                        startActivity(intent);
+                        finish();
+
+
+
                     }
 
 
