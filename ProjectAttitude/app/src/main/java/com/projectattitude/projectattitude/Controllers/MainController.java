@@ -93,7 +93,7 @@ public class MainController {
         Log.d("Error", "Time Parameter: "+Long.toString(timeParameter));
         Log.d("Error", "MoodList Size: "+Integer.toString(moodList.size()));
 
-        for(int i = moodList.size() - 1; i >= 0; --i) {
+        for(int i = moodList.size() - 1; i >= 0; --i) { //Go backwards on list, to work around moodList.remove()
             Log.d("Error", moodList.get(i).getEmotionState());
             //If time is greater than timeParameter, remove it from moodList
             long moodTime = ((Date)moodList.get(i).getMoodDate()).getTime();
@@ -112,7 +112,7 @@ public class MainController {
      * @param emotion - String of mood's emotional state
      */
     public void filterListByEmotion(ArrayList<Mood> moodList, String emotion){
-        for(int i = 0; i < moodList.size(); ++i){
+        for(int i = moodList.size() - 1; i >= 0; --i){
             if(!(moodList.get(i).getEmotionState().equals(emotion))){ //If mood's emotion is not equal to emotion Parameter
                 moodList.remove(i);
             }
@@ -126,8 +126,19 @@ public class MainController {
      * @param reason - Word that filters mood by finding if word is in its' reason field.
      */
     public void filterListByTrigger(ArrayList<Mood> moodList, String reason){
-        for(int i = 0; i < moodList.size(); ++i){
-            if(!(moodList.get(i).getTrigger().equals(reason))){ //If mood's trigger is not equal to reason
+        reason = reason.toLowerCase(); //Not case-sensitive searching
+        for(int i = moodList.size() - 1; i >= 0; --i){
+            //Split mood's trigger sentence into individual words, then try to find the word specified by reason
+            String currentTrigger = moodList.get(i).getTrigger().toLowerCase();
+            String triggerWords[] = currentTrigger.split(" ");
+            boolean foundWord = false; //Flag for if word is found or not
+            for(int k = 0; k < triggerWords.length; ++k){
+                if(reason.equals(triggerWords[k])){
+                    foundWord = true;
+                    break;
+                }
+            }
+            if (!foundWord){
                 moodList.remove(i);
             }
         }
