@@ -16,9 +16,13 @@ public class User {
     private ArrayList<String> followList;    //arrayList of people that are following this user
     private ArrayList<String> followedList;    //arrayList of people that this user is following
 
-    public User(String s){
-    }
+    private String id;
 
+//    public User(String s){
+//    }
+
+    public User(){
+    }
     public String getUserName() {
         return userName;
     }
@@ -39,5 +43,13 @@ public class User {
 
     public ArrayList<String> getFollowedList() {
         return followedList;
+    }
+
+    public Object getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
