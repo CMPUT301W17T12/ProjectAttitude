@@ -10,6 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.projectattitude.projectattitude.Activities.EditMoodActivity">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -91,6 +92,12 @@
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/quantum_ic_art_track_grey600_48"
                 android:id="@+id/imageView" />
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/save_location" />
 
             <Button
                 android:text="@string/save_button"
