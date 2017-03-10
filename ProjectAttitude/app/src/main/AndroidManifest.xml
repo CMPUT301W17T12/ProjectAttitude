@@ -16,9 +16,8 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <!--
-         Open Street Map permissions
+         Open Street Map permissions/Location permissions
     -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

@@ -6,12 +6,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.projectattitude.projectattitude.Objects.DatePickerEditText;
 import com.projectattitude.projectattitude.Abstracts.MoodActivity;
+import com.projectattitude.projectattitude.Objects.DatePickerEditText;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
 
@@ -28,6 +29,7 @@ public class EditMoodActivity extends MoodActivity {
     EditText etTrigger;
     Spinner socialSituationSpinner;
     private Mood newMood;
+    CheckBox saveLocation;
 
 
     //https://www.mkyong.com/android/android-spinner-drop-down-list-example/
@@ -42,6 +44,13 @@ public class EditMoodActivity extends MoodActivity {
         etTrigger = (EditText) findViewById(R.id.triggerField);
         socialSituationSpinner = (Spinner) findViewById(R.id.spinner);
 
+        /*if(saveLocation.isChecked()){ //TODO check location
+            GeoPoint myLocation = LocationServices.FusedLocationApi.getLastLocation()
+            newMood.setGeoLocation(myLocation);
+        }
+        else{
+            GeoPoint myLocation = null;
+        }*/
 
 
         Mood mood = (Mood) getIntent().getSerializableExtra("mood");

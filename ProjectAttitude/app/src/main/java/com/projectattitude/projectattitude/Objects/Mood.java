@@ -1,6 +1,8 @@
 package com.projectattitude.projectattitude.Objects;
 
-import android.provider.ContactsContract;
+import android.media.Image;
+
+import org.osmdroid.util.GeoPoint;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,10 +17,10 @@ public class Mood implements Serializable {
 
     private Date moodDate;
     private String emotionState;
-    private String geoLocation;
+    private GeoPoint geoLocation;
     private String trigger;
     private String explanation;
-    private ContactsContract.Contacts.Photo photograph; //Maybe make this an Image?
+    private Image image;
     private String socialSituation;
 
     @JestId
@@ -42,11 +44,11 @@ public class Mood implements Serializable {
         this.emotionState = emotionState;
     }
 
-    public String getGeoLocation() {
+    public GeoPoint getGeoLocation() {
         return geoLocation;
     }
 
-    public void setGeoLocation(String geoLocation) {
+    public void setGeoLocation(GeoPoint geoLocation) {
         this.geoLocation = geoLocation;
     }
 
@@ -66,12 +68,12 @@ public class Mood implements Serializable {
         this.explanation = explanation;
     }
 
-    public ContactsContract.Contacts.Photo getPhotograph() {
-        return photograph;
+    public Image getImage() {
+        return image;
     }
 
-    public void setPhotograph(ContactsContract.Contacts.Photo photograph) {
-        this.photograph = photograph;
+    public void setImage(Image image) {
+        this.image = image;
     }
 
     public String getSocialSituation() {
