@@ -1,4 +1,4 @@
-package com.projectattitude.projectattitude.Abstracts;
+package com.projectattitude.projectattitude.Objects;
 
 /**
  * Created by rfsh on 2017-03-07.
@@ -60,6 +60,7 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
         DatePickerDialog dialog = new DatePickerDialog(_context, this,
                 calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH));
+
         dialog.show();
 
     }
@@ -68,7 +69,10 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
         String date_str = editText.getText().toString();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA);
         try {
-            return sdf.parse(date_str);
+            Date date = sdf.parse(date_str);
+            Date currTime = new Date(System.currentTimeMillis());
+            return new Date(date.getYear(), date.getMonth(), date.getDay(),
+                    currTime.getHours(), currTime.getMinutes(), currTime.getSeconds());
         } catch (ParseException e) {
             return new Date(System.currentTimeMillis());
         }
