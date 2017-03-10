@@ -88,14 +88,21 @@ public class MainController {
      * @param timeParameter - time in milliseconds to filter by
      */
     public void filterListByTime(ArrayList<Mood> moodList, long timeParameter){
+        ArrayList<Mood> newList = new ArrayList<Mood>();
         long currentTime = new Date().getTime();
-        for(int i = 0; i < moodList.size(); ++i) {
+        Log.d("Error", "Time Parameter: "+Long.toString(timeParameter));
+        Log.d("Error", "MoodList Size: "+Integer.toString(moodList.size()));
+
+        for(int i = moodList.size() - 1; i >= 0; --i) {
+            Log.d("Error", moodList.get(i).getEmotionState());
             //If time is greater than timeParameter, remove it from moodList
             long moodTime = ((Date)moodList.get(i).getMoodDate()).getTime();
-            if(currentTime - moodTime > timeParameter){
+            Log.d("Error", "This Mood's Time: "+Long.toString(currentTime - moodTime));
+            if(Math.abs(currentTime - moodTime) > timeParameter){
                 moodList.remove(i);
             }
         }
+
     }
 
     /**
