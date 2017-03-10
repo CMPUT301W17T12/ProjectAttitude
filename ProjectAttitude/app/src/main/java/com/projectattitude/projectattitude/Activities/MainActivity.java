@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -179,6 +180,8 @@ public class MainActivity extends AppCompatActivity {
                 catch(Exception e){
                     Log.d("Error", "Failed to get the moods from the async object");
                 }
+                //moodList = controller.getMyMoodList().getMoodList();
+
                  moodAdapter.notifyDataSetChanged();
                 break;
         }
@@ -190,18 +193,17 @@ public class MainActivity extends AppCompatActivity {
      */
     public void filterMoodsByTime(MenuItem item){
         //TODO: Make sure moods are up to date?
-        Long milliseconds = new Date().getTime();
         switch (item.getItemId()) {
             case R.id.dayOption:
-                controller.filterListByTime(moodList, milliseconds - (long)8.64e+7); //1 day's worth of milliseconds
+                controller.filterListByTime(moodList, (long)8.64e+7); //1 day's worth of milliseconds
                 break;
 
             case R.id.monthOption:
-                controller.filterListByTime(moodList, milliseconds - (long)2.628e+9); //1 month's worth of milliseconds approximately
+                controller.filterListByTime(moodList, (long)2.628e+9); //1 month's worth of milliseconds approximately
                 break;
 
             case R.id.yearOption:
-                controller.filterListByTime(moodList, milliseconds - (long)3.154e+10); //1 year's worth of milliseconds approximately
+                controller.filterListByTime(moodList, (long)3.154e+10); //1 year's worth of milliseconds approximately
                 break;
         }
         moodAdapter.notifyDataSetChanged();

@@ -19,6 +19,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+
 }
 
 dependencies {
@@ -34,4 +36,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile files('src/Include/jest-droid-2.0.1-SNAPSHOT.jar')
     compile 'org.mindrot:jbcrypt:0.4'
+    compile 'com.google.code.gson:gson:2.8.0'
 }
