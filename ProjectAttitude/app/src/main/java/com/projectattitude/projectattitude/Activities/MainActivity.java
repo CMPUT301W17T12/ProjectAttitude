@@ -295,7 +295,6 @@ public class MainActivity extends AppCompatActivity {
      * Is used when the sort/filter button is pressed to display a menu
      * @param view
      */
-  //TODO: Resolve SF Menu vs sort and filter menu function below
     public void openSFMenu(View view){
         //TODO: Test all this popupmenu crap
         PopupMenu popup = new PopupMenu(this, view);
@@ -321,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
     public void openMainMenu(View view){
         PopupMenu popup = new PopupMenu(this, findViewById(R.id.menuButton));
         MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.sort_menu, popup.getMenu());
+        inflater.inflate(R.menu.main_menu, popup.getMenu());
         popup.show();
     }
 
