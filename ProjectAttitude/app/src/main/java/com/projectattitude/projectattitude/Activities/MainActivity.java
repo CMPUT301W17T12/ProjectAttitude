@@ -295,6 +295,20 @@ public class MainActivity extends AppCompatActivity {
         popup.show();
     }
 
+    public void openSortMenu(MenuItem view){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.sort_menu, popup.getMenu());
+        popup.show();
+    }
+
+    public void openFilterMenu(MenuItem view){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.filter_menu, popup.getMenu());
+        popup.show();
+    }
+    
     public void openMainMenu(View view){
         PopupMenu popup = new PopupMenu(this, findViewById(R.id.menuButton));
         MenuInflater inflater = popup.getMenuInflater();

@@ -13,10 +13,6 @@ import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import static android.graphics.Color.rgb;
 
 /**
  * Created by Vuk on 2/27/2017.
@@ -33,7 +29,6 @@ public class MoodMainAdapter extends ArrayAdapter<Mood> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         ColorMap<String, Integer> map = new ColorMap<>();
-
 
         Mood mood = getItem(position);
 
