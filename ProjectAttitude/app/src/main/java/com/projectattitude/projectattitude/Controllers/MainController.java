@@ -9,10 +9,13 @@ import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.Objects.User;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+
+import static java.lang.Math.toIntExact;
 
 /**
  * Created by Chris on 2/24/2017.
@@ -47,17 +50,21 @@ public class MainController {
         //Taken from http://stackoverflow.com/questions/2839137/how-to-use-comparator-in-java-to-sort
         //Date: 3/6/2017
 
+        //Taken from http://stackoverflow.com/questions/1590831/safely-casting-long-to-int-in-java
+        //Date: 3/9/2017
         class dateComparator implements Comparator<Mood> {
             @Override
             public int compare(Mood mood1, Mood mood2) {
-                return (int)(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime());
+                return new BigDecimal(-(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime())).intValueExact();
+                //return toIntExact(-(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime()));
             }
         }
 
         class reverseDateComparator implements Comparator<Mood> {
             @Override
             public int compare(Mood mood1, Mood mood2) {
-                return (int)-(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime());
+                return new BigDecimal((((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime())).intValueExact();
+                //return toIntExact((((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime()));
             }
         }
 
@@ -102,6 +109,20 @@ public class MainController {
     }
 
     /**
+     * Filters an array list of moods, resulting in the moodList but by moods' trigger
+     * Removes moods from moodList that don't have the correct emotional state
+     * @param moodList - moods to be filtered
+     * @param reason - Word that filters mood by finding if word is in its' reason field.
+     */
+    public void filterListByTrigger(ArrayList<Mood> moodList, String reason){
+        for(int i = 0; i < moodList.size(); ++i){
+            if(!(moodList.get(i).getTrigger().equals(reason))){ //If mood's trigger is not equal to reason
+                moodList.remove(i);
+            }
+        }
+    }
+
+    /**
      * Changes to following list...????
      * @param moodList - moods to be filtered
      */
@@ -119,7 +140,7 @@ public class MainController {
         return array;
     }
 
-    public MoodList getMyMoodList(boolean viewingMyList) {
+    public MoodList getMyMoodList() {
         ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
 
         getMoodsTask.execute("");
@@ -135,8 +156,9 @@ public class MainController {
         return myMoodList.clone();
     }
 
-    public void setMyMoodList(MoodList myMoodList) {
-        this.myMoodList = myMoodList;
+    //Precondition: myMoodList shouldn't be touchable by anyone else
+    public void setMyMoodList(MoodList tempList) {
+        this.myMoodList = tempList.clone();
     }
 
     public MoodList getFollowedMoodList() {

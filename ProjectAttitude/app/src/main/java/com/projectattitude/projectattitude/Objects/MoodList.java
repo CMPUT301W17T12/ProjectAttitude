@@ -42,6 +42,11 @@ public class MoodList implements Serializable, Cloneable {
     }
 
     public void deleteMood(Mood mood) {
+        moods.remove(mood);
+    }
+
+    public void deleteMood(Integer i) {
+        moods.remove(i);
     }
 
     public Mood getMood(int i) {
