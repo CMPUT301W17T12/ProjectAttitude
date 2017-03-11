@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
 
-                //moodList.add(returnedMood);
+                moodList.add(returnedMood);
                 userController.getActiveUser().getMoodList().add(returnedMood);
                 moodAdapter.notifyDataSetChanged();
 
