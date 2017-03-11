@@ -324,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
-                moodList = controller.getMyMoodList().getMoodList();
+                refreshMoodList();
                 moodList.add(returnedMood);
                 controller.setMyMoodList(new MoodList(moodList));
                 //TODO: Only update moodList if displaying myMoodList, not following list, otherwise moodList = followingList
@@ -346,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
             //ViewMoodActivity says edit
             if (resultCode == 3){
                 returnedMood = (Mood) data.getSerializableExtra("newMood");
-                moodList = controller.getMyMoodList().getMoodList();
+                refreshMoodList();
                 moodList.set(itemPosition,returnedMood);
                 controller.setMyMoodList(new MoodList(moodList));
                 moodAdapter.notifyDataSetChanged();
@@ -356,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 2){
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("mood");
-                moodList = controller.getMyMoodList().getMoodList();
+                refreshMoodList();
                 moodList.set(itemPosition,returnedMood);
                 controller.setMyMoodList(new MoodList(moodList));
                 moodAdapter.notifyDataSetChanged();
