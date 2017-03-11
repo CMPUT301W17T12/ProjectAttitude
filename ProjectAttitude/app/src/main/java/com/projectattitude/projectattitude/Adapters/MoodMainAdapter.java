@@ -57,7 +57,7 @@ public class MoodMainAdapter extends ArrayAdapter<Mood> {
             tvTrigger.setText("Reason: " + mood.getTrigger());
         }
 
-        if(mood.getSocialSituation().equalsIgnoreCase("Select an social situation")){
+        if(mood.getSocialSituation().equalsIgnoreCase("Select a social situation")){
             tvSocialSituation.setVisibility(View.GONE);
         }
         else{

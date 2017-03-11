@@ -1,16 +1,12 @@
 package com.projectattitude.projectattitude.Activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.icu.util.TimeUnit;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,14 +16,19 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
-import com.projectattitude.projectattitude.Controllers.ElasticSearchController;
+import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Controllers.MainController;
+import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.MoodList;
+import com.projectattitude.projectattitude.Objects.NetWorkUtil;
+import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,7 +39,18 @@ public class MainActivity extends AppCompatActivity {
     private boolean viewingMyList;
     private Integer itemPosition;
 
+
+    private UserController userController = UserController.getInstance();
+
+    private static final String LOG_TAG = "CheckNetworkStatus";
+    //private NetworkChangeReceiver receiver;
+    private boolean isConnected = false;
+
     private  int listItem; //This is the index of the item pressed in the list
+    private NetWorkUtil netWorkUtil = new NetWorkUtil();
+
+    TimerTask mTimerTask;
+    Timer mTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +58,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //get passed user from LoginActivity
+        User user = (User) getIntent().getSerializableExtra("PassUserToMain");
+        userController.setActiveUser(user);
+
         moodListView = (ListView) findViewById(R.id.moodListView);
         FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
-        moodAdapter = new MoodMainAdapter(this, moodList);
+        //moodAdapter = new MoodMainAdapter(this, moodList);
+        //adapter is fed from moodList inside user
+        moodAdapter = new MoodMainAdapter(this, userController.getActiveUser().getMoodList());
         moodListView.setAdapter(moodAdapter);
         viewingMyList = false;
         Button viewMapButton = (Button) findViewById(R.id.viewMapButton);
+
+        userController.loadFromFile();
+        Log.d("userController load", userController.getActiveUser().getMoodList().toString());
 
         registerForContextMenu(moodListView);
 
@@ -70,24 +91,45 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //return all moods from db, so it can populate view on start
-        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
-        getMoodsTask.execute("");
+//        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
+//        getMoodsTask.execute("");
+
+        //check if person is online every 30 seconds, and updates the db every time there is a connection
+        mTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if(netWorkUtil.getConnectivityStatus(MainActivity.this) == 1){
+                    if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+                        ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+                        addUserTask.execute(UserController.getInstance().getActiveUser());
+                    }
+                }
+            }
+        };
+
+        mTimer = new Timer();
+        /**1st argument: task to be scheduled
+         * 2nd argument: delay before task is executed
+         * 3rd arugument: delay between successive executions
+         */
+        mTimer.scheduleAtFixedRate(mTimerTask, 1000, 30000);
 
         try{
-            ArrayList<Mood> tempList = getMoodsTask.get();
+//            ArrayList<Mood> tempList = getMoodsTask.get();
+            ArrayList<Mood> tempList = userController.getActiveUser().getMoodList();
+            Log.d("moodlist1", tempList.toString());
             controller.setMyMoodList(new MoodList(tempList));
             moodList = controller.getMyMoodList().getMoodList();
+            Log.d("moodList2", moodList.toString());
         }
         catch(Exception e){
             Log.d("Error", "Failed to get the moods from the async object");
         }
 
-        controller.setMyMoodList(new MoodList(moodList));
-        moodAdapter = new MoodMainAdapter(this, moodList);
-        moodListView.setAdapter(moodAdapter);
+//        controller.setMyMoodList(new MoodList(moodList));
+//        moodAdapter = new MoodMainAdapter(this, moodList);
+//        moodListView.setAdapter(moodAdapter);
     }
-
-
 
     //TODO Build these functions
     /**
@@ -110,14 +152,24 @@ public class MainActivity extends AppCompatActivity {
      * @param i, the integer of the moodList to be removed
      */
     private void deleteMood(Integer i){
-        Log.d("deleting", moodList.get(i).toString());
-        Mood delMood = moodList.get(i);
-        moodList = controller.getMyMoodList().getMoodList();
-        moodList.remove(delMood);
-        controller.setMyMoodList(new MoodList(moodList));
-        Log.d("deleting", moodList.get(i).toString());
+        //Log.d("deleting", moodList.get(i).toString());
+        //Mood delMood = moodList.get(i);
+        Log.d("deleting", userController.getActiveUser().getMoodList().get(i).toString());
+        Mood delMood = userController.getActiveUser().getMoodList().get(i);
+        //moodList = controller.getMyMoodList().getMoodList();
+        //moodList.remove(delMood);
+        userController.getActiveUser().getMoodList().remove(delMood);
+        //controller.setMyMoodList(new MoodList(moodList));
+        //Log.d("deleting", moodList.get(i).toString());
         moodAdapter.notifyDataSetChanged();
+        userController.saveInFile();
+        Log.d("userController deleted", userController.getActiveUser().getMoodList().toString());
 
+        //updating db
+        if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+            ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+            addUserTask.execute(UserController.getInstance().getActiveUser());
+        }
     }
 
     /**
@@ -324,16 +376,27 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
+
+                //moodList.add(returnedMood);
+                userController.getActiveUser().getMoodList().add(returnedMood);
+
                 refreshMoodList();
                 moodList.add(returnedMood);
                 controller.setMyMoodList(new MoodList(moodList));
                 //TODO: Only update moodList if displaying myMoodList, not following list, otherwise moodList = followingList
                 //This to-do applies to the viewMoodActivity and EditMoodActivity result too
-                moodAdapter.notifyDataSetChanged();
 
+                moodAdapter.notifyDataSetChanged();
+                userController.saveInFile();
+                Log.d("userController Added", userController.getActiveUser().getMoodList().toString());
+
+                if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+                    addUserTask.execute(UserController.getInstance().getActiveUser());
+                }
                 //add newly created mood to DB
-                ElasticSearchController.AddMoodsTask addMoodsTask = new ElasticSearchController.AddMoodsTask();
-                addMoodsTask.execute(returnedMood);
+//                ElasticSearchController.AddMoodsTask addMoodsTask = new ElasticSearchController.AddMoodsTask();
+//                addMoodsTask.execute(returnedMood);
             }
         }
 
@@ -352,6 +415,7 @@ public class MainActivity extends AppCompatActivity {
                 moodAdapter.notifyDataSetChanged();
             }
         }
+
         //EditMoodActivity results
         if (requestCode == 2){
             if (resultCode == RESULT_OK) {
@@ -402,19 +466,19 @@ public class MainActivity extends AppCompatActivity {
                 //On second though this is all UI so it doenst need a controller?
                 edit = false;//Makes it so the edit window will not pop up
                 Intent intentView = new Intent(MainActivity.this, ViewMoodActivity.class);
-                intentView.putExtra("mood", moodList.get(itemPosition));
+                //intentView.putExtra("mood", moodList.get(itemPosition));
+                intentView.putExtra("mood", userController.getActiveUser().getMoodList().get(itemPosition));
                 startActivityForResult(intentView, 1);
-
 
             case R.id.edit: //When edit is pressed
                 if (edit) {
                     Intent intentEdit = new Intent(MainActivity.this, EditMoodActivity.class);
-                    intentEdit.putExtra("mood", moodList.get(itemPosition));
+//                    intentEdit.putExtra("mood", moodList.get(itemPosition));
+                    intentEdit.putExtra("mood", userController.getActiveUser().getMoodList().get(itemPosition));
                     startActivityForResult(intentEdit, 2); //Handled in the results section
                     listItem = itemPosition;
                 }
                 return true;
-
 
             case R.id.delete: //When delete is pressed the item is removed, and everything is updated
                 deleteMood(itemPosition);

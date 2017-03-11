@@ -4,17 +4,21 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
+import com.projectattitude.projectattitude.Controllers.UserController;
+import com.projectattitude.projectattitude.Objects.NetWorkUtil;
+import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
-import org.mindrot.jbcrypt.BCrypt;
+import java.util.concurrent.ExecutionException;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,6 +28,9 @@ public class LoginActivity extends AppCompatActivity {
     private View titleView;
     private View loginFormView;
     private View progressView;
+
+    private UserController userController = UserController.getInstance();
+    private NetWorkUtil netWorkUtil = new NetWorkUtil();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +47,10 @@ public class LoginActivity extends AppCompatActivity {
                 usernameView.setError(null);
                 passwordView.setError(null);
 
+                User user = new User();
+
                 String username = usernameView.getText().toString();
+                user.setUserName(username);
                 String password = passwordView.getText().toString();
 
                 Boolean cancel = false;
@@ -55,9 +65,48 @@ public class LoginActivity extends AppCompatActivity {
                     usernameView.requestFocus();
                 }
                 else {
-                    showProgress(true); // show the progress animation
-                    LoginTask loginTask = new LoginTask(username, password);
-                    loginTask.execute((Void) null);
+//                    showProgress(true); // show the progress animation
+
+                    if(netWorkUtil.getConnectivityStatus(LoginActivity.this) == 1){
+                        //need to get a static instance, check for existence of user
+                        if (ElasticSearchUserController.getInstance().verifyUser(user)) {
+
+                            //creates user using ElasticSearchUserController and switch to MainActivity
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.putExtra("PassUserToMain", user);
+                            //LoginActivity.this.startActivity(intent);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            //give error that account already exists
+                            //usernameView.setError("this name already exists");
+
+                            //grab user from db and pass to MainActivity, since they exist
+                            User user1 = new User();
+                            ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+
+                            try {
+                                user1 = getUserTask.execute(user.getUserName()).get();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
+
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.putExtra("PassUserToMain", user1);
+                            startActivity(intent);
+                            finish();
+                        }
+                    }
+
+                    else{
+                        Toast.makeText(LoginActivity.this, "Must be connected to internet to login!",
+                                Toast.LENGTH_LONG).show();
+                    }
+
+//                    LoginTask loginTask = new LoginTask(username, password);
+//                    loginTask.execute((Void) null);
                 }
             }
         });
@@ -66,6 +115,115 @@ public class LoginActivity extends AppCompatActivity {
         progressView = findViewById(R.id.login_progress);
         titleView = findViewById(R.id.title_label);
     }
+
+//    private boolean authenticate (String username) {
+//
+//        ElasticSearchUserController.UserExistTask userExistTask = new ElasticSearchUserController.UserExistTask();
+//        userExistTask.execute(username);
+//
+//        try{
+//            if(userExistTask.get()){
+//                Log.d("User", "exist");
+//                return true;
+//            }
+//
+//            else{
+//                Log.d("User", "Does not exist");
+//                return false;
+//            }
+//        }
+//        catch (Exception e){
+//            Log.d("User", "An error happened");
+//            return false;
+//        }
+//    }
+
+    /**
+     * Login background task, allows us to run the long part of login asynchronously
+     */
+//    public class LoginTask extends AsyncTask<Void, Void, Boolean> {
+//        private final String username;
+//        private final String password;
+//
+//        LoginTask(String username, String password){
+//            this.username = username;
+//            this.password = password;
+//        }
+
+//        @Override
+//        protected Boolean doInBackground(Void... params){
+//            return authenticate(username, password);
+//        }
+
+//        @Override
+//        protected void onPostExecute(final Boolean success) {
+//            showProgress(false);
+//
+//            if (success) {
+//                finish();
+//                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                LoginActivity.this.startActivity(intent);
+//            }
+//        }
+//
+//        @Override
+//        protected void onCancelled() {
+//            showProgress(false);
+//        }
+//    }
+
+//    /**
+//     * Login authentication, if given a username that doesn't exist in the database
+//     * will create a new account for that given username password
+//     * returns true if login/signup succeeded
+//     * @param username
+//     * @param password
+//     * @return
+//     */
+//    private boolean authenticate (String username, String password) {
+//
+//        if (checkUsernameExists(username)) {
+//
+//            // Find if username exists in database
+//
+//            // Check if password for username matches
+//            if (BCrypt.checkpw(password, getHashedPasswordFromServer(username))){
+//                // Now logged into account, switch to mainactivity
+//
+//                return true;
+//            }
+//            // Password was incorrect
+//            else {
+//                passwordView.setError(getString(R.string.error_incorrect_password));
+//                return false;
+//            }
+//        }
+//        // Create New account in database with username password
+//        else {
+//            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+//        }
+//        return true;
+//    }
+
+//    /**
+//     * Retrieve the salted hash of username's password
+//     * @param username
+//     * @return hashed
+//     */
+//    private String getHashedPasswordFromServer(String username) {
+//        return BCrypt.hashpw("test", BCrypt.gensalt());
+//    }
+//
+//    /**
+//     * Checks if there exists an account in the database with name username
+//     * @param username
+//     * @return
+//     */
+//    private boolean checkUsernameExists (String username) {
+//        // Check username with elasticsearch server
+//
+//        return false;
+//    }
 
     /**
      * Shows the progress UI and hides the login form.
@@ -110,92 +268,5 @@ public class LoginActivity extends AppCompatActivity {
             progressView.setVisibility(show ? View.VISIBLE : View.GONE);
             loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
-    }
-
-    /**
-     * Login background task, allows us to run the long part of login asynchronously
-     */
-    public class LoginTask extends AsyncTask<Void, Void, Boolean> {
-        private final String username;
-        private final String password;
-
-        LoginTask(String username, String password){
-            this.username = username;
-            this.password = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params){
-            return authenticate(username, password);
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            showProgress(false);
-
-            if (success) {
-                finish();
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                LoginActivity.this.startActivity(intent);
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            showProgress(false);
-        }
-    }
-
-    /**
-     * Login authentication, if given a username that doesn't exist in the database
-     * will create a new account for that given username password
-     * returns true if login/signup succeeded
-     * @param username
-     * @param password
-     * @return
-     */
-    private boolean authenticate (String username, String password) {
-
-        if (checkUsernameExists(username)) {
-
-            // Find if username exists in database
-
-            // Check if password for username matches
-            if (BCrypt.checkpw(password, getHashedPasswordFromServer(username))){
-                // Now logged into account, switch to mainactivity
-
-                return true;
-            }
-            // Password was incorrect
-            else {
-                passwordView.setError(getString(R.string.error_incorrect_password));
-                return false;
-            }
-        }
-        // Create New account in database with username password
-        else {
-            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-        }
-        return true;
-    }
-
-    /**
-     * Retrieve the salted hash of username's password
-     * @param username
-     * @return hashed
-     */
-    private String getHashedPasswordFromServer(String username) {
-        return BCrypt.hashpw("test", BCrypt.gensalt());
-    }
-
-    /**
-     * Checks if there exists an account in the database with name username
-     * @param username
-     * @return
-     */
-    private boolean checkUsernameExists (String username) {
-        // Check username with elasticsearch server
-
-        return false;
     }
 }
