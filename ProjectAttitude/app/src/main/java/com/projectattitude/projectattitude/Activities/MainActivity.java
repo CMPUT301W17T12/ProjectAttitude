@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         moodListView = (ListView) findViewById(R.id.moodListView);
         FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
-        //moodAdapter = new MoodMainAdapter(this, moodList);
+        moodAdapter = new MoodMainAdapter(this, moodList);
         //adapter is fed from moodList inside user
         moodAdapter = new MoodMainAdapter(this, userController.getActiveUser().getMoodList());
         moodListView.setAdapter(moodAdapter);
