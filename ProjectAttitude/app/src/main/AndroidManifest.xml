@@ -65,6 +65,16 @@
         <activity android:name=".Activities.CreateMoodActivity" />
         <activity android:name=".Activities.EditMoodActivity" />
         <activity android:name=".Activities.ViewProfileActivity"></activity>
+
+        <receiver
+            android:name="com.projectattitude.projectattitude.Objects.NetWorkChangeReceiver"
+            android:label="NetWorkChangeReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

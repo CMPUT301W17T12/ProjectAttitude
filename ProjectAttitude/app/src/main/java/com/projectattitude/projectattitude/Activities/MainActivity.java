@@ -21,11 +21,14 @@ import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.MoodList;
+import com.projectattitude.projectattitude.Objects.NetWorkUtil;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,7 +42,15 @@ public class MainActivity extends AppCompatActivity {
 
     private UserController userController = UserController.getInstance();
 
+    private static final String LOG_TAG = "CheckNetworkStatus";
+    //private NetworkChangeReceiver receiver;
+    private boolean isConnected = false;
+
     private  int listItem; //This is the index of the item pressed in the list
+    private NetWorkUtil netWorkUtil = new NetWorkUtil();
+
+    TimerTask mTimerTask;
+    Timer mTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +90,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         //return all moods from db, so it can populate view on start
 //        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
 //        getMoodsTask.execute("");
+
+        //check if person is online every 30 seconds, and updates the db every time there is a connection
+        mTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if(netWorkUtil.getConnectivityStatus(MainActivity.this) == 1){
+                    if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+                        ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+                        addUserTask.execute(UserController.getInstance().getActiveUser());
+                    }
+                }
+            }
+        };
+
+        mTimer = new Timer();
+        /**1st argument: task to be scheduled
+         * 2nd argument: delay before task is executed
+         * 3rd arugument: delay between successive executions
+         */
+        mTimer.scheduleAtFixedRate(mTimerTask, 1000, 30000);
 
         try{
 //            ArrayList<Mood> tempList = getMoodsTask.get();
@@ -100,8 +130,6 @@ public class MainActivity extends AppCompatActivity {
 //        moodAdapter = new MoodMainAdapter(this, moodList);
 //        moodListView.setAdapter(moodAdapter);
     }
-
-
 
     //TODO Build these functions
     /**

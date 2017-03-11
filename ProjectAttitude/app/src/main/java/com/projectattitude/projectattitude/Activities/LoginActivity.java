@@ -3,14 +3,10 @@ package com.projectattitude.projectattitude.Activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +14,7 @@ import android.widget.Toast;
 
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Controllers.UserController;
+import com.projectattitude.projectattitude.Objects.NetWorkUtil;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
@@ -33,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private View progressView;
 
     private UserController userController = UserController.getInstance();
+    private NetWorkUtil netWorkUtil = new NetWorkUtil();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                 else {
 //                    showProgress(true); // show the progress animation
 
-                    if(isNetworkAvailable()) {
+                    if(netWorkUtil.getConnectivityStatus(LoginActivity.this) == 1){
                         //need to get a static instance, check for existence of user
                         if (ElasticSearchUserController.getInstance().verifyUser(user)) {
 
@@ -116,20 +114,6 @@ public class LoginActivity extends AppCompatActivity {
         loginFormView = findViewById(R.id.login_form);
         progressView = findViewById(R.id.login_progress);
         titleView = findViewById(R.id.title_label);
-    }
-
-    public boolean isNetworkAvailable() {
-        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        boolean isAvailable = false;
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // Network is present and connected
-            Log.d("Network is available", "connected");
-            isAvailable = true;
-        }
-
-        Log.d("Network not available", "doesn't work");
-        return isAvailable;
     }
 
 //    private boolean authenticate (String username) {
