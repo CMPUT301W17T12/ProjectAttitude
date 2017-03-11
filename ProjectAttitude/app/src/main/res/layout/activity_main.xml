@@ -42,9 +42,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/moodTextView"
         android:src="@drawable/filter_button"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:onClick="openSFMenu"
+        />
+
+    <ImageButton
+        android:id="@+id/searchButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/moodTextView"
+        android:layout_toStartOf="@id/filterButton"
+        android:src="@drawable/search_button"
+        android:onClick="filterMoodByTrigger"
         />
 
     <EditText
@@ -52,8 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/moodTextView"
-        android:layout_toLeftOf="@id/filterButton"
-        android:layout_toStartOf="@+id/filterButton"
+        android:layout_toStartOf="@+id/searchButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:hint="@string/search_bar"

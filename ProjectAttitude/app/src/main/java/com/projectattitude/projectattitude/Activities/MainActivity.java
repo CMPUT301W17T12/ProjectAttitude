@@ -7,11 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
@@ -84,7 +86,9 @@ public class MainActivity extends AppCompatActivity {
         getMoodsTask.execute("");
 
         try{
-            moodList = getMoodsTask.get();
+            ArrayList<Mood> tempList = getMoodsTask.get();
+            controller.setMyMoodList(new MoodList(tempList));
+            moodList = controller.getMyMoodList().getMoodList();
         }
         catch(Exception e){
             Log.d("Error", "Failed to get the moods from the async object");
@@ -119,7 +123,10 @@ public class MainActivity extends AppCompatActivity {
      */
     private void deleteMood(Integer i){
         Log.d("deleting", moodList.get(i).toString());
-        moodList.remove(moodList.get(i));
+        Mood delMood = moodList.get(i);
+        moodList = controller.getMyMoodList().getMoodList();
+        moodList.remove(delMood);
+        controller.setMyMoodList(new MoodList(moodList));
         Log.d("deleting", moodList.get(i).toString());
         moodAdapter.notifyDataSetChanged();
 
@@ -127,10 +134,12 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This is the method that handles finding moods with a given keyword
-     * Will probably return a mood list object in time, or set the current one.
+     * Called by pressing the searchButton on main_layout
      */
-    private void searchMood(){
-
+    public void filterMoodByTrigger(View view){
+        //Get text from search bar and then call controller function
+        controller.filterListByTrigger(moodList, ((EditText)findViewById(R.id.searchBar)).getText().toString());
+        moodAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -173,15 +182,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.allOption:
-                ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
-                getMoodsTask.execute("");
+                //TODO: Add following to allOption
+                refreshMoodList();
 
-                try{
-                    moodList = getMoodsTask.get();
-                }
-                catch(Exception e){
-                    Log.d("Error", "Failed to get the moods from the async object");
-                }
                  moodAdapter.notifyDataSetChanged();
                 break;
         }
@@ -193,18 +196,17 @@ public class MainActivity extends AppCompatActivity {
      */
     public void filterMoodsByTime(MenuItem item){
         //TODO: Make sure moods are up to date?
-        Long milliseconds = new Date().getTime();
         switch (item.getItemId()) {
             case R.id.dayOption:
-                controller.filterListByTime(moodList, milliseconds - (long)8.64e+7); //1 day's worth of milliseconds
+                controller.filterListByTime(moodList, (long)8.64e+7); //1 day's worth of milliseconds
                 break;
 
             case R.id.monthOption:
-                controller.filterListByTime(moodList, milliseconds - (long)2.628e+9); //1 month's worth of milliseconds approximately
+                controller.filterListByTime(moodList, (long)2.628e+9); //1 month's worth of milliseconds approximately
                 break;
 
             case R.id.yearOption:
-                controller.filterListByTime(moodList, milliseconds - (long)3.154e+10); //1 year's worth of milliseconds approximately
+                controller.filterListByTime(moodList, (long)3.154e+10); //1 year's worth of milliseconds approximately
                 break;
         }
         moodAdapter.notifyDataSetChanged();
@@ -278,19 +280,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * refreshMood - Used to refresh the mood list.
+     * refreshMood - Used to refresh the mood list with the most current stuff.
      * Currently works by using the global variable moodList
      */
     public void refreshMoodList(){
-        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
-        getMoodsTask.execute("");
-
-        try{
-            moodList = getMoodsTask.get();
-        }
-        catch(Exception e){
-            Log.d("Error", "Failed to get the moods from the async object");
-        }
+        //TODO: Add following and perhaps make algorithm more elegant
+        ArrayList<Mood> newList = controller.getMyMoodList().getMoodList();
+        moodList.clear();
+        moodList.addAll(newList);
     }
 
     /**
@@ -298,7 +295,6 @@ public class MainActivity extends AppCompatActivity {
      * Is used when the sort/filter button is pressed to display a menu
      * @param view
      */
-  //TODO: Resolve SF Menu vs sort and filter menu function below
     public void openSFMenu(View view){
         //TODO: Test all this popupmenu crap
         PopupMenu popup = new PopupMenu(this, view);
@@ -324,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
     public void openMainMenu(View view){
         PopupMenu popup = new PopupMenu(this, findViewById(R.id.menuButton));
         MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.sort_menu, popup.getMenu());
+        inflater.inflate(R.menu.main_menu, popup.getMenu());
         popup.show();
     }
 
@@ -341,8 +337,16 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
 
+
                 //moodList.add(returnedMood);
-                userController.getActiveUser().getMoodList().add(returnedMood);
+                //userController.getActiveUser().getMoodList().add(returnedMood);
+
+                refreshMoodList();
+                moodList.add(returnedMood);
+                controller.setMyMoodList(new MoodList(moodList));
+                //TODO: Only update moodList if displaying myMoodList, not following list, otherwise moodList = followingList
+                //This to-do applies to the viewMoodActivity and EditMoodActivity result too
+
                 moodAdapter.notifyDataSetChanged();
 
                 if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
@@ -364,7 +368,9 @@ public class MainActivity extends AppCompatActivity {
             //ViewMoodActivity says edit
             if (resultCode == 3){
                 returnedMood = (Mood) data.getSerializableExtra("newMood");
+                refreshMoodList();
                 moodList.set(itemPosition,returnedMood);
+                controller.setMyMoodList(new MoodList(moodList));
                 moodAdapter.notifyDataSetChanged();
             }
         }
@@ -372,7 +378,9 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 2){
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("mood");
+                refreshMoodList();
                 moodList.set(itemPosition,returnedMood);
+                controller.setMyMoodList(new MoodList(moodList));
                 moodAdapter.notifyDataSetChanged();
             }
         }

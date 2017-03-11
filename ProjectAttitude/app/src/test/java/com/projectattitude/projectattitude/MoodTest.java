@@ -1,11 +1,12 @@
 package com.projectattitude.projectattitude;
 
-import android.provider.ContactsContract;
+import android.media.Image;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Objects.Mood;
-import com.projectattitude.projectattitude.Objects.MoodList;
+
+import org.osmdroid.util.GeoPoint;
 
 import java.util.Date;
 
@@ -20,13 +21,13 @@ public class MoodTest extends ActivityInstrumentationTestCase2{
     }
 
     public void testGetMoodDate(){
-        Mood mood = new Mood("test mood");
+        Mood mood = new Mood();
         Date date = new Date();
         assertTrue(mood.getMoodDate() == date);
     }
 
     public void testSetMoodDate(){
-        Mood mood = new Mood("test mood");
+        Mood mood = new Mood();
         Date date = new Date();
 
         mood.setMoodDate(date);
@@ -34,75 +35,79 @@ public class MoodTest extends ActivityInstrumentationTestCase2{
     }
 
     public void testGetEmotionState(){
-        Mood mood = new Mood("test mood");
+        Mood mood = new Mood();
         mood.setEmotionState("Happy");
         assertEquals("Happy", mood.getEmotionState());
     }
 
     public void testSetEmotionState(){
-        Mood mood = new Mood("test mood");
+        Mood mood = new Mood();
         mood.setEmotionState("Happy");
         assertEquals("Happy", mood.getEmotionState());
     }
 
     public void testGetGeoLocation(){
-        Mood mood = new Mood("test mood");
-        mood.setGeoLocation("testLocation");
-        assertEquals("testLocation", mood.getGeoLocation());
+        Mood mood = new Mood();
+        mood.setGeoLocation(new GeoPoint(0f, 0f));
+        assertEquals(new GeoPoint(0f, 0f), mood.getGeoLocation());
+
     }
 
     public void testSetGeoLocation(){
-        Mood mood = new Mood("test mood");
-        mood.setGeoLocation("testLocation");
-        assertEquals("testLocation", mood.getGeoLocation());
+        Mood mood = new Mood();
+
+        mood.setGeoLocation(new GeoPoint(0f, 0f));
+        assertEquals(new GeoPoint(0f, 0f), mood.getGeoLocation());
     }
 
     public void testGetTrigger(){
-        Mood mood = new Mood("test mood");
+        Mood mood = new Mood();
         mood.setTrigger("testTrigger");
         assertEquals(mood.getTrigger(), "testTrigger");
     }
 
     public void testSetTrigger(){
-        Mood mood = new Mood("test mood");
+        Mood mood = new Mood();
         mood.setTrigger("testTrigger");
         assertEquals(mood.getTrigger(), "testTrigger");
     }
 
     public void testGetExplanation(){
-        Mood mood = new Mood("test mood");
+        Mood mood = new Mood();
         mood.setExplanation("testExplanation");
         assertEquals(mood.getExplanation(), "testExplanation");
     }
 
     public void testSetExplanation(){
-        Mood mood = new Mood("test mood");
+        Mood mood = new Mood();
         mood.setExplanation("testExplanation");
         assertEquals(mood.getExplanation(), "testExplanation");
     }
 
-    public void testGetPhotograph(){
-        Mood mood = new Mood("test mood");
-        ContactsContract.Contacts.Photo photograph = null;
-        mood.setPhotograph(photograph);
-        assertEquals(photograph, mood.getPhotograph());
+    public void testGetImage(){
+        Mood mood = new Mood();
+
+        Image image = null;
+        mood.setImage(image);
+        assertEquals(image, mood.getImage());
     }
 
-    public void testSetPhotograph(){
-        Mood mood = new Mood("test mood");
-        ContactsContract.Contacts.Photo photograph = null;
-        mood.setPhotograph(null);
-        assertEquals(null, mood.getPhotograph());
+    public void testSetImage(){
+        Mood mood = new Mood();
+
+        Image image = null;
+        mood.setImage(image);
+        assertEquals(image, mood.getImage());
     }
 
     public void testGetSocialSituation(){
-        Mood mood = new Mood("test mood");
+        Mood mood = new Mood();
         mood.setSocialSituation("Alone");
         assertEquals("Alone", mood.getSocialSituation());
     }
 
     public void testSetSocialSituation(){
-        Mood mood = new Mood("test mood");
+        Mood mood = new Mood();
         mood.setSocialSituation("Alone");
         assertEquals("Alone", mood.getSocialSituation());
     }

@@ -77,6 +77,7 @@
     <string name="cancel_button">Cancel</string>
     <string name="emotion_state_error">Emotional state is a mandatory field</string>
     <string name="social_situation_label">Social Situation:</string>
+    <string name="save_location">Save Location</string>
 
     <string-array name="emotional_state">
         <item>Select an emotional state</item>
@@ -95,6 +96,6 @@
     <string name="trigger_prefix">Reason: %1$s</string>
     <string name="social_situation_prefix">Situation: %1$s</string>
 
-    <!-- Strings for map activity -->
+    <!-- Strings for Google map activity -->
     <string name="google_maps_key">AIzaSyCvXpLfGeIYr7BAMHg3GD9hYxU0izDRA</string>
 </resources>

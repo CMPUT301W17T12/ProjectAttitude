@@ -9,10 +9,13 @@ import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.Objects.User;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+
+import static java.lang.Math.toIntExact;
 
 /**
  * Created by Chris on 2/24/2017.
@@ -47,17 +50,25 @@ public class MainController {
         //Taken from http://stackoverflow.com/questions/2839137/how-to-use-comparator-in-java-to-sort
         //Date: 3/6/2017
 
+        //Taken from http://stackoverflow.com/questions/1590831/safely-casting-long-to-int-in-java
+        //Date: 3/9/2017
         class dateComparator implements Comparator<Mood> {
             @Override
             public int compare(Mood mood1, Mood mood2) {
-                return (int)(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime());
+                long tempValue = -(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime());
+                if (tempValue < 0){ return -1; }
+                if (tempValue > 0){ return 1; }
+                return 0; //else, return 0
             }
         }
 
         class reverseDateComparator implements Comparator<Mood> {
             @Override
             public int compare(Mood mood1, Mood mood2) {
-                return (int)-(((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime());
+                long tempValue = ((Date)mood1.getMoodDate()).getTime() - ((Date)mood2.getMoodDate()).getTime();
+                if (tempValue < 0){ return -1; }
+                if (tempValue > 0){ return 1; }
+                return 0; //else, return 0
             }
         }
 
@@ -77,14 +88,21 @@ public class MainController {
      * @param timeParameter - time in milliseconds to filter by
      */
     public void filterListByTime(ArrayList<Mood> moodList, long timeParameter){
+        ArrayList<Mood> newList = new ArrayList<Mood>();
         long currentTime = new Date().getTime();
-        for(int i = 0; i < moodList.size(); ++i) {
+        Log.d("Error", "Time Parameter: "+Long.toString(timeParameter));
+        Log.d("Error", "MoodList Size: "+Integer.toString(moodList.size()));
+
+        for(int i = moodList.size() - 1; i >= 0; --i) { //Go backwards on list, to work around moodList.remove()
+            Log.d("Error", moodList.get(i).getEmotionState());
             //If time is greater than timeParameter, remove it from moodList
             long moodTime = ((Date)moodList.get(i).getMoodDate()).getTime();
-            if(currentTime - moodTime > timeParameter){
+            Log.d("Error", "This Mood's Time: "+Long.toString(currentTime - moodTime));
+            if(Math.abs(currentTime - moodTime) > timeParameter){
                 moodList.remove(i);
             }
         }
+
     }
 
     /**
@@ -94,8 +112,33 @@ public class MainController {
      * @param emotion - String of mood's emotional state
      */
     public void filterListByEmotion(ArrayList<Mood> moodList, String emotion){
-        for(int i = 0; i < moodList.size(); ++i){
+        for(int i = moodList.size() - 1; i >= 0; --i){
             if(!(moodList.get(i).getEmotionState().equals(emotion))){ //If mood's emotion is not equal to emotion Parameter
+                moodList.remove(i);
+            }
+        }
+    }
+
+    /**
+     * Filters an array list of moods, resulting in the moodList but by moods' trigger
+     * Removes moods from moodList that don't have the correct emotional state
+     * @param moodList - moods to be filtered
+     * @param reason - Word that filters mood by finding if word is in its' reason field.
+     */
+    public void filterListByTrigger(ArrayList<Mood> moodList, String reason){
+        reason = reason.toLowerCase(); //Not case-sensitive searching
+        for(int i = moodList.size() - 1; i >= 0; --i){
+            //Split mood's trigger sentence into individual words, then try to find the word specified by reason
+            String currentTrigger = moodList.get(i).getTrigger().toLowerCase();
+            String triggerWords[] = currentTrigger.split(" ");
+            boolean foundWord = false; //Flag for if word is found or not
+            for(int k = 0; k < triggerWords.length; ++k){
+                if(reason.equals(triggerWords[k])){
+                    foundWord = true;
+                    break;
+                }
+            }
+            if (!foundWord){
                 moodList.remove(i);
             }
         }
@@ -119,7 +162,7 @@ public class MainController {
         return array;
     }
 
-    public MoodList getMyMoodList(boolean viewingMyList) {
+    public MoodList getMyMoodList() {
         ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
 
         getMoodsTask.execute("");
@@ -135,8 +178,9 @@ public class MainController {
         return myMoodList.clone();
     }
 
-    public void setMyMoodList(MoodList myMoodList) {
-        this.myMoodList = myMoodList;
+    //Precondition: myMoodList shouldn't be touchable by anyone else
+    public void setMyMoodList(MoodList tempList) {
+        this.myMoodList = tempList.clone();
     }
 
     public MoodList getFollowedMoodList() {

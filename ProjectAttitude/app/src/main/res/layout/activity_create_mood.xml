@@ -10,28 +10,18 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.projectattitude.projectattitude.Activities.CreateMoodActivity"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:weightSum="1">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_weight="0.76">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-
-            <TextView
-                android:text="@string/mood_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/moodLabel"
-                android:labelFor="@+id/moodField"/>
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:id="@+id/moodField"/>
 
             <TextView
                 android:text="@string/date_label"
@@ -61,7 +51,8 @@
                 android:layout_height="wrap_content"
                 android:entries="@array/emotional_state"
                 android:prompt="@string/emotionSpinner"
-                android:paddingTop="@dimen/activity_vertical_margin"/>
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"/>
 
             <TextView
                 android:text="@string/trigger_label"
@@ -94,18 +85,24 @@
                 app:srcCompat="@drawable/quantum_ic_art_track_grey600_48"
                 android:id="@+id/imageView" />
 
-            <Button
-                android:text="@string/save_button"
+            <CheckBox
+                android:id="@+id/saveLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/saveButton"
-                android:layout_weight=".05"/>
+                android:text="@string/save_location" />
 
             <Button
-                android:text="@string/cancel_button"
+                android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/cancelButton" />
+                android:layout_weight=".05"
+                android:text="@string/save_button" />
+
+            <Button
+                android:id="@+id/cancelButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel_button" />
         </LinearLayout>
     </ScrollView>
 

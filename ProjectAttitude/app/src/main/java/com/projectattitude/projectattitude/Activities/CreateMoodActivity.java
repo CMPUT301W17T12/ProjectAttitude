@@ -5,12 +5,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.projectattitude.projectattitude.Abstracts.DatePickerEditText;
 import com.projectattitude.projectattitude.Abstracts.MoodActivity;
+import com.projectattitude.projectattitude.Objects.DatePickerEditText;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
 
@@ -28,6 +29,34 @@ public class CreateMoodActivity extends MoodActivity {
         final Spinner emotionSpinner = (Spinner) findViewById(R.id.emotionSpinner);
         final EditText etTrigger = (EditText) findViewById(R.id.triggerField);
         final Spinner socialSituationSpinner = (Spinner) findViewById(R.id.spinner);
+        final CheckBox saveLocation = (CheckBox) findViewById(R.id.saveLocation); // geoPoint location saving
+
+        completeButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                //Spinner class will return a textview when you use getSelectedView(), allows for easy setError
+                TextView errorText = (TextView) emotionSpinner.getSelectedView();
+
+                if(errorCheck(errorText, etTrigger)){
+                    newMood = new Mood();
+                    newMood.setEmotionState(emotionSpinner.getSelectedItem().toString());
+                    newMood.setMoodDate(date.getDate());
+                    newMood.setTrigger(etTrigger.getText().toString());
+                    newMood.setSocialSituation(socialSituationSpinner.getSelectedItem().toString());
+
+                    /*if(saveLocation.isChecked()){ //TODO check location
+                        GeoPoint myLocation = LocationServices.FusedLocationApi.getLastLocation()
+                        newMood.setGeoLocation(myLocation);
+                    }*/
+
+
+                    Intent returnCreateMoodIntent = new Intent();
+                    returnCreateMoodIntent.putExtra("addMoodIntent", newMood);
+                    setResult(RESULT_OK, returnCreateMoodIntent);
+                    finish();
+                }
+            }
+        });
 
         completeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
