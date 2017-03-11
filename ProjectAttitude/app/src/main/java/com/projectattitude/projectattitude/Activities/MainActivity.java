@@ -61,10 +61,6 @@ public class MainActivity extends AppCompatActivity {
         viewingMyList = false;
         Button viewMapButton = (Button) findViewById(R.id.viewMapButton);
 
-        //current instance of user
-//        userController.setActiveUser(user);
-        Log.d("whatisthis", userController.getActiveUser().getUserName());
-
         registerForContextMenu(moodListView);
 
         //on click listener for adding moods
@@ -122,14 +118,22 @@ public class MainActivity extends AppCompatActivity {
      * @param i, the integer of the moodList to be removed
      */
     private void deleteMood(Integer i){
-        Log.d("deleting", moodList.get(i).toString());
-        Mood delMood = moodList.get(i);
-        moodList = controller.getMyMoodList().getMoodList();
-        moodList.remove(delMood);
-        controller.setMyMoodList(new MoodList(moodList));
-        Log.d("deleting", moodList.get(i).toString());
+        //Log.d("deleting", moodList.get(i).toString());
+        //Mood delMood = moodList.get(i);
+        Log.d("deleting", userController.getActiveUser().getMoodList().get(i).toString());
+        Mood delMood = userController.getActiveUser().getMoodList().get(i);
+        //moodList = controller.getMyMoodList().getMoodList();
+        //moodList.remove(delMood);
+        userController.getActiveUser().getMoodList().remove(delMood);
+        //controller.setMyMoodList(new MoodList(moodList));
+        //Log.d("deleting", moodList.get(i).toString());
         moodAdapter.notifyDataSetChanged();
 
+        //updating db
+        if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+            ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+            addUserTask.execute(UserController.getInstance().getActiveUser());
+        }
     }
 
     /**
@@ -337,7 +341,6 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
 
-
                 //moodList.add(returnedMood);
                 userController.getActiveUser().getMoodList().add(returnedMood);
 
@@ -374,6 +377,7 @@ public class MainActivity extends AppCompatActivity {
                 moodAdapter.notifyDataSetChanged();
             }
         }
+
         //EditMoodActivity results
         if (requestCode == 2){
             if (resultCode == RESULT_OK) {
@@ -424,19 +428,19 @@ public class MainActivity extends AppCompatActivity {
                 //On second though this is all UI so it doenst need a controller?
                 edit = false;//Makes it so the edit window will not pop up
                 Intent intentView = new Intent(MainActivity.this, ViewMoodActivity.class);
-                intentView.putExtra("mood", moodList.get(itemPosition));
+                //intentView.putExtra("mood", moodList.get(itemPosition));
+                intentView.putExtra("mood", userController.getActiveUser().getMoodList().get(itemPosition));
                 startActivityForResult(intentView, 1);
-
 
             case R.id.edit: //When edit is pressed
                 if (edit) {
                     Intent intentEdit = new Intent(MainActivity.this, EditMoodActivity.class);
-                    intentEdit.putExtra("mood", moodList.get(itemPosition));
+//                    intentEdit.putExtra("mood", moodList.get(itemPosition));
+                    intentEdit.putExtra("mood", userController.getActiveUser().getMoodList().get(itemPosition));
                     startActivityForResult(intentEdit, 2); //Handled in the results section
                     listItem = itemPosition;
                 }
                 return true;
-
 
             case R.id.delete: //When delete is pressed the item is removed, and everything is updated
                 deleteMood(itemPosition);

@@ -21,6 +21,11 @@ import io.searchbox.core.SearchResult;
  * Created by Vuk on 3/6/2017.
  */
 
+/**
+ * THIS SHOULD BE DEPRECATED FOR NOW AND NEVER USED OR REFERENCED TO, MOODS ARE NOW STORED IN AN ARRAY
+ * INSIDE THE USER OBJECT
+ */
+
 public class ElasticSearchController {
 
     private static JestDroidClient client;
