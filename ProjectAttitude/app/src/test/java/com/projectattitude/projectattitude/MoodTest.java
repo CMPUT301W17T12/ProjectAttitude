@@ -1,11 +1,12 @@
 package com.projectattitude.projectattitude;
 
-import android.provider.ContactsContract;
+import android.media.Image;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Objects.Mood;
-import com.projectattitude.projectattitude.Objects.MoodList;
+
+import org.osmdroid.util.GeoPoint;
 
 import java.util.Date;
 
@@ -47,14 +48,14 @@ public class MoodTest extends ActivityInstrumentationTestCase2{
 
     public void testGetGeoLocation(){
         Mood mood = new Mood();
-        mood.setGeoLocation("testLocation");
-        assertEquals("testLocation", mood.getGeoLocation());
+        mood.setGeoLocation(new GeoPoint(0f, 0f));
+        assertEquals(new GeoPoint(0f, 0f), mood.getGeoLocation());
     }
 
     public void testSetGeoLocation(){
         Mood mood = new Mood();
-        mood.setGeoLocation("testLocation");
-        assertEquals("testLocation", mood.getGeoLocation());
+        mood.setGeoLocation(new GeoPoint(0f, 0f));
+        assertEquals(new GeoPoint(0f, 0f), mood.getGeoLocation());
     }
 
     public void testGetTrigger(){
@@ -81,18 +82,18 @@ public class MoodTest extends ActivityInstrumentationTestCase2{
         assertEquals(mood.getExplanation(), "testExplanation");
     }
 
-    public void testGetPhotograph(){
+    public void testGetImage(){
         Mood mood = new Mood();
-        ContactsContract.Contacts.Photo photograph = null;
-        mood.setPhotograph(photograph);
-        assertEquals(photograph, mood.getPhotograph());
+        Image image = null;
+        mood.setImage(image);
+        assertEquals(image, mood.getImage());
     }
 
-    public void testSetPhotograph(){
+    public void testSetImage(){
         Mood mood = new Mood();
-        ContactsContract.Contacts.Photo photograph = null;
-        mood.setPhotograph(null);
-        assertEquals(null, mood.getPhotograph());
+        Image image = null;
+        mood.setImage(image);
+        assertEquals(image, mood.getImage());
     }
 
     public void testGetSocialSituation(){
