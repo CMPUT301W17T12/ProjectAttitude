@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         viewingMyList = false;
         Button viewMapButton = (Button) findViewById(R.id.viewMapButton);
 
+        userController.loadFromFile();
+
         registerForContextMenu(moodListView);
 
         //on click listener for adding moods
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 goToMap();
             }
         });
+
 
         //return all moods from db, so it can populate view on start
         ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
@@ -128,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
         //controller.setMyMoodList(new MoodList(moodList));
         //Log.d("deleting", moodList.get(i).toString());
         moodAdapter.notifyDataSetChanged();
+        userController.saveInFile();
 
         //updating db
         if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
@@ -351,6 +355,7 @@ public class MainActivity extends AppCompatActivity {
                 //This to-do applies to the viewMoodActivity and EditMoodActivity result too
 
                 moodAdapter.notifyDataSetChanged();
+                userController.saveInFile();
 
                 if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
                     ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();

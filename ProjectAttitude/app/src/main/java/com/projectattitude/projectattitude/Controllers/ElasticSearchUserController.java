@@ -70,6 +70,10 @@ public class ElasticSearchUserController {
         return true;
     }
 
+//    public void saveInFile(){
+//
+//    }
+
     //add user to ES DB
     public static class AddUserTask extends AsyncTask<User, Void, Boolean> {
 
