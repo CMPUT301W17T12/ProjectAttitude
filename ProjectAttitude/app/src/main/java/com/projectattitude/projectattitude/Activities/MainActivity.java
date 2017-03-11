@@ -171,16 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.allOption:
                 //TODO: Add following to allOption
-                ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
-                getMoodsTask.execute("");
-
-                try{
-                    moodList = getMoodsTask.get();
-                }
-                catch(Exception e){
-                    Log.d("Error", "Failed to get the moods from the async object");
-                }
-                //moodList = controller.getMyMoodList().getMoodList();
+                refreshMoodList();
 
                  moodAdapter.notifyDataSetChanged();
                 break;
@@ -277,19 +268,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * refreshMood - Used to refresh the mood list.
+     * refreshMood - Used to refresh the mood list with the most current stuff.
      * Currently works by using the global variable moodList
      */
     public void refreshMoodList(){
-        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
-        getMoodsTask.execute("");
-
-        try{
-            moodList = getMoodsTask.get();
-        }
-        catch(Exception e){
-            Log.d("Error", "Failed to get the moods from the async object");
-        }
+        //TODO: Add following and perhaps make algorithm more elegant
+        ArrayList<Mood> newList = controller.getMyMoodList().getMoodList();
+        moodList.clear();
+        moodList.addAll(newList);
     }
 
     /**

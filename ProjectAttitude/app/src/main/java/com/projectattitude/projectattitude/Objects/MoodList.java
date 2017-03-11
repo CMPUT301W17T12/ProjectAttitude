@@ -37,6 +37,7 @@ public class MoodList implements Serializable, Cloneable {
         return false;
     }
 
+
     public int getCount() {
         return moods.size();
     }
