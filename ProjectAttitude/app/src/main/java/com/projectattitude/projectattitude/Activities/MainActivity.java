@@ -171,16 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.allOption:
                 //TODO: Add following to allOption
-                ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
-                getMoodsTask.execute("");
-
-                try{
-                    moodList = getMoodsTask.get();
-                }
-                catch(Exception e){
-                    Log.d("Error", "Failed to get the moods from the async object");
-                }
-                //moodList = controller.getMyMoodList().getMoodList();
+                refreshMoodList();
 
                  moodAdapter.notifyDataSetChanged();
                 break;
@@ -277,19 +268,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * refreshMood - Used to refresh the mood list.
+     * refreshMood - Used to refresh the mood list with the most current stuff.
      * Currently works by using the global variable moodList
      */
     public void refreshMoodList(){
-        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
-        getMoodsTask.execute("");
-
-        try{
-            moodList = getMoodsTask.get();
-        }
-        catch(Exception e){
-            Log.d("Error", "Failed to get the moods from the async object");
-        }
+        //TODO: Add following and perhaps make algorithm more elegant
+        ArrayList<Mood> newList = controller.getMyMoodList().getMoodList();
+        moodList.clear();
+        moodList.addAll(newList);
     }
 
     /**
@@ -338,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
-                moodList = controller.getMyMoodList().getMoodList();
+                refreshMoodList();
                 moodList.add(returnedMood);
                 controller.setMyMoodList(new MoodList(moodList));
                 //TODO: Only update moodList if displaying myMoodList, not following list, otherwise moodList = followingList
@@ -360,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
             //ViewMoodActivity says edit
             if (resultCode == 3){
                 returnedMood = (Mood) data.getSerializableExtra("newMood");
-                moodList = controller.getMyMoodList().getMoodList();
+                refreshMoodList();
                 moodList.set(itemPosition,returnedMood);
                 controller.setMyMoodList(new MoodList(moodList));
                 moodAdapter.notifyDataSetChanged();
@@ -370,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 2){
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("mood");
-                moodList = controller.getMyMoodList().getMoodList();
+                refreshMoodList();
                 moodList.set(itemPosition,returnedMood);
                 controller.setMyMoodList(new MoodList(moodList));
                 moodAdapter.notifyDataSetChanged();

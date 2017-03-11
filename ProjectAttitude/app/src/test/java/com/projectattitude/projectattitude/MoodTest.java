@@ -50,10 +50,12 @@ public class MoodTest extends ActivityInstrumentationTestCase2{
         Mood mood = new Mood();
         mood.setGeoLocation(new GeoPoint(0f, 0f));
         assertEquals(new GeoPoint(0f, 0f), mood.getGeoLocation());
+
     }
 
     public void testSetGeoLocation(){
         Mood mood = new Mood();
+
         mood.setGeoLocation(new GeoPoint(0f, 0f));
         assertEquals(new GeoPoint(0f, 0f), mood.getGeoLocation());
     }
@@ -84,6 +86,7 @@ public class MoodTest extends ActivityInstrumentationTestCase2{
 
     public void testGetImage(){
         Mood mood = new Mood();
+
         Image image = null;
         mood.setImage(image);
         assertEquals(image, mood.getImage());
@@ -91,6 +94,7 @@ public class MoodTest extends ActivityInstrumentationTestCase2{
 
     public void testSetImage(){
         Mood mood = new Mood();
+
         Image image = null;
         mood.setImage(image);
         assertEquals(image, mood.getImage());
