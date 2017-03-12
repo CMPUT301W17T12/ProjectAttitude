@@ -1,6 +1,9 @@
 package com.projectattitude.projectattitude.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -100,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         mTimerTask = new TimerTask() {
             @Override
             public void run() {
-                if(netWorkUtil.getConnectivityStatus(MainActivity.this) == 1){
+                if(isNetworkAvailable()){
                     if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
                         ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
                         addUserTask.execute(UserController.getInstance().getActiveUser());
@@ -492,6 +495,18 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    /**
+     * Taken from http://stackoverflow.com/questions/5474089/how-to-check-currently-internet-connection-is-available-or-not-in-android
+     * @return a bool if the device is connected to the internet
+     */
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+
     }
 
 //    @Override
