@@ -66,13 +66,15 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
         //moodAdapter = new MoodMainAdapter(this, moodList);
         //adapter is fed from moodList inside user
-        moodAdapter = new MoodMainAdapter(this, userController.getActiveUser().getMoodList());
+        moodAdapter = new MoodMainAdapter(this, moodList); //userController.getActiveUser().getMoodList()
         moodListView.setAdapter(moodAdapter);
         viewingMyList = false;
         Button viewMapButton = (Button) findViewById(R.id.viewMapButton);
 
+        //Load user and mood, and update current displayed list
         userController.loadFromFile();
         Log.d("userController load", userController.getActiveUser().getMoodList().toString());
+        refreshMoodList();
 
         registerForContextMenu(moodListView);
 
@@ -118,8 +120,7 @@ public class MainActivity extends AppCompatActivity {
 //            ArrayList<Mood> tempList = getMoodsTask.get();
             ArrayList<Mood> tempList = userController.getActiveUser().getMoodList();
             Log.d("moodlist1", tempList.toString());
-            controller.setMyMoodList(new MoodList(tempList));
-            moodList = controller.getMyMoodList().getMoodList();
+            refreshMoodList();
             Log.d("moodList2", moodList.toString());
         }
         catch(Exception e){
@@ -143,8 +144,17 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This method takes a mood the user made and brings them to the edit mood view
      */
-    private void editMood(){
+    private void editMood(Mood returnedMood){
+        userController.getActiveUser().getMoodList().set(itemPosition,returnedMood);
+        userController.saveInFile();
+        refreshMoodList();
+        moodAdapter.notifyDataSetChanged();
 
+        //updating db
+        if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+            ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+            addUserTask.execute(UserController.getInstance().getActiveUser());
+        }
     }
 
     /**
@@ -161,9 +171,11 @@ public class MainActivity extends AppCompatActivity {
         userController.getActiveUser().getMoodList().remove(delMood);
         //controller.setMyMoodList(new MoodList(moodList));
         //Log.d("deleting", moodList.get(i).toString());
-        moodAdapter.notifyDataSetChanged();
         userController.saveInFile();
         Log.d("userController deleted", userController.getActiveUser().getMoodList().toString());
+
+        refreshMoodList();
+        moodAdapter.notifyDataSetChanged();
 
         //updating db
         if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
@@ -223,8 +235,8 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.allOption:
                 //TODO: Add following to allOption
+                userController.loadFromFile();
                 refreshMoodList();
-
                  moodAdapter.notifyDataSetChanged();
                 break;
         }
@@ -257,7 +269,6 @@ public class MainActivity extends AppCompatActivity {
      * @param item
      */
     public void filterMoodsByEmotion(MenuItem item){
-        //TODO: Spinner or wat?
         Long milliseconds = new Date().getTime();
         switch (item.getItemId()) {
             case R.id.angerOption:
@@ -325,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void refreshMoodList(){
         //TODO: Add following and perhaps make algorithm more elegant
-        ArrayList<Mood> newList = controller.getMyMoodList().getMoodList();
+        ArrayList<Mood> newList = userController.getActiveUser().getMoodList();
         moodList.clear();
         moodList.addAll(newList);
     }
@@ -379,15 +390,16 @@ public class MainActivity extends AppCompatActivity {
 
                 //moodList.add(returnedMood);
                 userController.getActiveUser().getMoodList().add(returnedMood);
+                userController.saveInFile();
 
                 refreshMoodList();
-                moodList.add(returnedMood);
-                controller.setMyMoodList(new MoodList(moodList));
+                moodAdapter.notifyDataSetChanged();
+                //RefreshMoodList accomplishes the next 2 lines of code already
+                //moodList.add(returnedMood);
+                //controller.setMyMoodList(new MoodList(moodList));
                 //TODO: Only update moodList if displaying myMoodList, not following list, otherwise moodList = followingList
                 //This to-do applies to the viewMoodActivity and EditMoodActivity result too
 
-                moodAdapter.notifyDataSetChanged();
-                userController.saveInFile();
                 Log.d("userController Added", userController.getActiveUser().getMoodList().toString());
 
                 if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
@@ -409,10 +421,7 @@ public class MainActivity extends AppCompatActivity {
             //ViewMoodActivity says edit
             if (resultCode == 3){
                 returnedMood = (Mood) data.getSerializableExtra("newMood");
-                refreshMoodList();
-                moodList.set(itemPosition,returnedMood);
-                controller.setMyMoodList(new MoodList(moodList));
-                moodAdapter.notifyDataSetChanged();
+                editMood(returnedMood);
             }
         }
 
@@ -420,10 +429,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 2){
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("mood");
-                refreshMoodList();
-                moodList.set(itemPosition,returnedMood);
-                controller.setMyMoodList(new MoodList(moodList));
-                moodAdapter.notifyDataSetChanged();
+                editMood(returnedMood);
             }
         }
     }
