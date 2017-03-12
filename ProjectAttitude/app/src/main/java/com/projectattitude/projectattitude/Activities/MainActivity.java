@@ -140,6 +140,61 @@ public class MainActivity extends AppCompatActivity {
 //        moodListView.setAdapter(moodAdapter);
     }
 
+    //-------POPUP MENU FUNCTIONS-------
+    /**
+     * OpenSFMenu - Open Sort/Filter Menu
+     * Is used when the sort/filter button is pressed to display a menu
+     * @param view - the sort/filter button
+     * @see #openSortMenu(MenuItem)
+     * @see #openFilterMenu(MenuItem)
+     */
+    public void openSFMenu(View view){
+        //TODO: Test all this popupmenu crap
+        PopupMenu popup = new PopupMenu(this, view);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.sort_filter_menu, popup.getMenu());
+        popup.show();
+    }
+
+    /**
+     * openSortMenu
+     * Is used when the sort option in sort/filter menu is pressed to display a menu
+     * @param item - the sort option in sort_filter_menu
+     * @see #sortMood(MenuItem)
+     */
+    public void openSortMenu(MenuItem item){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.sort_menu, popup.getMenu());
+        popup.show();
+    }
+
+    /**
+     * openFilterMenu
+     * Is used when the filter option in sort/filter menu is pressed to display a menu
+     * @param item - the filter option in sort_filter_menu
+     * @see #filterMood(MenuItem)
+     */
+    public void openFilterMenu(MenuItem item){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.filter_menu, popup.getMenu());
+        popup.show();
+    }
+
+    /**
+     * OpenMainMenu
+     * Is used when the main menu button is pressed to display a menu
+     * @param view - the main menu button
+     */
+    public void openMainMenu(View view){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.menuButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.main_menu, popup.getMenu());
+        popup.show();
+    }
+    //---------------------------------------------
+
     //TODO Build these functions
     /**
      * This method will take the user to the Create Mood view
@@ -193,18 +248,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * This is the method that handles finding moods with a given keyword
-     * Called by pressing the searchButton on main_layout
-     */
-    public void filterMoodByTrigger(View view){
-        //Get text from search bar and then call controller function
-        controller.filterListByTrigger(moodList, ((EditText)findViewById(R.id.searchBar)).getText().toString());
-        moodAdapter.notifyDataSetChanged();
-    }
-
-    /**
      * Handles sorting the list, called when an item in the sortMenu is pressed
-     * @param item - identifies which item has been pressed on
+     * @param item - one of the sort options from the sort menu
      */
     public void sortMood(MenuItem item){
         switch (item.getItemId()) {
@@ -220,7 +265,9 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Handles filtering the list
-     * @param item
+     * @param item - one of the options from the filter menu
+     * @see #filterMoodsByEmotion(MenuItem)
+     * @see #filterMoodsByTime(MenuItem)
      */
     public void filterMood(MenuItem item){
         PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
@@ -251,6 +298,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * This is the method that handles finding moods with a given keyword
+     * Called by pressing the searchButton on main_layout
+     */
+    public void filterMoodByTrigger(View view){
+        //Get text from search bar and then call controller function
+        controller.filterListByTrigger(moodList, ((EditText)findViewById(R.id.searchBar)).getText().toString());
+        moodAdapter.notifyDataSetChanged();
+    }
+
+    /**
      * Handles filtering the list, but specifically for the time menu
      * @param item
      */
@@ -274,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Handles filtering the list, but specifically for the mood menu
-     * @param item
+     * @param item - option from the filter emotion menu
      */
     public void filterMoodsByEmotion(MenuItem item){
         Long milliseconds = new Date().getTime();
@@ -339,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * refreshMood - Used to refresh the mood list with the most current stuff.
+     * refreshMood - Used to refresh the mood list with the most current moods.
      * Currently works by using the global variable moodList
      */
     public void refreshMoodList(){
@@ -347,40 +404,6 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Mood> newList = userController.getActiveUser().getMoodList();
         moodList.clear();
         moodList.addAll(newList);
-    }
-
-    /**
-     * OpenSFMenu - Open Sort/Filter Menu
-     * Is used when the sort/filter button is pressed to display a menu
-     * @param view
-     */
-    public void openSFMenu(View view){
-        //TODO: Test all this popupmenu crap
-        PopupMenu popup = new PopupMenu(this, view);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.sort_filter_menu, popup.getMenu());
-        popup.show();
-    }
-
-    public void openSortMenu(MenuItem view){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.sort_menu, popup.getMenu());
-        popup.show();
-    }
-
-    public void openFilterMenu(MenuItem view){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.filter_menu, popup.getMenu());
-        popup.show();
-    }
-    
-    public void openMainMenu(View view){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.menuButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.main_menu, popup.getMenu());
-        popup.show();
     }
 
     //accept returned information from activities
