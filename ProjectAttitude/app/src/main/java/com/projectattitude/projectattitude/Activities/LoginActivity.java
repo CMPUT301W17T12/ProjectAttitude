@@ -124,6 +124,11 @@ public class LoginActivity extends AppCompatActivity {
         titleView = findViewById(R.id.title_label);
     }
 
+    /**
+     * This returns a boolean value if the device is connected to the internet
+     * Taken from http://stackoverflow.com/questions/5474089/how-to-check-currently-internet-connection-is-available-or-not-in-android
+     * @return
+     */
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
