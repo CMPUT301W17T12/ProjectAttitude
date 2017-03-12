@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -33,7 +31,7 @@ public class CreateMoodActivity extends MoodActivity {
     private Mood newMood;   // initializing the mood object
     private ImageView imageView;
     private byte[] byteArray;
-    private String s;
+    //private String s;
     //private short[] short;
 
     @Override
@@ -67,8 +65,8 @@ public class CreateMoodActivity extends MoodActivity {
                     newMood.setTrigger(etTrigger.getText().toString());
                     newMood.setSocialSituation(socialSituationSpinner.getSelectedItem().toString());
                     //newMood.setPhoto(imageView.getDrawingCache());
-                    //newMood.setPhoto(byteArray);
-                    newMood.setPhoto(s);
+                   // newMood.setPhoto(byteArray);
+                    //newMood.setPhoto(s);
 
 
                     /*if(saveLocation.isChecked()){ //TODO check location
@@ -106,11 +104,11 @@ public class CreateMoodActivity extends MoodActivity {
             byteArray = stream.toByteArray();
             //s = new String(byteArray);
             //s = new String(byteArray, "UTF-16");
-            s = Base64.encodeToString(byteArray, Base64.DEFAULT);
-            short[] shorts = new short[byteArray.length/2];
-            Log.d("StringShort", shorts.toString());
+            //s = Base64.encodeToString(byteArray, Base64.DEFAULT);
+            //short[] shorts = new short[byteArray.length/2];
+            //Log.d("StringShort", shorts.toString());
 
-            Log.d("PhotoString", s);
+            //Log.d("PhotoString", s);
             imageView.setImageBitmap(photo);
         }
 
