@@ -75,7 +75,7 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
         try {
             Date date = sdf.parse(date_str);
             Date currTime = new Date(System.currentTimeMillis());
-            return new Date(date.getYear(), date.getMonth(), date.getDay(),
+            return new Date(date.getYear(), date.getMonth(), date.getDate(),
                     currTime.getHours(), currTime.getMinutes(), currTime.getSeconds());
         } catch (ParseException e) {
             return new Date(System.currentTimeMillis());
