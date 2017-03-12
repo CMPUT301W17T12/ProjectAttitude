@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -17,6 +19,8 @@ import com.projectattitude.projectattitude.Objects.DatePickerEditText;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
 
+import java.io.ByteArrayOutputStream;
+
 /**
  * The CreateMood handles the creation of mood objects for the user. The only field that is
  * mandatory is the mood state field. Entering other data will display it upon creation but is
@@ -28,6 +32,9 @@ public class CreateMoodActivity extends MoodActivity {
 
     private Mood newMood;   // initializing the mood object
     private ImageView imageView;
+    private byte[] byteArray;
+    private String s;
+    //private short[] short;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +60,16 @@ public class CreateMoodActivity extends MoodActivity {
                 //Spinner class will return a textview when you use getSelectedView(), allows for easy setError
                 TextView errorText = (TextView) emotionSpinner.getSelectedView();
 
-                if(errorCheck(errorText, etTrigger)){   //checking the
+                if(errorCheck(errorText, etTrigger)){   //checking the trigger and emotional state selection
                     newMood = new Mood();
                     newMood.setEmotionState(emotionSpinner.getSelectedItem().toString());
                     newMood.setMoodDate(date.getDate());
                     newMood.setTrigger(etTrigger.getText().toString());
                     newMood.setSocialSituation(socialSituationSpinner.getSelectedItem().toString());
+                    //newMood.setPhoto(imageView.getDrawingCache());
+                    //newMood.setPhoto(byteArray);
+                    newMood.setPhoto(s);
+
 
                     /*if(saveLocation.isChecked()){ //TODO check location
                         GeoPoint myLocation = LocationServices.FusedLocationApi.getLastLocation()
@@ -79,7 +90,7 @@ public class CreateMoodActivity extends MoodActivity {
             @Override
             public void onClick(View v){
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, 1);
+                startActivityForResult(cameraIntent, 3);
             }
         });
     }
@@ -88,8 +99,18 @@ public class CreateMoodActivity extends MoodActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 1 && resultCode == RESULT_OK && null != data ){
+        if(requestCode == 3 && resultCode == RESULT_OK && null != data ){
             Bitmap photo = (Bitmap) data.getExtras().get("data");
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byteArray = stream.toByteArray();
+            //s = new String(byteArray);
+            //s = new String(byteArray, "UTF-16");
+            s = Base64.encodeToString(byteArray, Base64.DEFAULT);
+            short[] shorts = new short[byteArray.length/2];
+            Log.d("StringShort", shorts.toString());
+
+            Log.d("PhotoString", s);
             imageView.setImageBitmap(photo);
         }
 

@@ -31,10 +31,6 @@ public class User implements Serializable {
         this.moods = new ArrayList<Mood>();
     }
 
-//    public void makeMoodList(){
-//        this.moods = new ArrayList<Mood>();
-//    }
-
     /**
      * Returns the moodList array.
      * @return moodList
@@ -112,4 +108,5 @@ public class User implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
+
 }
