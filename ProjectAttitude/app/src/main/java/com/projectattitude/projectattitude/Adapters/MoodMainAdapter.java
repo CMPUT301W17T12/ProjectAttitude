@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Vuk on 2/27/2017.
+ * The MoodMainAdapter updates the listview as moods are manipulated and updated using a MVC model.
  */
 
 public class MoodMainAdapter extends ArrayAdapter<Mood> {

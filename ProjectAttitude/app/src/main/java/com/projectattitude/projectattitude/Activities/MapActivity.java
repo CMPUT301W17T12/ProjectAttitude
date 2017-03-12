@@ -14,6 +14,7 @@ import com.projectattitude.projectattitude.R;
 
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.api.IMapController;
+import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -53,10 +54,11 @@ public class MapActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Context ctx = getApplicationContext();
+        Context ctx = getApplicationContext();
         //important! set your user agent to prevent getting banned from the osm servers
         //Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         setContentView(R.layout.activity_map);
+        OpenStreetMapTileProviderConstants.setCachePath(this.getFilesDir().getAbsolutePath());  // prevents gray screen
 
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);    //for building the map
@@ -74,7 +76,7 @@ public class MapActivity extends Activity {
         map.getOverlays().add(this.mLocationOverlay);
 
         IMapController mapController = map.getController(); //controls position of map
-        mapController.setZoom(12);
+        mapController.setZoom(12);  // increase zooms in
         //GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
         //GeoPoint startPoint = mLocationOverlay.getMyLocation();
         GeoPoint startPoint = new GeoPoint(53.5444, -113.4909);    // Edmonton by default
@@ -86,6 +88,7 @@ public class MapActivity extends Activity {
 
         // taken from https://github.com/keithweaver/Android-Samples/tree/master/Location/GetUserLocation
         // on March 10th at 4:34PM
+
         int LOCATION_REFRESH_TIME = 1000;
         int LOCATION_REFRESH_DISTANCE = 5;
 
@@ -100,6 +103,7 @@ public class MapActivity extends Activity {
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, mLocationListener);
+
     }
 
     /**
@@ -111,37 +115,16 @@ public class MapActivity extends Activity {
             //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, myLocationListener);
             //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, myLocationListener);
         }
-
-
-        LocationListener myLocationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                //updateLoc(location);
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-        };
     }
 
     //taken from https://github.com/keithweaver/Android-Samples/tree/master/Location/GetUserLocation
     //at Mar 10th, 2017, 3:33PM
     /**
-     * The location listener keeps the location up to date.
+     * The location listener keeps the location up to date when the user moves around.
      */
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            //code
             System.out.println("onLocationChanged");
             // mainLabel.setText("Latitude:" + String.valueOf(location.getLatitude()) + "\n" + "Longitude:" + String.valueOf(location.getLongitude()));
             IMapController mapController = map.getController(); //controls position of map

@@ -3,7 +3,10 @@ package com.projectattitude.projectattitude.Activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +23,13 @@ import com.projectattitude.projectattitude.R;
 
 import java.util.concurrent.ExecutionException;
 
+/**
+ * LoginActivity allows users to log into the service and connect to the Database.
+ * Users who do not currently have an account can create an account by entering a username
+ * and password. Otherwise, entering a username with a valid corresponding password
+ * will log into the account, and load the appropriate information on the database in regards
+ * to that user.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private EditText usernameView;
@@ -43,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         final Button signInButton = (Button) findViewById(R.id.signInButton);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {   // button for signing in
                 usernameView.setError(null);
                 passwordView.setError(null);
 
@@ -67,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                 else {
 //                    showProgress(true); // show the progress animation
 
-                    if(netWorkUtil.getConnectivityStatus(LoginActivity.this) == 1){
+                    if(isNetworkAvailable()){
                         //need to get a static instance, check for existence of user
                         if (ElasticSearchUserController.getInstance().verifyUser(user)) {
 
@@ -114,6 +124,19 @@ public class LoginActivity extends AppCompatActivity {
         loginFormView = findViewById(R.id.login_form);
         progressView = findViewById(R.id.login_progress);
         titleView = findViewById(R.id.title_label);
+    }
+
+    /**
+     * This returns a boolean value if the device is connected to the internet
+     * Taken from http://stackoverflow.com/questions/5474089/how-to-check-currently-internet-connection-is-available-or-not-in-android
+     * @return
+     */
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+
     }
 
 //    private boolean authenticate (String username) {

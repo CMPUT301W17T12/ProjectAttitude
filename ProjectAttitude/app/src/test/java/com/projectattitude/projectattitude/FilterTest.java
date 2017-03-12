@@ -8,11 +8,12 @@ import com.projectattitude.projectattitude.Objects.Mood;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
  * Created by henry on 3/8/2017.
+ * This test checks if the filtering process works properly in the mainActivity.
+ * @see MainActivity
  */
 
 public class FilterTest extends ActivityInstrumentationTestCase2 {

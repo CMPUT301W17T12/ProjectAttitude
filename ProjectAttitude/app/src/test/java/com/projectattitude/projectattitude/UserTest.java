@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Boris on 25/02/2017.
+ * These tests check if the user object works properly.
  */
 
 public class UserTest extends ActivityInstrumentationTestCase2{

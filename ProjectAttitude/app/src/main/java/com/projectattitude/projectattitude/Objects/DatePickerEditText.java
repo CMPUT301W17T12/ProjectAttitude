@@ -2,6 +2,10 @@ package com.projectattitude.projectattitude.Objects;
 
 /**
  * Created by rfsh on 2017-03-07.
+ * This object represents the DatePickerEditText when creating and editing moods.
+ * This allows the user to select the appropriate time for their mood.
+ * @See CreateMoodActivity
+ * @See EditMoodActivity
  */
 
 import android.app.Activity;
@@ -71,7 +75,7 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
         try {
             Date date = sdf.parse(date_str);
             Date currTime = new Date(System.currentTimeMillis());
-            return new Date(date.getYear(), date.getMonth(), date.getDay(),
+            return new Date(date.getYear(), date.getMonth(), date.getDate(),
                     currTime.getHours(), currTime.getMinutes(), currTime.getSeconds());
         } catch (ParseException e) {
             return new Date(System.currentTimeMillis());

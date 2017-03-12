@@ -1,6 +1,9 @@
 package com.projectattitude.projectattitude.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +23,6 @@ import com.projectattitude.projectattitude.Controllers.ElasticSearchUserControll
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
-import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.Objects.NetWorkUtil;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
@@ -30,6 +32,13 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * The MainActivity is where the primary information for the user can be found. This is achieved by
+ * syncing to the database individually for each username. A list of moods
+ * is displayed filled with moods created by the user. Long clicking on a mood will provide
+ * additional options such as to view the mood, edit the mood or delete the mood. Filtering
+ * is available in the top right corner, as well as search functionality.
+ */
 public class MainActivity extends AppCompatActivity {
 
     protected ArrayList<Mood> moodList = new ArrayList<Mood>();
@@ -38,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private MainController controller;
     private boolean viewingMyList;
     private Integer itemPosition;
-
 
     private UserController userController = UserController.getInstance();
 
@@ -100,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         mTimerTask = new TimerTask() {
             @Override
             public void run() {
-                if(netWorkUtil.getConnectivityStatus(MainActivity.this) == 1){
+                if(isNetworkAvailable()){
                     if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
                         ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
                         addUserTask.execute(UserController.getInstance().getActiveUser());
@@ -114,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
          * 2nd argument: delay before task is executed
          * 3rd arugument: delay between successive executions
          */
-        mTimer.scheduleAtFixedRate(mTimerTask, 1000, 30000);
+        mTimer.scheduleAtFixedRate(mTimerTask, 1000, 30000);    // time in millisec, = 30 second intervals
 
         try{
 //            ArrayList<Mood> tempList = getMoodsTask.get();
@@ -492,6 +500,18 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    /**
+     * Taken from http://stackoverflow.com/questions/5474089/how-to-check-currently-internet-connection-is-available-or-not-in-android
+     * @return a bool if the device is connected to the internet
+     */
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+
     }
 
 //    @Override

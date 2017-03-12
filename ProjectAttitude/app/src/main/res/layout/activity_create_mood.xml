@@ -92,6 +92,12 @@
                 android:text="@string/save_location" />
 
             <Button
+                android:id="@+id/addPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add Photo" />
+
+            <Button
                 android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

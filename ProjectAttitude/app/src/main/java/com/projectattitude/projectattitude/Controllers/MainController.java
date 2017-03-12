@@ -1,21 +1,15 @@
 package com.projectattitude.projectattitude.Controllers;
 
-import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.util.Log;
 
-import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.Objects.User;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-
-import static java.lang.Math.toIntExact;
 
 /**
  * Created by Chris on 2/24/2017.
@@ -23,8 +17,8 @@ import static java.lang.Math.toIntExact;
 
 public class MainController {
     private User user;
-    private ArrayList<User> followList; //The people the user follows?
-    private ArrayList<User> followedList; //The people that follow the user?
+    private ArrayList<User> followList; //The people the user follows
+    private ArrayList<User> followedList; //The people that follow the user
     private MoodList myMoodList;
     private MoodList followedMoodList;
 

@@ -1,12 +1,14 @@
 package com.projectattitude.projectattitude.Activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -15,29 +17,43 @@ import com.projectattitude.projectattitude.Objects.DatePickerEditText;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
 
+/**
+ * The CreateMood handles the creation of mood objects for the user. The only field that is
+ * mandatory is the mood state field. Entering other data will display it upon creation but is
+ * not needed. Moods will be updated in the database if connected to the internet. Otherwise, they
+ * will remain stored on the application where they will be pushed to the database as soon as a
+ * connection is reestablished.
+ */
 public class CreateMoodActivity extends MoodActivity {
 
-    private Mood newMood;
+    private Mood newMood;   // initializing the mood object
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_mood);
+        setContentView(R.layout.activity_create_mood);  // setting the view
 
-        Button completeButton = (Button) findViewById(R.id.saveButton);
+        Button completeButton = (Button) findViewById(R.id.saveButton); // initialization of the buttons
+        Button addPhoto = (Button) findViewById(R.id.addPhoto);
+        imageView = (ImageView) findViewById(R.id.imageView);
         final DatePickerEditText date = new DatePickerEditText(this, R.id.dateField);
         final Spinner emotionSpinner = (Spinner) findViewById(R.id.emotionSpinner);
         final EditText etTrigger = (EditText) findViewById(R.id.triggerField);
         final Spinner socialSituationSpinner = (Spinner) findViewById(R.id.spinner);
         final CheckBox saveLocation = (CheckBox) findViewById(R.id.saveLocation); // geoPoint location saving
 
+        /**
+         * The complete button checks if there are any errors and then sets all the values of the
+         * mood to the appropriate properties based off the data input.
+         */
         completeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 //Spinner class will return a textview when you use getSelectedView(), allows for easy setError
                 TextView errorText = (TextView) emotionSpinner.getSelectedView();
 
-                if(errorCheck(errorText, etTrigger)){
+                if(errorCheck(errorText, etTrigger)){   //checking the
                     newMood = new Mood();
                     newMood.setEmotionState(emotionSpinner.getSelectedItem().toString());
                     newMood.setMoodDate(date.getDate());
@@ -58,25 +74,25 @@ public class CreateMoodActivity extends MoodActivity {
             }
         });
 
-        completeButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        addPhoto.setOnClickListener(new View.OnClickListener(){
 
-                //Spinner class will return a textview when you use getSelectedView(), allows for easy setError
-                TextView errorText = (TextView) emotionSpinner.getSelectedView();
-
-                if(errorCheck(errorText, etTrigger)){
-                    newMood = new Mood();
-                    newMood.setEmotionState(emotionSpinner.getSelectedItem().toString());
-                    newMood.setMoodDate(date.getDate());
-                    newMood.setTrigger(etTrigger.getText().toString());
-                    newMood.setSocialSituation(socialSituationSpinner.getSelectedItem().toString());
-                    Intent returnCreateMoodIntent = new Intent();
-                    returnCreateMoodIntent.putExtra("addMoodIntent", newMood);
-                    setResult(RESULT_OK, returnCreateMoodIntent);
-                    finish();
-                }
+            @Override
+            public void onClick(View v){
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, 1);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1 && resultCode == RESULT_OK && null != data ){
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            imageView.setImageBitmap(photo);
+        }
+
     }
 
     /*error checks Emotional State spinner to make sure an emotional state was chosen

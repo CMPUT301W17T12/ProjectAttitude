@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Boris on 25/02/2017.
+ * These tests check if the list object for storing moods works properly.
  */
 
 public class MoodListTest extends ActivityInstrumentationTestCase2{

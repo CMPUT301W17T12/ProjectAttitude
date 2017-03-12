@@ -3,6 +3,7 @@ package com.projectattitude.projectattitude.Activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,6 +18,13 @@ import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
 
 import java.util.Date;
+
+/**
+ * This activity allows for the manipulation of mood objects. The view is similar to the
+ * viewmood. Initially, any information from the object is loaded into the appropriate fields
+ * to help the user remember what was already there. By updating the mood object, the object
+ * in the list is then also updated.
+ */
 
 public class EditMoodActivity extends MoodActivity {
     Button completeButton;
@@ -37,27 +45,29 @@ public class EditMoodActivity extends MoodActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_mood);
+        setContentView(R.layout.activity_create_mood);
         completeButton = (Button) findViewById(R.id.saveButton);
         date = new DatePickerEditText(this, R.id.dateField);
         emotionSpinner = (Spinner) findViewById(R.id.emotionSpinner);
         etTrigger = (EditText) findViewById(R.id.triggerField);
         socialSituationSpinner = (Spinner) findViewById(R.id.spinner);
 
-        /*if(saveLocation.isChecked()){ //TODO check location
-            GeoPoint myLocation = LocationServices.FusedLocationApi.getLastLocation()
-            newMood.setGeoLocation(myLocation);
+        if(saveLocation.isChecked()){ //TODO check location
+            createLocation();
         }
         else{
-            GeoPoint myLocation = null;
-        }*/
+            //GeoPoint myLocation = null;   //TODO set location to null
+        }
 
 
         Mood mood = (Mood) getIntent().getSerializableExtra("mood");
         //Changes the fields to the selected mood
         etTrigger.setText(mood.getTrigger());
         Date tempDate = (Date) mood.getMoodDate();
-        date.setDate(tempDate.getYear()+1900, tempDate.getMonth(), tempDate.getDay());
+
+        date.setDate(tempDate.getYear()+1900, tempDate.getMonth(), tempDate.getDate());
+        Date temp = date.getDate();
+        Log.d("date", temp.toString());
         //disgusting single line way to set the spinners
         //Taken from http://stackoverflow.com/questions/2390102/how-to-set-selected-item-of-spinner-by-value-not-by-position
         emotionSpinner.setSelection(((ArrayAdapter<String>)emotionSpinner.getAdapter())
@@ -73,6 +83,8 @@ public class EditMoodActivity extends MoodActivity {
                 TextView errorText = (TextView) emotionSpinner.getSelectedView();
 
                 if(errorCheck(errorText, etTrigger)){
+                    Date temp = date.getDate();
+                    Log.d("date", temp.toString());
                     newMood = new Mood();
                     newMood.setEmotionState(emotionSpinner.getSelectedItem().toString());
                     newMood.setMoodDate(date.getDate());
@@ -120,14 +132,14 @@ also error checks trigger input field for character length*/
 
 
     /**
-     * Not sure what this does tbh
      * @see CreateMoodActivity
-     * @return A location? Should probably be the Location Type
-     * once again we do the same function twice, should probably not repeat code if we can avoid it
-     * Maybe add it to Mood Activity?
+     * @return A GeoPoint
+     * This function creates a GeoPoint of the current user's last known location
      */
-    private String createLocation(){
-        return "";
+    private void createLocation(){
+        //GeoPoint myLocation = LocationServices.FusedLocationApi.getLastLocation()
+        //newMood.setGeoLocation(myLocation);
+        return;
     }
 
     /**
