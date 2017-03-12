@@ -20,6 +20,11 @@ import com.projectattitude.projectattitude.R;
 
 import java.util.concurrent.ExecutionException;
 
+/**
+ * LoginActivity allows users to log into the service and connect to the DataBase.
+ * Users who do not currently have an account can create an account by entering a username
+ * and password.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private EditText usernameView;
