@@ -1,12 +1,14 @@
 package com.projectattitude.projectattitude.Activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -25,6 +27,7 @@ import com.projectattitude.projectattitude.R;
 public class CreateMoodActivity extends MoodActivity {
 
     private Mood newMood;   // initializing the mood object
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,8 @@ public class CreateMoodActivity extends MoodActivity {
         setContentView(R.layout.activity_create_mood);  // setting the view
 
         Button completeButton = (Button) findViewById(R.id.saveButton); // initialization of the buttons
+        Button addPhoto = (Button) findViewById(R.id.addPhoto);
+        imageView = (ImageView) findViewById(R.id.imageView);
         final DatePickerEditText date = new DatePickerEditText(this, R.id.dateField);
         final Spinner emotionSpinner = (Spinner) findViewById(R.id.emotionSpinner);
         final EditText etTrigger = (EditText) findViewById(R.id.triggerField);
@@ -68,6 +73,26 @@ public class CreateMoodActivity extends MoodActivity {
                 }
             }
         });
+
+        addPhoto.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v){
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, 1);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1 && resultCode == RESULT_OK && null != data ){
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            imageView.setImageBitmap(photo);
+        }
+
     }
 
     /*error checks Emotional State spinner to make sure an emotional state was chosen
