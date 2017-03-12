@@ -3,6 +3,7 @@ package com.projectattitude.projectattitude.Activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -37,7 +38,7 @@ public class EditMoodActivity extends MoodActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_mood);
+        setContentView(R.layout.activity_create_mood);
         completeButton = (Button) findViewById(R.id.saveButton);
         date = new DatePickerEditText(this, R.id.dateField);
         emotionSpinner = (Spinner) findViewById(R.id.emotionSpinner);
@@ -57,7 +58,10 @@ public class EditMoodActivity extends MoodActivity {
         //Changes the fields to the selected mood
         etTrigger.setText(mood.getTrigger());
         Date tempDate = (Date) mood.getMoodDate();
-        date.setDate(tempDate.getYear()+1900, tempDate.getMonth(), tempDate.getDay());
+
+        date.setDate(tempDate.getYear()+1900, tempDate.getMonth(), tempDate.getDate());
+        Date temp = date.getDate();
+        Log.d("date", temp.toString());
         //disgusting single line way to set the spinners
         //Taken from http://stackoverflow.com/questions/2390102/how-to-set-selected-item-of-spinner-by-value-not-by-position
         emotionSpinner.setSelection(((ArrayAdapter<String>)emotionSpinner.getAdapter())
@@ -73,6 +77,8 @@ public class EditMoodActivity extends MoodActivity {
                 TextView errorText = (TextView) emotionSpinner.getSelectedView();
 
                 if(errorCheck(errorText, etTrigger)){
+                    Date temp = date.getDate();
+                    Log.d("date", temp.toString());
                     newMood = new Mood();
                     newMood.setEmotionState(emotionSpinner.getSelectedItem().toString());
                     newMood.setMoodDate(date.getDate());
