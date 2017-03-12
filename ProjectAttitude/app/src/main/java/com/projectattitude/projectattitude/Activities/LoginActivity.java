@@ -24,9 +24,11 @@ import com.projectattitude.projectattitude.R;
 import java.util.concurrent.ExecutionException;
 
 /**
- * LoginActivity allows users to log into the service and connect to the DataBase.
+ * LoginActivity allows users to log into the service and connect to the Database.
  * Users who do not currently have an account can create an account by entering a username
- * and password.
+ * and password. Otherwise, entering a username with a valid corresponding password
+ * will log into the account, and load the appropriate information on the database in regards
+ * to that user.
  */
 public class LoginActivity extends AppCompatActivity {
 
@@ -51,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         final Button signInButton = (Button) findViewById(R.id.signInButton);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {   // button for signing in
                 usernameView.setError(null);
                 passwordView.setError(null);
 

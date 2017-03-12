@@ -18,6 +18,13 @@ import com.projectattitude.projectattitude.R;
 
 import java.util.Date;
 
+/**
+ * This activity allows for the manipulation of mood objects. The view is similar to the
+ * viewmood. Initially, any information from the object is loaded into the appropriate fields
+ * to help the user remember what was already there. By updating the mood object, the object
+ * in the list is then also updated.
+ */
+
 public class EditMoodActivity extends MoodActivity {
     Button completeButton;
     Button cancelButton;
@@ -44,13 +51,12 @@ public class EditMoodActivity extends MoodActivity {
         etTrigger = (EditText) findViewById(R.id.triggerField);
         socialSituationSpinner = (Spinner) findViewById(R.id.spinner);
 
-        /*if(saveLocation.isChecked()){ //TODO check location
-            GeoPoint myLocation = LocationServices.FusedLocationApi.getLastLocation()
-            newMood.setGeoLocation(myLocation);
+        if(saveLocation.isChecked()){ //TODO check location
+            createLocation();
         }
         else{
-            GeoPoint myLocation = null;
-        }*/
+            //GeoPoint myLocation = null;   //TODO set location to null
+        }
 
 
         Mood mood = (Mood) getIntent().getSerializableExtra("mood");
@@ -120,14 +126,14 @@ also error checks trigger input field for character length*/
 
 
     /**
-     * Not sure what this does tbh
      * @see CreateMoodActivity
-     * @return A location? Should probably be the Location Type
-     * once again we do the same function twice, should probably not repeat code if we can avoid it
-     * Maybe add it to Mood Activity?
+     * @return A GeoPoint
+     * This function creates a GeoPoint of the current user's last known location
      */
-    private String createLocation(){
-        return "";
+    private void createLocation(){
+        //GeoPoint myLocation = LocationServices.FusedLocationApi.getLastLocation()
+        //newMood.setGeoLocation(myLocation);
+        return;
     }
 
     /**

@@ -11,6 +11,8 @@ import java.util.Date;
 
 /**
  * Created by henry on 3/8/2017.
+ * These tests check if sorting works properly within the MainActivity.
+ * @see MainActivity
  */
 
 public class SortTest extends ActivityInstrumentationTestCase2 {

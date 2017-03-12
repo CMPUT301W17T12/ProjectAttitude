@@ -12,6 +12,7 @@ import java.util.Date;
 
 /**
  * Created by Boris on 25/02/2017.
+ * These tests check if the mood object behaves as it should.
  */
 
 public class MoodTest extends ActivityInstrumentationTestCase2{

@@ -15,29 +15,40 @@ import com.projectattitude.projectattitude.Objects.DatePickerEditText;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
 
+/**
+ * The CreateMood handles the creation of mood objects for the user. The only field that is
+ * mandatory is the mood state field. Entering other data will display it upon creation but is
+ * not needed. Moods will be updated in the database if connected to the internet. Otherwise, they
+ * will remain stored on the application where they will be pushed to the database as soon as a
+ * connection is reestablished.
+ */
 public class CreateMoodActivity extends MoodActivity {
 
-    private Mood newMood;
+    private Mood newMood;   // initializing the mood object
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_mood);
+        setContentView(R.layout.activity_create_mood);  // setting the view
 
-        Button completeButton = (Button) findViewById(R.id.saveButton);
+        Button completeButton = (Button) findViewById(R.id.saveButton); // initialization of the buttons
         final DatePickerEditText date = new DatePickerEditText(this, R.id.dateField);
         final Spinner emotionSpinner = (Spinner) findViewById(R.id.emotionSpinner);
         final EditText etTrigger = (EditText) findViewById(R.id.triggerField);
         final Spinner socialSituationSpinner = (Spinner) findViewById(R.id.spinner);
         final CheckBox saveLocation = (CheckBox) findViewById(R.id.saveLocation); // geoPoint location saving
 
+        /**
+         * The complete button checks if there are any errors and then sets all the values of the
+         * mood to the appropriate properties based off the data input.
+         */
         completeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 //Spinner class will return a textview when you use getSelectedView(), allows for easy setError
                 TextView errorText = (TextView) emotionSpinner.getSelectedView();
 
-                if(errorCheck(errorText, etTrigger)){
+                if(errorCheck(errorText, etTrigger)){   //checking the
                     newMood = new Mood();
                     newMood.setEmotionState(emotionSpinner.getSelectedItem().toString());
                     newMood.setMoodDate(date.getDate());
@@ -50,26 +61,6 @@ public class CreateMoodActivity extends MoodActivity {
                     }*/
 
 
-                    Intent returnCreateMoodIntent = new Intent();
-                    returnCreateMoodIntent.putExtra("addMoodIntent", newMood);
-                    setResult(RESULT_OK, returnCreateMoodIntent);
-                    finish();
-                }
-            }
-        });
-
-        completeButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-                //Spinner class will return a textview when you use getSelectedView(), allows for easy setError
-                TextView errorText = (TextView) emotionSpinner.getSelectedView();
-
-                if(errorCheck(errorText, etTrigger)){
-                    newMood = new Mood();
-                    newMood.setEmotionState(emotionSpinner.getSelectedItem().toString());
-                    newMood.setMoodDate(date.getDate());
-                    newMood.setTrigger(etTrigger.getText().toString());
-                    newMood.setSocialSituation(socialSituationSpinner.getSelectedItem().toString());
                     Intent returnCreateMoodIntent = new Intent();
                     returnCreateMoodIntent.putExtra("addMoodIntent", newMood);
                     setResult(RESULT_OK, returnCreateMoodIntent);

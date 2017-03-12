@@ -2,6 +2,10 @@ package com.projectattitude.projectattitude.Objects;
 
 /**
  * Created by rfsh on 2017-03-07.
+ * This object represents the DatePickerEditText when creating and editing moods.
+ * This allows the user to select the appropriate time for their mood.
+ * @See CreateMoodActivity
+ * @See EditMoodActivity
  */
 
 import android.app.Activity;

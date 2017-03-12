@@ -20,9 +20,13 @@ public class User implements Serializable {
 
     private String id;
 
-//    public User(String s){
-//    }
+    //Initiates the user with a string
+    public User(String s){
+    }
 
+    /**
+     * Creates the user object as well as initiating an arrayList of mood objects.
+     */
     public User(){
         this.moods = new ArrayList<Mood>();
     }
@@ -31,40 +35,80 @@ public class User implements Serializable {
 //        this.moods = new ArrayList<Mood>();
 //    }
 
+    /**
+     * Returns the moodList array.
+     * @return moodList
+     */
     public ArrayList<Mood> getMoodList(){
         return moods;
     }
 
+    /**
+     * Sets the moodList array.
+     * @param moodList moodList
+     */
     public void setMoodList(ArrayList<Mood> moodList){
         this.moods = moodList;
     }
 
+    /**
+     * Returns the userName.
+     * @return userName
+     */
     public String getUserName() {
         return userName;
     }
 
+    /**
+     * Sets the userName.
+     * @param userName userName
+     */
     public void setUserName(String userName) {
         this.userName = userName;
     }
 
-    public void addFollow(String followName) {
+    /**
+     * Adds a follow to the user.
+     * @param followName followName
+     */
+    public void addFollow(String followName) {//TODO implement followers/following
     }
 
-    public void addFollowed(String followName) {
+    /**
+     * Adds a followed to the user.
+     * @param followedName followedName
+     */
+    public void addFollowed(String followedName) {
     }
 
+    /**
+     * Returns the followList.
+     * @return followList
+     */
     public ArrayList<String> getFollowList() {
         return followList;
     }
 
+    /**
+     * Returns the followedList.
+     * @return followedList
+     */
     public ArrayList<String> getFollowedList() {
         return followedList;
     }
 
+    /**
+     * Returns the user ID
+     * @return id
+     */
     public Object getId() {
         return id;
     }
 
+    /**
+     * Sets the user ID
+     * @param id id
+     */
     public void setId(String id) {
         this.id = id;
     }
