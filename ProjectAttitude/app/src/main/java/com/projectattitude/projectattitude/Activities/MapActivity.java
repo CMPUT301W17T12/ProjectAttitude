@@ -1,11 +1,14 @@
 package com.projectattitude.projectattitude.Activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 
 import com.projectattitude.projectattitude.R;
 
@@ -73,7 +76,7 @@ public class MapActivity extends Activity {
         map.getOverlays().add(this.mLocationOverlay);
 
         IMapController mapController = map.getController(); //controls position of map
-        mapController.setZoom(12);
+        mapController.setZoom(12);  // increase zooms in
         //GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
         //GeoPoint startPoint = mLocationOverlay.getMyLocation();
         GeoPoint startPoint = new GeoPoint(53.5444, -113.4909);    // Edmonton by default
@@ -85,7 +88,7 @@ public class MapActivity extends Activity {
 
         // taken from https://github.com/keithweaver/Android-Samples/tree/master/Location/GetUserLocation
         // on March 10th at 4:34PM
-        /*
+
         int LOCATION_REFRESH_TIME = 1000;
         int LOCATION_REFRESH_DISTANCE = 5;
 
@@ -99,7 +102,8 @@ public class MapActivity extends Activity {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, mLocationListener);*/
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, mLocationListener);
+
     }
 
     /**
@@ -111,26 +115,6 @@ public class MapActivity extends Activity {
             //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, myLocationListener);
             //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, myLocationListener);
         }
-
-
-        LocationListener myLocationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                //updateLoc(location);
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-        };
     }
 
     //taken from https://github.com/keithweaver/Android-Samples/tree/master/Location/GetUserLocation
@@ -141,7 +125,6 @@ public class MapActivity extends Activity {
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            //code
             System.out.println("onLocationChanged");
             // mainLabel.setText("Latitude:" + String.valueOf(location.getLatitude()) + "\n" + "Longitude:" + String.valueOf(location.getLongitude()));
             IMapController mapController = map.getController(); //controls position of map

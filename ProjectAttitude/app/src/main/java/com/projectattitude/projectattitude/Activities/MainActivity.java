@@ -23,7 +23,6 @@ import com.projectattitude.projectattitude.Controllers.ElasticSearchUserControll
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
-import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.Objects.NetWorkUtil;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
@@ -33,6 +32,13 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * The MainActivity is where the primary information for the user can be found. This is achieved by
+ * syncing to the database individually for each username. A list of moods
+ * is displayed filled with moods created by the user. Long clicking on a mood will provide
+ * additional options such as to view the mood, edit the mood or delete the mood. Filtering
+ * is available in the top right corner, as well as search functionality.
+ */
 public class MainActivity extends AppCompatActivity {
 
     protected ArrayList<Mood> moodList = new ArrayList<Mood>();
@@ -41,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private MainController controller;
     private boolean viewingMyList;
     private Integer itemPosition;
-
 
     private UserController userController = UserController.getInstance();
 
@@ -117,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
          * 2nd argument: delay before task is executed
          * 3rd arugument: delay between successive executions
          */
-        mTimer.scheduleAtFixedRate(mTimerTask, 1000, 30000);
+        mTimer.scheduleAtFixedRate(mTimerTask, 1000, 30000);    // time in millisec, = 30 second intervals
 
         try{
 //            ArrayList<Mood> tempList = getMoodsTask.get();

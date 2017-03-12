@@ -2,7 +2,6 @@ package com.projectattitude.projectattitude.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -13,9 +12,11 @@ import com.projectattitude.projectattitude.Objects.ColorMap;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
 
-import java.util.HashMap;
-
-
+/**
+ * This activity allows the user to view a mood object in extended detail, such
+ * as viewing the location and image if appropriate. An edit button and delete button
+ * appear in the corners that allow for their respective features.
+ */
 public class ViewMoodActivity extends MoodActivity {
 
     private TextView emotionState;
@@ -27,8 +28,6 @@ public class ViewMoodActivity extends MoodActivity {
 
     RelativeLayout r1;
     Intent intent;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
