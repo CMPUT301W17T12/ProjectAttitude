@@ -3,7 +3,10 @@ package com.projectattitude.projectattitude.Activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -67,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
                 else {
 //                    showProgress(true); // show the progress animation
 
-                    if(netWorkUtil.getConnectivityStatus(LoginActivity.this) == 1){
+                    if(isNetworkAvailable()){
                         //need to get a static instance, check for existence of user
                         if (ElasticSearchUserController.getInstance().verifyUser(user)) {
 
@@ -114,6 +117,14 @@ public class LoginActivity extends AppCompatActivity {
         loginFormView = findViewById(R.id.login_form);
         progressView = findViewById(R.id.login_progress);
         titleView = findViewById(R.id.title_label);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+
     }
 
 //    private boolean authenticate (String username) {
