@@ -2,9 +2,12 @@ package com.projectattitude.projectattitude;
 
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
+<<<<<<< HEAD
 import android.text.Layout;
 import android.util.Log;
 import android.view.View;
+=======
+>>>>>>> 6c4e01898ec422620da504ea32e3f8ee382ba11e
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -16,7 +19,10 @@ import com.robotium.solo.Solo;
 import com.projectattitude.projectattitude.Activities.CreateMoodActivity;
 
 import java.util.Date;
+<<<<<<< HEAD
 import java.util.zip.Inflater;
+=======
+>>>>>>> 6c4e01898ec422620da504ea32e3f8ee382ba11e
 
 /**
  * Created by Boris on 12/03/2017.
@@ -47,6 +53,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
      */
     public void testCreateMood(){
         logIn(solo);
+<<<<<<< HEAD
         checkMoods();
         createHappy(solo);
         assertTrue(solo.searchText("Happiness"));   //checking if mood exist
@@ -110,16 +117,25 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.assertCurrentActivity("Wrong activity", MainActivity.class);
         assertFalse(solo.searchText("Happiness"));
 
+=======
+        createHappy(solo);
+        assertTrue(solo.searchText("Happiness"));   //checking if mood exist
+>>>>>>> 6c4e01898ec422620da504ea32e3f8ee382ba11e
 
     }
 
+<<<<<<< HEAD
     public void deleteFirstMood(){ //deletes the first mood in the list
         solo.clickLongInList(0);
         assertTrue(solo.searchText("Delete"));
         solo.clickOnText("Delete");
+=======
+        assertFalse(solo.searchText("Happiness"));
+>>>>>>> 6c4e01898ec422620da504ea32e3f8ee382ba11e
     }
     //TODO Maybe make a method to clean out the list fully?
 
+<<<<<<< HEAD
     public void logIn(Solo solo){ //Logs in with tester account
         solo.enterText((EditText)solo.getView(R.id.usernameField), "tester");
         solo.clickOnView(solo.getView(R.id.signInButton));
@@ -167,21 +183,93 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         assertTrue(solo.searchText("Select an emotional state"));
         solo.clickOnText("Select an emotional state");
         solo.clickOnText("Happiness");
+=======
+    //Logs in, creates a happy mood then changes it to angry, deletes after
+    public void testEditMood(){
+        logIn(solo);
+        createHappy(solo);
+
+        assertTrue(solo.searchText("Happiness"));   //checking if mood exist
+
+        solo.clickLongInList(0);
+        assertTrue(solo.searchText("Edit"));
+        solo.clickOnText("Edit");
+>>>>>>> 6c4e01898ec422620da504ea32e3f8ee382ba11e
 
         //Set trigger to Test
         solo.enterText((EditText) solo.getCurrentActivity().findViewById(R.id.triggerField), "Test");
         assertTrue(solo.searchText("Test"));
 
+<<<<<<< HEAD
         //Set situation to Alone
         solo.clickOnText("Select a social situation");
         solo.clickOnText("Alone");
+=======
+        assertTrue(solo.searchText("Happiness"));   // editing happy mood to angry mood
+        solo.searchText("Happiness");
+        solo.clickOnText("Happiness");
+        assertTrue(solo.searchText("Anger"));
+        solo.clickOnText("Anger");
+>>>>>>> 6c4e01898ec422620da504ea32e3f8ee382ba11e
+
+        assertTrue(solo.searchButton("Save"));  //saving mood
+        solo.clickOnButton("Save");
+
+<<<<<<< HEAD
+        solo.assertCurrentActivity("Wrong activity", MainActivity.class);
+    }
+
+=======
+        solo.assertCurrentActivity("Wrong activity", MainActivity.class);   // checking if mood changed
+        assertTrue(solo.searchText("Anger"));
+        assertFalse(solo.searchButton("Happiness"));
+        deleteFirstMood();
+    }
+
+    public void testViewMood(){ //Making sure view mood works
+        logIn(solo);
+        createHappy(solo);
+
+
+        solo.clickLongInList(0);
+        assertTrue(solo.searchText("View"));
+        solo.clickOnText("View");
+        solo.assertCurrentActivity("Wrong activity", ViewMoodActivity.class);
+        assertTrue(solo.searchText("Happiness"));
+        solo.clickOnText("Delete");
+        solo.assertCurrentActivity("Wrong activity", MainActivity.class);
+        assertFalse(solo.searchText("Happiness"));
+
+
+    }
+
+    public void deleteFirstMood(){ //deletes the first mood
+        solo.clickLongInList(0);
+        assertTrue(solo.searchText("Delete"));
+        solo.clickOnText("Delete");
+    }
+
+    public void logIn(Solo solo){ //Logs in with tester account
+        solo.enterText((EditText)solo.getView(R.id.usernameField), "tester");
+        solo.clickOnView(solo.getView(R.id.signInButton));
+        solo.assertCurrentActivity("Wrong activity", MainActivity.class);
+    }
+
+    public void createHappy(Solo solo){ //Creates a happy mood and returns to main
+        solo.clickOnView(solo.getView(R.id.addMoodButton));
+        solo.assertCurrentActivity("Wrong activity", CreateMoodActivity.class);
+
+        assertTrue(solo.searchText("Select an emotional state"));   //creating mood
+        solo.clickOnText("Select an emotional state");
+        assertTrue(solo.searchText("Happiness"));
+        solo.clickOnText("Happiness");
 
         assertTrue(solo.searchButton("Save"));  //saving mood
         solo.clickOnButton("Save");
 
         solo.assertCurrentActivity("Wrong activity", MainActivity.class);
     }
-
+>>>>>>> 6c4e01898ec422620da504ea32e3f8ee382ba11e
 
     @Override
     public void tearDown() throws Exception{
