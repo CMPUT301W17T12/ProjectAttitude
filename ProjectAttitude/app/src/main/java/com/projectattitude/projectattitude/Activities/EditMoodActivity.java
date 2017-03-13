@@ -52,12 +52,14 @@ public class EditMoodActivity extends MoodActivity {
         etTrigger = (EditText) findViewById(R.id.triggerField);
         socialSituationSpinner = (Spinner) findViewById(R.id.spinner);
 
-        if(saveLocation.isChecked()){ //TODO check location
-            createLocation();
-        }
-        else{
-            //GeoPoint myLocation = null;   //TODO set location to null
-        }
+
+
+//        if(saveLocation.isChecked()){ //TODO check location
+//            createLocation();
+//        }
+//        else{
+//            //GeoPoint myLocation = null;   //TODO set location to null
+//        }
 
 
         Mood mood = (Mood) getIntent().getSerializableExtra("mood");

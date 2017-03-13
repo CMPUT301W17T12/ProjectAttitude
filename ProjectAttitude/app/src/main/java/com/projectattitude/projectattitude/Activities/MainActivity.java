@@ -432,28 +432,21 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d("userController Added", userController.getActiveUser().getMoodList().toString());
 
-
-                if(returnedPhoto.getPhoto() == ""){
+//                if(returnedPhoto.getPhoto() == ""){
                     if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
                         ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
                         addUserTask.execute(UserController.getInstance().getActiveUser());
                     }
-                }
-                else {
-                    ElasticSearchUserController.AddPhotoTask addPhotoTask = new ElasticSearchUserController.AddPhotoTask();
-                    addPhotoTask.execute(returnedPhoto);
-
-                    if (ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())) {
-                        ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-                        addUserTask.execute(UserController.getInstance().getActiveUser());
-                    }
-                }
-
-//                ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
-//                updateUserTask.execute(UserController.getInstance().getActiveUser());
-                //add newly created mood to DB
-//                ElasticSearchController.AddMoodsTask addMoodsTask = new ElasticSearchController.AddMoodsTask();
-//                addMoodsTask.execute(returnedMood);
+//                }
+//                else {
+//                    ElasticSearchUserController.AddPhotoTask addPhotoTask = new ElasticSearchUserController.AddPhotoTask();
+//                    addPhotoTask.execute(returnedPhoto);
+//
+//                    if (ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())) {
+//                        ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+//                        addUserTask.execute(UserController.getInstance().getActiveUser());
+//                    }
+//                }
             }
 
         }

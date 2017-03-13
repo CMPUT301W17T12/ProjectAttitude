@@ -79,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     if(isNetworkAvailable()){
                         //need to get a static instance, check for existence of user
+                        //user doesnt exist
                         if (ElasticSearchUserController.getInstance().verifyUser(user)) {
 
                             //creates user using ElasticSearchUserController and switch to MainActivity
@@ -88,8 +89,6 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         } else {
-                            //give error that account already exists
-                            //usernameView.setError("this name already exists");
 
                             //grab user from db and pass to MainActivity, since they exist
                             User user1 = new User();
