@@ -112,4 +112,16 @@ public class MoodTest extends ActivityInstrumentationTestCase2{
         mood.setSocialSituation("Alone");
         assertEquals("Alone", mood.getSocialSituation());
     }
+
+    public void testGetId(){
+        Mood mood = new Mood();
+        mood.setId("1234");
+        assertEquals("1234", mood.getId());
+    }
+
+    public void testSetId(){
+        Mood mood = new Mood();
+        mood.setId("1234");
+        assertEquals("1234", mood.getId());
+    }
 }

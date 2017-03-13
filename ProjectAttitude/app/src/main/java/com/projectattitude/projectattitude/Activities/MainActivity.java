@@ -2,6 +2,7 @@ package com.projectattitude.projectattitude.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.projectattitude.projectattitude.Controllers.ElasticSearchUserControll
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
+
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
@@ -52,13 +54,24 @@ public class MainActivity extends AppCompatActivity {
     private UserController userController = UserController.getInstance();
 
     private static final String LOG_TAG = "CheckNetworkStatus";
-    //private NetworkChangeReceiver receiver;
+    private NetWorkChangeReceiver receiver;
     private boolean isConnected = false;
 
     private  int listItem; //This is the index of the item pressed in the list
 
-    TimerTask mTimerTask;
-    Timer mTimer;
+    // https://trinitytuts.com/pass-data-from-broadcast-receiver-to-activity-without-reopening-activity/
+    // Network listener to sync when connecting to network
+    NetWorkChangeReceiver netWorkChangeReceiver = new NetWorkChangeReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent){
+            if(isNetworkAvailable()){
+                if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+                    addUserTask.execute(UserController.getInstance().getActiveUser());
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         moodListView = (ListView) findViewById(R.id.moodListView);
         FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
+
         //adapter is fed from moodList inside user
         moodAdapter = new MoodMainAdapter(this, moodList);
         moodListView.setAdapter(moodAdapter);
@@ -99,25 +113,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //check if person is online every 30 seconds, and updates the db every time there is a connection
-//        mTimerTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//                if(isNetworkAvailable()){
-//                    if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-//                        ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-//                        addUserTask.execute(UserController.getInstance().getActiveUser());
-//                    }
-//                }
-//            }
-//        };
-//
-//        mTimer = new Timer();
-//        /**1st argument: task to be scheduled
-//         * 2nd argument: delay before task is executed
-//         * 3rd arugument: delay between successive executions
-//         */
-//        mTimer.scheduleAtFixedRate(mTimerTask, 1000, 30000);    // time in millisec, = 30 second intervals
+        registerReceiver(netWorkChangeReceiver, new IntentFilter("networkConnectBroadcast"));
 
         try{
             ArrayList<Mood> tempList = userController.getActiveUser().getMoodList();
@@ -183,9 +179,7 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.main_menu, popup.getMenu());
         popup.show();
     }
-    //---------------------------------------------
 
-    //TODO Build these functions
     /**
      * This method will take the user to the Create Mood view
      */
@@ -380,6 +374,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Logs the current profile out of the application and returns the user to the log in view.
+     * No data will be saved if user logs out while offline
+     * and you will not be able to log back in when offline
      */
     public void logOut(MenuItem item){
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);

@@ -32,10 +32,11 @@ public class LoginActivityUITest extends ActivityInstrumentationTestCase2<LoginA
 
     public void testLogin(){
         solo.assertCurrentActivity("Wrong activity", LoginActivity.class);
-        solo.enterText((EditText)solo.getView(R.id.usernameField), "foo@example.com");
-        solo.enterText((EditText)solo.getView(R.id.passwordField), "hello");
+        solo.enterText((EditText)solo.getView(R.id.usernameField), "tester");
 
-        solo.clickOnButton("Sign in or Register");
+        //solo.enterText((EditText)solo.getView(R.id.passwordField), "hello"); password is currently disabled
+
+        solo.clickOnView(solo.getView(R.id.signInButton));
 
         solo.assertCurrentActivity("Wrong activity", MainActivity.class);
 
@@ -46,6 +47,7 @@ public class LoginActivityUITest extends ActivityInstrumentationTestCase2<LoginA
 //        solo.clickOnButton("Clear");
 //        assertFalse(solo.searchText("Test Tweet"));
     }
+
 
     @Override
     public void tearDown() throws Exception{

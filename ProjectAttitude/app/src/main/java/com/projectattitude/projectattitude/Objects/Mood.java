@@ -156,7 +156,6 @@ public class Mood implements Serializable {
      */
     @Override
     public String toString(){
-        //TODO Probably make a real ui here
         return(emotionState);
     }
 
