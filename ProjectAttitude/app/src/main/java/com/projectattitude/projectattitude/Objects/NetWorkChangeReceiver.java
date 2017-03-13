@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -35,6 +36,9 @@ public class NetWorkChangeReceiver extends BroadcastReceiver{
                         Toast.LENGTH_LONG).show();
                 firstConnect = true;
             // Tell the app we're connected, and to sync
+            Intent i = new Intent("networkConnectBroadcast");
+            context.sendBroadcast(i);
+
         }
 
         else {
