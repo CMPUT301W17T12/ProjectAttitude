@@ -28,7 +28,6 @@ package com.projectattitude.projectattitude;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.projectattitude.projectattitude.Activities.MainActivity;
-import com.projectattitude.projectattitude.Objects.Photo;
 
 /**
  * Created by bfleyshe on 3/13/17.
