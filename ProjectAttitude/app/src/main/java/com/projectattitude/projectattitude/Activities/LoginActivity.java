@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText usernameView;
-    private EditText passwordView;
+//    private EditText passwordView;
 
     private View titleView;
     private View loginFormView;
@@ -48,20 +48,20 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         usernameView = (EditText) findViewById(R.id.usernameField);
-        passwordView = (EditText) findViewById(R.id.passwordField);
+//        passwordView = (EditText) findViewById(R.id.passwordField);
 
         final Button signInButton = (Button) findViewById(R.id.signInButton);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {   // button for signing in
                 usernameView.setError(null);
-                passwordView.setError(null);
+//                passwordView.setError(null);
 
                 User user = new User();
 
                 String username = usernameView.getText().toString();
                 user.setUserName(username);
-                String password = passwordView.getText().toString();
+//                String password = passwordView.getText().toString();
 
                 Boolean cancel = false;
 
