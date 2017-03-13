@@ -84,7 +84,6 @@ public class UserTest extends ActivityInstrumentationTestCase2{
         user.addFollow("followName");
         assertTrue(user.getFollowList() != null);
     }
-
     public void testAddFollowed(){
         User user = new User();
         user.setUserName("UserName");

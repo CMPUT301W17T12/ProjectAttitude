@@ -53,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText usernameView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
