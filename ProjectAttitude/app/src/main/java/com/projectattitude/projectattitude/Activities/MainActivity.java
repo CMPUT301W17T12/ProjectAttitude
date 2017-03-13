@@ -389,7 +389,9 @@ public class MainActivity extends AppCompatActivity {
      * Logs the current profile out of the application and returns the user to the log in view.
      */
     public void logOut(MenuItem item){
-
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        finish();
+        startActivity(intent);
     }
 
     /**
