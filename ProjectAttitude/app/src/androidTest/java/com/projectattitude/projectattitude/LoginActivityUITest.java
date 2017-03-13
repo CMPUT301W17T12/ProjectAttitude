@@ -39,13 +39,6 @@ public class LoginActivityUITest extends ActivityInstrumentationTestCase2<LoginA
         solo.clickOnView(solo.getView(R.id.signInButton));
 
         solo.assertCurrentActivity("Wrong activity", MainActivity.class);
-
-//        solo.clearEditText((EditText) solo.getView(R.id.body));
-
-//        assertTrue(solo.waitForText("Test Tweet"));
-
-//        solo.clickOnButton("Clear");
-//        assertFalse(solo.searchText("Test Tweet"));
     }
 
 
