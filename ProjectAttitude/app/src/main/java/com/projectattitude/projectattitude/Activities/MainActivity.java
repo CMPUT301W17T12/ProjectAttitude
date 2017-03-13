@@ -387,6 +387,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Logs the current profile out of the application and returns the user to the log in view.
+     * No data will be saved if user logs out while offline
+     * and you will not be able to log back in when offline
      */
     public void logOut(MenuItem item){
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);

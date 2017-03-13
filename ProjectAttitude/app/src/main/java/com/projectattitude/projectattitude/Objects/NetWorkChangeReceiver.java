@@ -34,6 +34,7 @@ public class NetWorkChangeReceiver extends BroadcastReceiver{
                 Toast.makeText(context, "Connected to internet!",
                         Toast.LENGTH_LONG).show();
                 firstConnect = true;
+            // Tell the app we're connected, and to sync
         }
 
         else {

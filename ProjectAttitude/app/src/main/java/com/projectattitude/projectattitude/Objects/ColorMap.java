@@ -26,6 +26,6 @@ public class ColorMap<S, I extends Number> extends HashMap {
         this.put("Sadness", rgb(191, 128, 64)); //brown
         this.put("Shame", rgb(51, 153, 255)); //blue
         this.put("Surprise", rgb(204, 51, 255)); //purple
-
+        this.put("", rgb(255, 255, 255));
     }
 }
