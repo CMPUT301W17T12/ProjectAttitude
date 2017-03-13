@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
     private  int listItem; //This is the index of the item pressed in the list
 
+    // https://trinitytuts.com/pass-data-from-broadcast-receiver-to-activity-without-reopening-activity/
+    // Network listener to sync when connecting to network
     NetWorkChangeReceiver netWorkChangeReceiver = new NetWorkChangeReceiver() {
         @Override
         public void onReceive(Context context, Intent intent){
@@ -112,26 +114,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         registerReceiver(netWorkChangeReceiver, new IntentFilter("networkConnectBroadcast"));
-
-        //check if person is online every 30 seconds, and updates the db every time there is a connection
-//        mTimerTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//                if(isNetworkAvailable()){
-//                    if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-//                        ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-//                        addUserTask.execute(UserController.getInstance().getActiveUser());
-//                    }
-//                }
-//            }
-//        };
-//
-//        mTimer = new Timer();
-//        /**1st argument: task to be scheduled
-//         * 2nd argument: delay before task is executed
-//         * 3rd arugument: delay between successive executions
-//         */
-//        mTimer.scheduleAtFixedRate(mTimerTask, 1000, 30000);    // time in millisec, = 30 second intervals
 
         try{
 //            ArrayList<Mood> tempList = getMoodsTask.get();
