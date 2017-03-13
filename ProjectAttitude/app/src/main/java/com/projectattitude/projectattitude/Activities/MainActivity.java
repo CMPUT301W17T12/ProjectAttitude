@@ -24,14 +24,13 @@ import com.projectattitude.projectattitude.Controllers.ElasticSearchUserControll
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
-
+import com.projectattitude.projectattitude.Objects.NetWorkChangeReceiver;
+import com.projectattitude.projectattitude.Objects.Photo;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * The MainActivity is where the primary information for the user can be found. This is achieved by

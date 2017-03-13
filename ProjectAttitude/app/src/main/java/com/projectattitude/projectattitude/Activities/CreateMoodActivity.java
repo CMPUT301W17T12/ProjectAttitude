@@ -70,14 +70,7 @@ public class CreateMoodActivity extends MoodActivity {
                     newMood.setMoodDate(date.getDate());
                     newMood.setTrigger(etTrigger.getText().toString().trim());
                     newMood.setSocialSituation(socialSituationSpinner.getSelectedItem().toString());
-                    //newMood.setPhoto(imageView.getDrawingCache());
-                   // newMood.setPhoto(byteArray);
-                    //newMood.setPhoto(s);
                     newMood.setPhoto(s);
-//                    newPhoto = new Photo();
-//                    newPhoto.setPhoto(s);
-                    //newPhoto.setPhoto(byteArray);
-
 
                     /*if(saveLocation.isChecked()){ //TODO check location
                         GeoPoint myLocation = LocationServices.FusedLocationApi.getLastLocation()

@@ -19,7 +19,9 @@ import com.projectattitude.projectattitude.Objects.EmoticonMap;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by Vuk on 2/27/2017.
@@ -53,7 +55,8 @@ public class MoodMainAdapter extends ArrayAdapter<Mood> {
 
         //emotional state will never be null because we error check for it in the CreateMoodActivity
         tvEmotionalState.setText(mood.getEmotionState());
-        tvDate.setText(mood.getMoodDate().toString());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA);
+        tvDate.setText(sdf.format(mood.getMoodDate()));
 
         //color background
         Integer val = (Integer) cMap.get(mood.getEmotionState());
