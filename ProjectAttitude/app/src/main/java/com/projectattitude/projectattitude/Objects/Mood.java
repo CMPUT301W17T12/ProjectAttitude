@@ -28,8 +28,7 @@ public class Mood implements Serializable {
 
     @JestId
     private String id;
-    private byte[] photo;
-    //private String photo;
+    private String photo;
 
 //    public Mood(String s) {
 //    }
@@ -179,16 +178,12 @@ public class Mood implements Serializable {
         this.id = id;
     }
 
-    public void setPhoto(byte[] photo){
+    public void setPhoto(String photo){
+        //Log.d("photoClassString", photo);
         this.photo = photo;
     }
-
-//    public void setPhoto(String photo){
-//        Log.d("photoClassString", photo);
-//        this.photo = photo;
-//    }
 //
-//    public String getPhoto(){
-//        return photo;
-//    }
+    public String getPhoto(){
+        return photo;
+    }
 }

@@ -71,8 +71,9 @@ public class CreateMoodActivity extends MoodActivity {
                     //newMood.setPhoto(imageView.getDrawingCache());
                    // newMood.setPhoto(byteArray);
                     //newMood.setPhoto(s);
-                    newPhoto = new Photo();
-                    newPhoto.setPhoto(s);
+                    newMood.setPhoto(s);
+//                    newPhoto = new Photo();
+//                    newPhoto.setPhoto(s);
                     //newPhoto.setPhoto(byteArray);
 
 
@@ -84,7 +85,7 @@ public class CreateMoodActivity extends MoodActivity {
 
                     Intent returnCreateMoodIntent = new Intent();
                     returnCreateMoodIntent.putExtra("addMoodIntent", newMood);
-                    returnCreateMoodIntent.putExtra("addPhotoIntent", newPhoto);
+                    //returnCreateMoodIntent.putExtra("addPhotoIntent", newPhoto);
                     setResult(RESULT_OK, returnCreateMoodIntent);
                     finish();
                 }

@@ -147,16 +147,13 @@ public class ElasticSearchUserController {
         protected Boolean doInBackground(Photo...search_parameters){
             verifySettings();
 
-            //boolean userExist = false;
             Index index = new Index.Builder(search_parameters[0]).index(INDEX).type("Photo").build();
             //Log.d("photoString1", search_parameters[0]);
 
             try {
                 DocumentResult result = client.execute(index);
-                //Log.d("photoString2", result.getId());
 
                 if (result.isSucceeded()){
-                    //userExist = true;
                     Log.d("photoSynced", result.getId());
                 }
                 else {
@@ -167,6 +164,25 @@ public class ElasticSearchUserController {
                 Log.d("photoSync", "The application failed to build and send the Photo");
             }
             return true;
+        }
+
+        public static class GetPhotoTask extends AsyncTask<String, Void, User> {
+
+            @Override
+            protected User doInBackground(String... search_parameters) {
+                verifySettings();
+                Get get = new Get.Builder(INDEX, search_parameters[0]).type(TYPE).id(search_parameters[0]).build();
+
+                User Photo = null;
+                try {
+                    JestResult result = client.execute(get);
+                    Photo = result.getSourceAsObject(User.class);
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return Photo;
+            }
         }
     }
 
