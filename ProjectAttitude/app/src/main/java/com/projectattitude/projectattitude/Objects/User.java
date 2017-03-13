@@ -21,8 +21,8 @@ public class User implements Serializable {
     private String id;
 
     //Initiates the user with a string
-    public User(String s){
-    }
+//    public User(String s){
+//    }
 
     /**
      * Creates the user object as well as initiating an arrayList of mood objects.
@@ -30,10 +30,6 @@ public class User implements Serializable {
     public User(){
         this.moods = new ArrayList<Mood>();
     }
-
-//    public void makeMoodList(){
-//        this.moods = new ArrayList<Mood>();
-//    }
 
     /**
      * Returns the moodList array.
@@ -112,4 +108,5 @@ public class User implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
+
 }
