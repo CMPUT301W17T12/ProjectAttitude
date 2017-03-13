@@ -2,6 +2,7 @@ package com.projectattitude.projectattitude.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.projectattitude.projectattitude.Controllers.ElasticSearchUserControll
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
+import com.projectattitude.projectattitude.Objects.NetWorkChangeReceiver;
 import com.projectattitude.projectattitude.Objects.NetWorkUtil;
 import com.projectattitude.projectattitude.Objects.Photo;
 import com.projectattitude.projectattitude.Objects.User;
@@ -52,14 +54,24 @@ public class MainActivity extends AppCompatActivity {
     private UserController userController = UserController.getInstance();
 
     private static final String LOG_TAG = "CheckNetworkStatus";
-    //private NetworkChangeReceiver receiver;
+    private NetWorkChangeReceiver receiver;
     private boolean isConnected = false;
 
     private  int listItem; //This is the index of the item pressed in the list
-    private NetWorkUtil netWorkUtil = new NetWorkUtil();
 
-    TimerTask mTimerTask;
-    Timer mTimer;
+    // https://trinitytuts.com/pass-data-from-broadcast-receiver-to-activity-without-reopening-activity/
+    // Network listener to sync when connecting to network
+    NetWorkChangeReceiver netWorkChangeReceiver = new NetWorkChangeReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent){
+            if(isNetworkAvailable()){
+                if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+                    addUserTask.execute(UserController.getInstance().getActiveUser());
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,26 +113,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //check if person is online every 30 seconds, and updates the db every time there is a connection
-
-        mTimerTask = new TimerTask() {
-            @Override
-            public void run() {
-                if(isNetworkAvailable()){
-                    if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-                        ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-                        addUserTask.execute(UserController.getInstance().getActiveUser());
-                    }
-                }
-            }
-        };
-
-        mTimer = new Timer();
-        /**1st argument: task to be scheduled
-         * 2nd argument: delay before task is executed
-         * 3rd arugument: delay between successive executions
-         */
-        mTimer.scheduleAtFixedRate(mTimerTask, 1000, 30000);    // time in millisec
+        registerReceiver(netWorkChangeReceiver, new IntentFilter("networkConnectBroadcast"));
 
         try{
 //            ArrayList<Mood> tempList = getMoodsTask.get();
