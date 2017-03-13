@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         moodListView = (ListView) findViewById(R.id.moodListView);
         FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
-        //moodAdapter = new MoodMainAdapter(this, moodList);
+
         //adapter is fed from moodList inside user
         moodAdapter = new MoodMainAdapter(this, moodList); //userController.getActiveUser().getMoodList()
         moodListView.setAdapter(moodAdapter);
@@ -184,9 +184,7 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.main_menu, popup.getMenu());
         popup.show();
     }
-    //---------------------------------------------
 
-    //TODO Build these functions
     /**
      * This method will take the user to the Create Mood view
      */

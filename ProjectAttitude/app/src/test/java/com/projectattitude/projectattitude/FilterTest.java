@@ -12,7 +12,7 @@ import java.util.GregorianCalendar;
 
 /**
  * Created by henry on 3/8/2017.
- * This test checks if the filtering process works properly in the mainActivity.
+ * This test checks if the filtering by date process works properly in the mainActivity.
  * @see MainActivity
  */
 
@@ -22,7 +22,7 @@ public class FilterTest extends ActivityInstrumentationTestCase2 {
         super(MainActivity.class);
     }
 
-    //Test to test if sort works + basic functionality
+    //Tests if sort works + basic functionality
     public void testFilterByDay(){
         ArrayList<Mood> list = new ArrayList<Mood>();
         MainController controller = new MainController();
@@ -58,7 +58,7 @@ public class FilterTest extends ActivityInstrumentationTestCase2 {
 
     }
 
-    //Test to test if reverseSort works
+    //Test if monthFilter works
     public void testFilterByMonth(){
         ArrayList<Mood> list = new ArrayList<Mood>();
         MainController controller = new MainController();
@@ -91,6 +91,7 @@ public class FilterTest extends ActivityInstrumentationTestCase2 {
         controller.filterListByTime(list, (long)2.628e+9);
 
         assertEquals(list.get(0),m1);
+
     }
 
     public void testFilterByYear(){
