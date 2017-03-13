@@ -63,4 +63,18 @@ public class UserTest extends ActivityInstrumentationTestCase2{
         assertTrue(user.getFollowedList() != null);
     }
 
+    public void testSetID(){
+        User user = new User("UserName");
+
+        user.setId("1234");
+        assertEquals(user.getId(), "1234");
+    }
+
+    public void testGetID(){
+        User user = new User("UserName");
+
+        user.setId("1234");
+        assertEquals(user.getId(), "1234");
+    }
+
 }
