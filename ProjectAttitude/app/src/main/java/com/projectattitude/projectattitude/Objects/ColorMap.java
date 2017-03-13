@@ -43,14 +43,14 @@ import static android.graphics.Color.rgb;
 
 public class ColorMap<S, I extends Number> extends HashMap {
     public ColorMap(){
-        this.put("Anger", rgb(255, 0, 0)); //red
-        this.put("Confusion", rgb(217, 217, 217)); //grey
-        this.put("Disgust", rgb(179, 179, 0)); //green/yellow
-        this.put("Fear", rgb(46, 46, 31)); //black
-        this.put("Happiness", rgb(68, 204, 0)); //green
-        this.put("Sadness", rgb(191, 128, 64)); //brown
-        this.put("Shame", rgb(51, 153, 255)); //blue
-        this.put("Surprise", rgb(204, 51, 255)); //purple
+        this.put("Anger", rgb(227, 51, 62)); //red
+        this.put("Confusion", rgb(237, 139, 95)); //grey
+        this.put("Disgust", rgb(192, 202, 85)); //green/yellow
+        this.put("Fear", rgb(104, 79, 21)); //black
+        this.put("Happiness", rgb(127, 199, 175)); //green
+        this.put("Sadness", rgb(145, 145, 133)); //brown
+        this.put("Shame", rgb(0, 88, 133)); //blue
+        this.put("Surprise", rgb(227, 104, 32)); //purple
         this.put("", rgb(255, 255, 255));
     }
 }
