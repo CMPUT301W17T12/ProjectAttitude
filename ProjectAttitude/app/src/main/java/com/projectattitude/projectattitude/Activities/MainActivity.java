@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         moodListView = (ListView) findViewById(R.id.moodListView);
         FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
-        //moodAdapter = new MoodMainAdapter(this, moodList);
+
         //adapter is fed from moodList inside user
         moodAdapter = new MoodMainAdapter(this, moodList); //userController.getActiveUser().getMoodList()
         moodListView.setAdapter(moodAdapter);
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
          * 2nd argument: delay before task is executed
          * 3rd arugument: delay between successive executions
          */
-        mTimer.scheduleAtFixedRate(mTimerTask, 1000, 30000);    // time in millisec, = 30 second intervals
+        mTimer.scheduleAtFixedRate(mTimerTask, 1000, 30000);    // time in millisec
 
         try{
 //            ArrayList<Mood> tempList = getMoodsTask.get();
@@ -140,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
 //        moodListView.setAdapter(moodAdapter);
     }
 
-    //TODO Build these functions
     /**
      * This method will take the user to the Create Mood view
      */

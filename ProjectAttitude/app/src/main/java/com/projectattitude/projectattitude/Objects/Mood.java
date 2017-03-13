@@ -29,8 +29,6 @@ public class Mood implements Serializable {
     @JestId
     private String id;
 
-//    public Mood(String s) {
-//    }
 
     /**
      * Initiates the mood object.
@@ -157,7 +155,6 @@ public class Mood implements Serializable {
      */
     @Override
     public String toString(){
-        //TODO Probably make a real ui here
         return(emotionState);
     }
 
