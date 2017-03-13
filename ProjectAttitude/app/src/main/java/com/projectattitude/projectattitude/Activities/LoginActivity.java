@@ -40,7 +40,6 @@ public class LoginActivity extends AppCompatActivity {
     private View progressView;
 
     private UserController userController = UserController.getInstance();
-    private NetWorkUtil netWorkUtil = new NetWorkUtil();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
