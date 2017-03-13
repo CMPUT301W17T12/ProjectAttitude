@@ -41,7 +41,6 @@ import android.widget.TextView;
 import com.projectattitude.projectattitude.Abstracts.MoodActivity;
 import com.projectattitude.projectattitude.Objects.DatePickerEditText;
 import com.projectattitude.projectattitude.Objects.Mood;
-import com.projectattitude.projectattitude.Objects.Photo;
 import com.projectattitude.projectattitude.R;
 
 import java.io.ByteArrayOutputStream;
@@ -56,7 +55,6 @@ import java.io.ByteArrayOutputStream;
 public class CreateMoodActivity extends MoodActivity {
 
     private Mood newMood;   // initializing the mood object
-    private Photo newPhoto;
     private ImageView imageView;
     private byte[] byteArray;
     private String s;

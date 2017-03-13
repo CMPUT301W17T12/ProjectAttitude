@@ -149,22 +149,6 @@ public class MainController {
         }
     }
 
-    public MoodList getMyMoodList() {
-        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
-
-        getMoodsTask.execute("");
-
-        try {
-            //Update myMoodList with new moods
-            ArrayList<Mood> tempList = getMoodsTask.get();
-            myMoodList.setMoodList(new MoodList(tempList));
-        } catch (Exception e) {
-            Log.d("Error", "Failed to get the moods from the async object");
-        }
-
-        return myMoodList.clone();
-    }
-
     //Precondition: myMoodList shouldn't be touchable by anyone else
     public void setMyMoodList(MoodList tempList) {
         this.myMoodList = tempList.clone();

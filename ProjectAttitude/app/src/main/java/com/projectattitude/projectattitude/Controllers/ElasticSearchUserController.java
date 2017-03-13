@@ -28,7 +28,6 @@ package com.projectattitude.projectattitude.Controllers;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.projectattitude.projectattitude.Objects.Photo;
 import com.projectattitude.projectattitude.Objects.User;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
@@ -174,33 +173,6 @@ public class ElasticSearchUserController {
             return true;
         }
     }
-
-    public static class AddPhotoTask extends AsyncTask<Photo, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Photo...search_parameters){
-            verifySettings();
-
-            Index index = new Index.Builder(search_parameters[0]).index(INDEX).type("Photo").build();
-            //Log.d("photoString1", search_parameters[0]);
-
-            try {
-                DocumentResult result = client.execute(index);
-
-                if (result.isSucceeded()){
-                    Log.d("photoSynced", result.getId());
-                }
-                else {
-                    Log.i("photoSync3", "Elasticsearch was not able to add photo.");
-                }
-            }
-            catch (IOException e) {
-                Log.d("photoSync", "The application failed to build and send the Photo");
-            }
-            return true;
-        }
-    }
-
 
 //    /**
 //     * doesnt work for some reason
