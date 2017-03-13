@@ -80,8 +80,6 @@ public class EditMoodActivity extends MoodActivity {
         Date tempDate = (Date) mood.getMoodDate();
 
         date.setDate(tempDate.getYear() + 1900, tempDate.getMonth(), tempDate.getDate());
-        Date temp = date.getDate();
-        Log.d("date", temp.toString());
         //disgusting single line way to set the spinners
         //Taken from http://stackoverflow.com/questions/2390102/how-to-set-selected-item-of-spinner-by-value-not-by-position
         emotionSpinner.setSelection(((ArrayAdapter<String>) emotionSpinner.getAdapter())
