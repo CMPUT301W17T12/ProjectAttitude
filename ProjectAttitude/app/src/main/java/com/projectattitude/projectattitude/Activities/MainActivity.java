@@ -272,6 +272,10 @@ public class MainActivity extends AppCompatActivity {
      * @param item - one of the sort options from the sort menu
      */
     public void sortMood(MenuItem item){
+        if(item == null){
+            controller.sortList(moodList, "Sort"); //True = sorting by date
+            return;
+        }
         switch (item.getItemId()) {
             case R.id.dateOption:
                 controller.sortList(moodList, "Sort"); //True = sorting by date
@@ -431,6 +435,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Mood> newList = userController.getActiveUser().getMoodList();
         moodList.clear();
         moodList.addAll(newList);
+        sortMood(null);
     }
 
     //accept returned information from activities
