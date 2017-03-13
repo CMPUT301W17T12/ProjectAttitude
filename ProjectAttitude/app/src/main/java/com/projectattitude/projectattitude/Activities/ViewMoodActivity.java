@@ -1,14 +1,19 @@
 package com.projectattitude.projectattitude.Activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.projectattitude.projectattitude.Abstracts.MoodActivity;
 import com.projectattitude.projectattitude.Objects.ColorMap;
+import com.projectattitude.projectattitude.Objects.EmoticonMap;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
 
@@ -25,6 +30,8 @@ public class ViewMoodActivity extends MoodActivity {
     private TextView socialSituation;
     private Button editButton;
     private Button deleteButton;
+    private ImageView imageView;
+    private ImageView emotionStateIcon;
 
     RelativeLayout r1;
     Intent intent;
@@ -46,6 +53,8 @@ public class ViewMoodActivity extends MoodActivity {
         date.setText("");
         trigger.setText("");
         socialSituation.setText("");
+        imageView = (ImageView) findViewById(R.id.imageView3);
+        emotionStateIcon = (ImageView) findViewById(R.id.EmotionalStateImage);
 
         //TODO Set texts from the mood
         final Mood mood = (Mood) getIntent().getSerializableExtra("mood");
@@ -53,6 +62,17 @@ public class ViewMoodActivity extends MoodActivity {
         date.setText(mood.getMoodDate().toString());
         trigger.setText(mood.getTrigger());
         socialSituation.setText(mood.getSocialSituation());
+
+
+        // Show emoticons
+        EmoticonMap<String, Integer> eMap = new EmoticonMap<>();
+        int res = (int) eMap.get(mood.getEmotionState());
+        emotionStateIcon.setImageResource(res);
+
+        //decode base64 image stored in User
+        byte[] imageBytes = Base64.decode(mood.getPhoto(), Base64.DEFAULT);
+        Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        imageView.setImageBitmap(decodedImage);
         //Handle colors
         ColorMap<String, Integer> map = new ColorMap<>();
         r1.setBackgroundColor((Integer) map.get(mood.getEmotionState()));

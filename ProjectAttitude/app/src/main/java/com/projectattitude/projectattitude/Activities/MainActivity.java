@@ -24,6 +24,7 @@ import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.NetWorkUtil;
+import com.projectattitude.projectattitude.Objects.Photo;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
@@ -100,11 +101,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //return all moods from db, so it can populate view on start
-//        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
-//        getMoodsTask.execute("");
-
         //check if person is online every 30 seconds, and updates the db every time there is a connection
+
         mTimerTask = new TimerTask() {
             @Override
             public void run() {
@@ -138,6 +136,60 @@ public class MainActivity extends AppCompatActivity {
 //        controller.setMyMoodList(new MoodList(moodList));
 //        moodAdapter = new MoodMainAdapter(this, moodList);
 //        moodListView.setAdapter(moodAdapter);
+    }
+
+    //-------POPUP MENU FUNCTIONS-------
+    /**
+     * OpenSFMenu - Open Sort/Filter Menu
+     * Is used when the sort/filter button is pressed to display a menu
+     * @param view - the sort/filter button
+     * @see #openSortMenu(MenuItem)
+     * @see #openFilterMenu(MenuItem)
+     */
+    public void openSFMenu(View view){
+        //TODO: Test all this popupmenu crap
+        PopupMenu popup = new PopupMenu(this, view);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.sort_filter_menu, popup.getMenu());
+        popup.show();
+    }
+
+    /**
+     * openSortMenu
+     * Is used when the sort option in sort/filter menu is pressed to display a menu
+     * @param item - the sort option in sort_filter_menu
+     * @see #sortMood(MenuItem)
+     */
+    public void openSortMenu(MenuItem item){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.sort_menu, popup.getMenu());
+        popup.show();
+    }
+
+    /**
+     * openFilterMenu
+     * Is used when the filter option in sort/filter menu is pressed to display a menu
+     * @param item - the filter option in sort_filter_menu
+     * @see #filterMood(MenuItem)
+     */
+    public void openFilterMenu(MenuItem item){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.filter_menu, popup.getMenu());
+        popup.show();
+    }
+
+    /**
+     * OpenMainMenu
+     * Is used when the main menu button is pressed to display a menu
+     * @param view - the main menu button
+     */
+    public void openMainMenu(View view){
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.menuButton));
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.main_menu, popup.getMenu());
+        popup.show();
     }
 
     /**
@@ -192,18 +244,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * This is the method that handles finding moods with a given keyword
-     * Called by pressing the searchButton on main_layout
-     */
-    public void filterMoodByTrigger(View view){
-        //Get text from search bar and then call controller function
-        controller.filterListByTrigger(moodList, ((EditText)findViewById(R.id.searchBar)).getText().toString());
-        moodAdapter.notifyDataSetChanged();
-    }
-
-    /**
      * Handles sorting the list, called when an item in the sortMenu is pressed
-     * @param item - identifies which item has been pressed on
+     * @param item - one of the sort options from the sort menu
      */
     public void sortMood(MenuItem item){
         switch (item.getItemId()) {
@@ -219,7 +261,9 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Handles filtering the list
-     * @param item
+     * @param item - one of the options from the filter menu
+     * @see #filterMoodsByEmotion(MenuItem)
+     * @see #filterMoodsByTime(MenuItem)
      */
     public void filterMood(MenuItem item){
         PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
@@ -250,6 +294,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * This is the method that handles finding moods with a given keyword
+     * Called by pressing the searchButton on main_layout
+     */
+    public void filterMoodByTrigger(View view){
+        //Get text from search bar and then call controller function
+        controller.filterListByTrigger(moodList, ((EditText)findViewById(R.id.searchBar)).getText().toString());
+        moodAdapter.notifyDataSetChanged();
+    }
+
+    /**
      * Handles filtering the list, but specifically for the time menu
      * @param item
      */
@@ -273,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Handles filtering the list, but specifically for the mood menu
-     * @param item
+     * @param item - option from the filter emotion menu
      */
     public void filterMoodsByEmotion(MenuItem item){
         Long milliseconds = new Date().getTime();
@@ -332,13 +386,17 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Logs the current profile out of the application and returns the user to the log in view.
+     * No data will be saved if user logs out while offline
+     * and you will not be able to log back in when offline
      */
     public void logOut(MenuItem item){
-
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        finish();
+        startActivity(intent);
     }
 
     /**
-     * refreshMood - Used to refresh the mood list with the most current stuff.
+     * refreshMood - Used to refresh the mood list with the most current moods.
      * Currently works by using the global variable moodList
      */
     public void refreshMoodList(){
@@ -348,40 +406,6 @@ public class MainActivity extends AppCompatActivity {
         moodList.addAll(newList);
     }
 
-    /**
-     * OpenSFMenu - Open Sort/Filter Menu
-     * Is used when the sort/filter button is pressed to display a menu
-     * @param view
-     */
-    public void openSFMenu(View view){
-        //TODO: Test all this popupmenu crap
-        PopupMenu popup = new PopupMenu(this, view);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.sort_filter_menu, popup.getMenu());
-        popup.show();
-    }
-
-    public void openSortMenu(MenuItem view){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.sort_menu, popup.getMenu());
-        popup.show();
-    }
-
-    public void openFilterMenu(MenuItem view){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.filter_menu, popup.getMenu());
-        popup.show();
-    }
-    
-    public void openMainMenu(View view){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.menuButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.main_menu, popup.getMenu());
-        popup.show();
-    }
-
     //accept returned information from activities
     @Override
     // requestCode 0 = Add mood
@@ -389,11 +413,13 @@ public class MainActivity extends AppCompatActivity {
     // requestCode 2 = Edit Mood
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Mood returnedMood;
+        Photo returnedPhoto;
 
         //CreateMoodActivity results, updating mood listview
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
+                returnedPhoto = (Photo) data.getSerializableExtra("addPhotoIntent");
 
                 //moodList.add(returnedMood);
                 userController.getActiveUser().getMoodList().add(returnedMood);
@@ -409,14 +435,23 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d("userController Added", userController.getActiveUser().getMoodList().toString());
 
-                if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-                    addUserTask.execute(UserController.getInstance().getActiveUser());
-                }
-                //add newly created mood to DB
-//                ElasticSearchController.AddMoodsTask addMoodsTask = new ElasticSearchController.AddMoodsTask();
-//                addMoodsTask.execute(returnedMood);
+//                if(returnedPhoto.getPhoto() == ""){
+                    if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+                        ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+                        addUserTask.execute(UserController.getInstance().getActiveUser());
+                    }
+//                }
+//                else {
+//                    ElasticSearchUserController.AddPhotoTask addPhotoTask = new ElasticSearchUserController.AddPhotoTask();
+//                    addPhotoTask.execute(returnedPhoto);
+//
+//                    if (ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())) {
+//                        ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+//                        addUserTask.execute(UserController.getInstance().getActiveUser());
+//                    }
+//                }
             }
+
         }
 
         //ViewMoodActivity results

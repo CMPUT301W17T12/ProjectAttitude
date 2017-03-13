@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText usernameView;
-    private EditText passwordView;
+//    private EditText passwordView;
 
     private View titleView;
     private View loginFormView;
@@ -48,20 +48,20 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         usernameView = (EditText) findViewById(R.id.usernameField);
-        passwordView = (EditText) findViewById(R.id.passwordField);
+//        passwordView = (EditText) findViewById(R.id.passwordField);
 
         final Button signInButton = (Button) findViewById(R.id.signInButton);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {   // button for signing in
                 usernameView.setError(null);
-                passwordView.setError(null);
+//                passwordView.setError(null);
 
                 User user = new User();
 
                 String username = usernameView.getText().toString();
                 user.setUserName(username);
-                String password = passwordView.getText().toString();
+//                String password = passwordView.getText().toString();
 
                 Boolean cancel = false;
 
@@ -79,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     if(isNetworkAvailable()){
                         //need to get a static instance, check for existence of user
+                        //user doesnt exist
                         if (ElasticSearchUserController.getInstance().verifyUser(user)) {
 
                             //creates user using ElasticSearchUserController and switch to MainActivity
@@ -88,8 +89,6 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         } else {
-                            //give error that account already exists
-                            //usernameView.setError("this name already exists");
 
                             //grab user from db and pass to MainActivity, since they exist
                             User user1 = new User();

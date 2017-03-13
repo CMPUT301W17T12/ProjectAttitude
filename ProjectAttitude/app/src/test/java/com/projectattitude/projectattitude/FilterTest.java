@@ -32,12 +32,14 @@ public class FilterTest extends ActivityInstrumentationTestCase2 {
         Mood m1 = new Mood();
         m1.setMoodDate(calendar1.getTime());
 
-        int tempMonth = calendar2.MONTH;
-        if(calendar2.MONTH == calendar2.JANUARY){
-            tempMonth = calendar2.DECEMBER;
+        int tempDay = calendar2.DAY_OF_MONTH;
+        if(calendar2.DAY_OF_MONTH == 1){
+            tempDay = 28;
+        }else{
+            --tempDay;
         }
 
-        calendar2.set(calendar2.YEAR-1,tempMonth,calendar2.DAY_OF_MONTH);
+        calendar2.set(calendar2.YEAR,calendar2.MONTH,tempDay);
 
         Mood m2 = new Mood();
         m1.setMoodDate(calendar2.getTime());
@@ -49,8 +51,10 @@ public class FilterTest extends ActivityInstrumentationTestCase2 {
         assertEquals(list.get(0), m2);
         assertEquals(list.get(1), m1);
 
-        //Test filter by year
-        //controller.filterListByTime(list, );
+        //Test filter by day
+        controller.filterListByTime(list, (long)8.64e+7);
+
+        assertEquals(list.get(0),m1);
 
     }
 
@@ -67,9 +71,11 @@ public class FilterTest extends ActivityInstrumentationTestCase2 {
         int tempMonth = calendar2.MONTH;
         if(calendar2.MONTH == calendar2.JANUARY){
             tempMonth = calendar2.DECEMBER;
+        }else{
+            --tempMonth;
         }
 
-        calendar2.set(calendar2.YEAR-1,tempMonth,calendar2.DAY_OF_MONTH);
+        calendar2.set(calendar2.YEAR,tempMonth,calendar2.DAY_OF_MONTH);
 
         Mood m2 = new Mood();
         m1.setMoodDate(calendar2.getTime());
@@ -80,6 +86,12 @@ public class FilterTest extends ActivityInstrumentationTestCase2 {
         //Make sure moods are in the correct starting spot
         assertEquals(list.get(0), m2);
         assertEquals(list.get(1), m1);
+
+        //Test filter by month
+        controller.filterListByTime(list, (long)2.628e+9);
+
+        assertEquals(list.get(0),m1);
+
     }
 
     public void testFilterByYear(){
@@ -94,6 +106,8 @@ public class FilterTest extends ActivityInstrumentationTestCase2 {
         int tempMonth = calendar2.MONTH;
         if(calendar2.MONTH == calendar2.JANUARY){
             tempMonth = calendar2.DECEMBER;
+        }else{
+            --tempMonth;
         }
 
         calendar2.set(calendar2.YEAR-1,tempMonth,calendar2.DAY_OF_MONTH);
@@ -107,5 +121,10 @@ public class FilterTest extends ActivityInstrumentationTestCase2 {
         //Make sure moods are in the correct starting spot
         assertEquals(list.get(0), m2);
         assertEquals(list.get(1), m1);
+
+        //Test filter by year
+        controller.filterListByTime(list, (long)3.154e+10);
+
+        assertEquals(list.get(0),m1);
     }
 }
