@@ -55,7 +55,9 @@ public class ElasticSearchController {
         }
     }
 
-    //copied from lonely twitter
+    /**
+     * Adds user to db
+     */
     public static class AddMoodsTask extends AsyncTask<Mood, Void, Void>{
 
         @Override
@@ -83,6 +85,9 @@ public class ElasticSearchController {
         }
     }
 
+    /**
+     * Gets user by id (username)
+     */
     public static class GetMoodsTask extends AsyncTask<String, Void, ArrayList<Mood>> {
         @Override
         protected ArrayList<Mood> doInBackground(String... search_parameters){
@@ -92,17 +97,6 @@ public class ElasticSearchController {
 
             String query;
             query = search_parameters[0];
-//            if(search_parameters[0].equals("")){
-//                query = search_parameters[0];
-//            }
-//
-//            else{
-//                query = "{\n" +
-//                        "   \"query\" : {\n" +
-//                        "       \"term\" : { \"Message\" : \"" + search_parameters[0] + "\" }\n" +
-//                        "   }\n" +
-//                        "}";
-//            }
 
             Search search = new Search.Builder(query)
                     .addIndex(INDEX)
