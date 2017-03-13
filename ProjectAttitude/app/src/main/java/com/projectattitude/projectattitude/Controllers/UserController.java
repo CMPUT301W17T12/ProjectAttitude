@@ -18,17 +18,23 @@ import java.io.OutputStreamWriter;
 
 /**
  * Created by Vuk on 3/10/2017.
+ *
+ *userController is what saves user data into file and loads from file, and keeps track of the most
+ * up to date user. This will be used later for caching the user, to they can login when they are
+ * offline. Current functionality requires user to be online for login
  */
 
 public class UserController {
 
     private static UserController instance = new UserController();
-    private ElasticSearchUserController ES = ElasticSearchUserController.getInstance();
 
     private User activeUser;
     private static String ACTIVE_USER_SAV = "active_user.json";
 
-
+    /**
+     * get current instance of user
+     * @return instance
+     */
     public static UserController getInstance() {
         return instance;
     }
@@ -36,15 +42,25 @@ public class UserController {
     private UserController() {
     }
 
+    /**
+     * get the current active user
+     * @return activeUser
+     */
     public User getActiveUser() {
         return activeUser;
     }
 
+    /**
+     * set most recent active user
+     * @param activeUser
+     */
     public void setActiveUser(User activeUser) {
         this.activeUser = activeUser;
-        //saveInFile();
     }
 
+    /**
+     * Save User data to file
+     */
     public void saveInFile(){
         try {
             String state = Environment.getExternalStorageState();
@@ -70,6 +86,9 @@ public class UserController {
         }
     }
 
+    /**
+     * Load User data to file
+     */
     public void loadFromFile() {
         try {
             String state = Environment.getExternalStorageState();
@@ -82,7 +101,6 @@ public class UserController {
 
                 Gson gson = new Gson();
                 activeUser = gson.fromJson(bufferedReader, User.class);
-                //setCached(true);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

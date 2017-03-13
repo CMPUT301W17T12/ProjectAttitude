@@ -1,7 +1,5 @@
 package com.projectattitude.projectattitude.Objects;
 
-import android.media.Image;
-
 import org.osmdroid.util.GeoPoint;
 
 import java.io.Serializable;
@@ -22,8 +20,6 @@ public class Mood implements Serializable {
     private String emotionState;
     private GeoPoint geoLocation;
     private String trigger;
-    private String explanation;
-    private Image image;
     private String socialSituation;
 
     @JestId
@@ -91,38 +87,6 @@ public class Mood implements Serializable {
      */
     public void setTrigger(String trigger) {
         this.trigger = trigger;
-    }
-
-    /**
-     * Gets the explanation.
-     * @return explanation
-     */
-    public String getExplanation() {
-        return explanation;
-    }
-
-    /**
-     * Sets the explanation.
-     * @param explanation explanation
-     */
-    public void setExplanation(String explanation) {
-        this.explanation = explanation;
-    }
-
-    /**
-     * Gets the image object.
-     * @return image
-     */
-    public Image getImage() {
-        return image;
-    }
-
-    /**
-     * Sets the image.
-     * @param image image
-     */
-    public void setImage(Image image) {
-        this.image = image;
     }
 
     /**

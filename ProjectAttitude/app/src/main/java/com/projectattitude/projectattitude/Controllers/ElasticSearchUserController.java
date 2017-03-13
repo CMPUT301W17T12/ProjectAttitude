@@ -3,7 +3,6 @@ package com.projectattitude.projectattitude.Controllers;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.projectattitude.projectattitude.Objects.Photo;
 import com.projectattitude.projectattitude.Objects.User;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
@@ -19,7 +18,7 @@ import io.searchbox.core.Get;
 import io.searchbox.core.Index;
 
 /**
- * ElasticSearchUserController contains tasks that communicate and update the dtabase with users
+ * ElasticSearchUserController contains tasks that communicate and update the database with users
  */
 
 public class ElasticSearchUserController {
@@ -149,63 +148,6 @@ public class ElasticSearchUserController {
             return true;
         }
     }
-
-    public static class AddPhotoTask extends AsyncTask<Photo, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Photo...search_parameters){
-            verifySettings();
-
-            Index index = new Index.Builder(search_parameters[0]).index(INDEX).type("Photo").build();
-            //Log.d("photoString1", search_parameters[0]);
-
-            try {
-                DocumentResult result = client.execute(index);
-
-                if (result.isSucceeded()){
-                    Log.d("photoSynced", result.getId());
-                }
-                else {
-                    Log.i("photoSync3", "Elasticsearch was not able to add photo.");
-                }
-            }
-            catch (IOException e) {
-                Log.d("photoSync", "The application failed to build and send the Photo");
-            }
-            return true;
-        }
-    }
-
-
-//    /**
-//     * doesnt work for some reason
-//     */
-//    public static class UpdateUserTask extends  AsyncTask<User, Void, Void> {
-//        @Override
-//        protected Void doInBackground(User... search_parameters) {
-//            verifySettings();
-//
-//            //for (User user : users) {
-//                Update update = new Update.Builder(search_parameters[0]).index(INDEX).type(TYPE).id(search_parameters[0].getUserName()).build();
-//            Log.d("Username:", search_parameters[0].getUserName());
-//            Log.d("Username moodList", search_parameters[0].getMoodList().toString());
-//
-//                try {
-//                    // where is the client
-//                    JestResult result = client.execute(update);
-//                    //Log.d("InAsyncTask ID", result.getId());
-//                    if (result.isSucceeded()) {
-//                        //Log.d("In AsyncTask ID", result.getId());
-//                    } else {
-//                        Log.i("Error", "Elasticsearch was not able to update the user.");
-//                    }
-//                } catch (Exception e) {
-//                    Log.i("Error", "The application failed to build and send the user");
-//                }
-//            //}
-//            return null;
-//        }
-//    }
 
     //copied from lonelytwitter
     private static void verifySettings(){

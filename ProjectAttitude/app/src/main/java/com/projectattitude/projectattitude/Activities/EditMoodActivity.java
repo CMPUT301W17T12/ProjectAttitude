@@ -84,6 +84,7 @@ public class EditMoodActivity extends MoodActivity {
         socialSituationSpinner.setSelection(((ArrayAdapter<String>) socialSituationSpinner
                 .getAdapter()).getPosition(mood.getSocialSituation()));
 
+        //decode the base 64 image
         byte[] imageBytes = Base64.decode(mood.getPhoto(), Base64.DEFAULT);
         final Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
         imageView.setImageBitmap(decodedImage);
@@ -202,15 +203,6 @@ also error checks trigger input field for character length*/
     private void createLocation(){
         //GeoPoint myLocation = LocationServices.FusedLocationApi.getLastLocation()
         //newMood.setGeoLocation(myLocation);
-        return;
-    }
-
-    /**
-     * I don't know what this does either
-     * @see CreateMoodActivity
-     * @return an Image most likely
-     */
-    private void createPicture(){
         return;
     }
 }

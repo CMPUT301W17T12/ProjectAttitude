@@ -24,14 +24,12 @@ import com.projectattitude.projectattitude.Controllers.ElasticSearchUserControll
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
-
+import com.projectattitude.projectattitude.Objects.NetWorkChangeReceiver;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * The MainActivity is where the primary information for the user can be found. This is achieved by
@@ -52,10 +50,6 @@ public class MainActivity extends AppCompatActivity {
     private Integer itemPosition;
 
     private UserController userController = UserController.getInstance();
-
-    private static final String LOG_TAG = "CheckNetworkStatus";
-    private NetWorkChangeReceiver receiver;
-    private boolean isConnected = false;
 
     private  int listItem; //This is the index of the item pressed in the list
 
@@ -94,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Load user and mood, and update current displayed list
         userController.loadFromFile();
-        Log.d("userController load", userController.getActiveUser().getMoodList().toString());
+        //Log.d("userController load", userController.getActiveUser().getMoodList().toString());
         refreshMoodList();
 
         registerForContextMenu(moodListView);
@@ -117,12 +111,12 @@ public class MainActivity extends AppCompatActivity {
 
         try{
             ArrayList<Mood> tempList = userController.getActiveUser().getMoodList();
-            Log.d("moodlist1", tempList.toString());
+            //Log.d("moodlist1", tempList.toString());
             refreshMoodList();
-            Log.d("moodList2", moodList.toString());
+            //Log.d("moodList2", moodList.toString());
         }
         catch(Exception e){
-            Log.d("Error", "Failed to get the moods from the async object");
+            //Log.d("Error", "Failed to get the moods from the async object");
         }
     }
 

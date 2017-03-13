@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.projectattitude.projectattitude.Abstracts.MoodActivity;
 import com.projectattitude.projectattitude.Objects.DatePickerEditText;
 import com.projectattitude.projectattitude.Objects.Mood;
-import com.projectattitude.projectattitude.Objects.Photo;
 import com.projectattitude.projectattitude.R;
 
 import java.io.ByteArrayOutputStream;
@@ -31,9 +30,9 @@ import java.io.ByteArrayOutputStream;
 public class CreateMoodActivity extends MoodActivity {
 
     private Mood newMood;   // initializing the mood object
-    private Photo newPhoto;
     private ImageView imageView;
     private byte[] byteArray;
+    //string to contain encoded bitmap
     private String s;
 
     @Override
@@ -70,24 +69,15 @@ public class CreateMoodActivity extends MoodActivity {
                     newMood.setMoodDate(date.getDate());
                     newMood.setTrigger(etTrigger.getText().toString().trim());
                     newMood.setSocialSituation(socialSituationSpinner.getSelectedItem().toString());
-                    //newMood.setPhoto(imageView.getDrawingCache());
-                   // newMood.setPhoto(byteArray);
-                    //newMood.setPhoto(s);
                     newMood.setPhoto(s);
-//                    newPhoto = new Photo();
-//                    newPhoto.setPhoto(s);
-                    //newPhoto.setPhoto(byteArray);
-
 
                     /*if(saveLocation.isChecked()){ //TODO check location
                         GeoPoint myLocation = LocationServices.FusedLocationApi.getLastLocation()
                         newMood.setGeoLocation(myLocation);
                     }*/
 
-
                     Intent returnCreateMoodIntent = new Intent();
                     returnCreateMoodIntent.putExtra("addMoodIntent", newMood);
-                    //returnCreateMoodIntent.putExtra("addPhotoIntent", newPhoto);
                     setResult(RESULT_OK, returnCreateMoodIntent);
                     finish();
                 }
@@ -213,11 +203,4 @@ public class CreateMoodActivity extends MoodActivity {
         return "";
     }
 
-    /**
-     * I don't know what this does either
-     * @return an Image most likely
-     */
-    private void createPicture(){
-        return;
-    }
 }
