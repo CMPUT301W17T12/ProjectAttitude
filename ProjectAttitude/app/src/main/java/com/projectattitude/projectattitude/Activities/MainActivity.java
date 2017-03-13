@@ -1,3 +1,28 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2017 CMPUT301W17T12
+ * Authors rsauveho vuk bfleyshe henrywei cs3
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.projectattitude.projectattitude.Activities;
 
 import android.content.Context;
@@ -24,8 +49,8 @@ import com.projectattitude.projectattitude.Controllers.ElasticSearchUserControll
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
+import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.Objects.NetWorkChangeReceiver;
-import com.projectattitude.projectattitude.Objects.Photo;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
@@ -191,10 +216,16 @@ public class MainActivity extends AppCompatActivity {
      * This method takes a mood the user made and brings them to the edit mood view
      */
     private void editMood(Mood returnedMood){
-        userController.getActiveUser().getMoodList().set(itemPosition,returnedMood);
-        userController.saveInFile();
-        refreshMoodList();
-        moodAdapter.notifyDataSetChanged();
+        ArrayList<Mood> tmpList = userController.getActiveUser().getMoodList();
+        for (int i = 0; i < tmpList.size(); i++) {
+            if (tmpList.get(i).equals(returnedMood)){
+                userController.getActiveUser().getMoodList().set(i, returnedMood);
+                userController.saveInFile();
+                refreshMoodList();
+                moodAdapter.notifyDataSetChanged();
+                break;
+            }
+        }
 
         //updating db
         if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
@@ -211,18 +242,24 @@ public class MainActivity extends AppCompatActivity {
         //Log.d("deleting", moodList.get(i).toString());
         //Mood delMood = moodList.get(i);
         Log.d("deleting", userController.getActiveUser().getMoodList().get(i).toString());
-        Mood delMood = userController.getActiveUser().getMoodList().get(i);
-        //moodList = controller.getMyMoodList().getMoodList();
-        //moodList.remove(delMood);
-        userController.getActiveUser().getMoodList().remove(delMood);
-        //controller.setMyMoodList(new MoodList(moodList));
-        //Log.d("deleting", moodList.get(i).toString());
-        userController.saveInFile();
-        Log.d("userController deleted", userController.getActiveUser().getMoodList().toString());
 
-        refreshMoodList();
-        moodAdapter.notifyDataSetChanged();
+        ArrayList<Mood> tmpList = userController.getActiveUser().getMoodList();
+        for (int j = 0; j < tmpList.size(); j++) {
+            if (tmpList.get(j).equals(moodList.get(i))) {
+                Mood delMood = userController.getActiveUser().getMoodList().get(j);
+                //moodList = controller.getMyMoodList().getMoodList();
+                //moodList.remove(delMood);
+                userController.getActiveUser().getMoodList().remove(delMood);
+                //controller.setMyMoodList(new MoodList(moodList));
+                //Log.d("deleting", moodList.get(i).toString());
+                userController.saveInFile();
+                Log.d("userController deleted", userController.getActiveUser().getMoodList().toString());
 
+                refreshMoodList();
+                moodAdapter.notifyDataSetChanged();
+                break;
+            }
+        }
         //updating db
         if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
             ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
@@ -235,6 +272,10 @@ public class MainActivity extends AppCompatActivity {
      * @param item - one of the sort options from the sort menu
      */
     public void sortMood(MenuItem item){
+        if(item == null){
+            controller.sortList(moodList, "Sort"); //True = sorting by date
+            return;
+        }
         switch (item.getItemId()) {
             case R.id.dateOption:
                 controller.sortList(moodList, "Sort"); //True = sorting by date
@@ -369,6 +410,9 @@ public class MainActivity extends AppCompatActivity {
      * Later may take a profile as an argument to go to someone elses profile.
      */
     public void viewProfile(MenuItem item){
+        Intent intent = new Intent(MainActivity.this, ViewProfileActivity.class);
+        intent.putExtra("moodCount", moodList.size());
+        startActivity(intent);
     }
 
     /**
@@ -391,6 +435,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Mood> newList = userController.getActiveUser().getMoodList();
         moodList.clear();
         moodList.addAll(newList);
+        sortMood(null);
     }
 
     //accept returned information from activities
@@ -486,14 +531,14 @@ public class MainActivity extends AppCompatActivity {
                 edit = false;//Makes it so the edit window will not pop up
                 Intent intentView = new Intent(MainActivity.this, ViewMoodActivity.class);
                 //intentView.putExtra("mood", moodList.get(itemPosition));
-                intentView.putExtra("mood", userController.getActiveUser().getMoodList().get(itemPosition));
+                intentView.putExtra("mood", moodList.get(itemPosition));
                 startActivityForResult(intentView, 1);
 
             case R.id.edit: //When edit is pressed
                 if (edit) {
                     Intent intentEdit = new Intent(MainActivity.this, EditMoodActivity.class);
 //                    intentEdit.putExtra("mood", moodList.get(itemPosition));
-                    intentEdit.putExtra("mood", userController.getActiveUser().getMoodList().get(itemPosition));
+                    intentEdit.putExtra("mood", moodList.get(itemPosition));
                     startActivityForResult(intentEdit, 2); //Handled in the results section
                     listItem = itemPosition;
                 }
