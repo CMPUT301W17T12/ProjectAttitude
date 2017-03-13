@@ -83,14 +83,14 @@
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="145dp"
                 app:srcCompat="@drawable/quantum_ic_art_track_grey600_48" />
 
-            <CheckBox
-                android:id="@+id/saveLocation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/save_location" />
+            <!--<CheckBox-->
+            <!--android:id="@+id/saveLocation"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/save_location" />-->
 
             <Button
                 android:id="@+id/addPhoto"
@@ -102,14 +102,13 @@
                 android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight=".05"
                 android:text="@string/save_button" />
 
-            <Button
-                android:id="@+id/cancelButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/cancel_button" />
+            <!--<Button-->
+            <!--android:id="@+id/cancelButton"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/cancel_button" />-->
         </LinearLayout>
     </ScrollView>
 
