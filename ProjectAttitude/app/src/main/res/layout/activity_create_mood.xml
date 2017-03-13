@@ -21,49 +21,50 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
-                android:text="@string/date_label"
+                android:id="@+id/dateLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/dateLabel"
-                android:labelFor="@+id/dateField"/>
+                android:labelFor="@+id/dateField"
+                android:text="@string/date_label" />
 
             <EditText
                 android:id="@+id/dateField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"
-                android:inputType="date"
-                android:hint="Select Date..." />
+                android:hint="Select Date..."
+                android:inputType="date" />
 
             <TextView
-                android:text="@string/emotional_state_label"
+                android:id="@+id/emotionalStateLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/emotionalStateLabel"
-                android:labelFor="@+id/emotionalStateField"/>
+                android:labelFor="@+id/emotionalStateField"
+                android:text="@string/emotional_state_label" />
 
             <Spinner
                 android:id="@+id/emotionSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:entries="@array/emotional_state"
-                android:prompt="@string/emotionSpinner"
+                android:paddingBottom="@dimen/activity_vertical_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
-                android:paddingBottom="@dimen/activity_vertical_margin"/>
+                android:prompt="@string/emotionSpinner" />
 
             <TextView
-                android:text="@string/trigger_label"
+                android:id="@+id/triggerLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/triggerLabel"/>
+                android:text="@string/trigger_label" />
+
             <EditText
+                android:id="@+id/triggerField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:id="@+id/triggerField"/>
+                android:ems="10" />
 
             <TextView
                 android:id="@+id/socialSituationLabel"
@@ -72,24 +73,24 @@
                 android:text="@string/social_situation_label" />
 
             <Spinner
-                android:paddingTop="@dimen/activity_vertical_margin"
+                android:id="@+id/spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinner"
                 android:entries="@array/social_situations"
-                android:prompt="@string/spinner"/>
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:prompt="@string/spinner" />
 
             <ImageView
+                android:id="@+id/imageView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/quantum_ic_art_track_grey600_48"
-                android:id="@+id/imageView" />
+                android:layout_height="145dp"
+                app:srcCompat="@drawable/quantum_ic_art_track_grey600_48" />
 
-            <CheckBox
-                android:id="@+id/saveLocation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/save_location" />
+            <!--<CheckBox-->
+            <!--android:id="@+id/saveLocation"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/save_location" />-->
 
             <Button
                 android:id="@+id/addPhoto"
@@ -101,14 +102,13 @@
                 android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight=".05"
                 android:text="@string/save_button" />
 
-            <Button
-                android:id="@+id/cancelButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/cancel_button" />
+            <!--<Button-->
+            <!--android:id="@+id/cancelButton"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/cancel_button" />-->
         </LinearLayout>
     </ScrollView>
 

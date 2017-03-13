@@ -60,6 +60,7 @@ public class ViewMoodActivity extends MoodActivity {
         trigger.setText(mood.getTrigger());
         socialSituation.setText(mood.getSocialSituation());
 
+        //decode base64 image stored in User
         byte[] imageBytes = Base64.decode(mood.getPhoto(), Base64.DEFAULT);
         Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
         imageView.setImageBitmap(decodedImage);
