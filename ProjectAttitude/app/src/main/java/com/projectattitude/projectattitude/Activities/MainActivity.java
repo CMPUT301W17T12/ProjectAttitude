@@ -242,18 +242,24 @@ public class MainActivity extends AppCompatActivity {
         //Log.d("deleting", moodList.get(i).toString());
         //Mood delMood = moodList.get(i);
         Log.d("deleting", userController.getActiveUser().getMoodList().get(i).toString());
-        Mood delMood = userController.getActiveUser().getMoodList().get(i);
-        //moodList = controller.getMyMoodList().getMoodList();
-        //moodList.remove(delMood);
-        userController.getActiveUser().getMoodList().remove(delMood);
-        //controller.setMyMoodList(new MoodList(moodList));
-        //Log.d("deleting", moodList.get(i).toString());
-        userController.saveInFile();
-        Log.d("userController deleted", userController.getActiveUser().getMoodList().toString());
 
-        refreshMoodList();
-        moodAdapter.notifyDataSetChanged();
+        ArrayList<Mood> tmpList = userController.getActiveUser().getMoodList();
+        for (int j = 0; j < tmpList.size(); j++) {
+            if (tmpList.get(j).equals(moodList.get(i))) {
+                Mood delMood = userController.getActiveUser().getMoodList().get(j);
+                //moodList = controller.getMyMoodList().getMoodList();
+                //moodList.remove(delMood);
+                userController.getActiveUser().getMoodList().remove(delMood);
+                //controller.setMyMoodList(new MoodList(moodList));
+                //Log.d("deleting", moodList.get(i).toString());
+                userController.saveInFile();
+                Log.d("userController deleted", userController.getActiveUser().getMoodList().toString());
 
+                refreshMoodList();
+                moodAdapter.notifyDataSetChanged();
+                break;
+            }
+        }
         //updating db
         if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
             ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
