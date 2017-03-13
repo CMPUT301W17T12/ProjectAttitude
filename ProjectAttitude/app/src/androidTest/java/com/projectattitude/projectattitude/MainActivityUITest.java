@@ -28,14 +28,13 @@ package com.projectattitude.projectattitude;
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.EditText;
-import android.widget.TextView;
 
+import com.projectattitude.projectattitude.Activities.CreateMoodActivity;
 import com.projectattitude.projectattitude.Activities.EditMoodActivity;
 import com.projectattitude.projectattitude.Activities.LoginActivity;
 import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Activities.ViewMoodActivity;
 import com.robotium.solo.Solo;
-import com.projectattitude.projectattitude.Activities.CreateMoodActivity;
 
 import java.util.Date;
 
@@ -108,7 +107,6 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         logIn(solo);
         createHappy(solo);
 
-
         solo.clickLongInList(0);
         assertTrue(solo.searchText("View"));
         solo.clickOnText("View");
@@ -117,8 +115,94 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.clickOnText("Delete");
         solo.assertCurrentActivity("Wrong activity", MainActivity.class);
         assertFalse(solo.searchText("Happiness"));
+    }
 
+    public void testFilterByDay(){
+        logIn(solo);
+        createHappy(solo);
 
+        solo.clickLongInList(0);
+        assertTrue(solo.searchText("Edit"));
+        solo.clickOnText("Edit");
+        solo.assertCurrentActivity("Wrong activity", EditMoodActivity.class);
+        assertTrue(solo.searchText("Happiness"));
+        solo.clickOnText("2017");
+
+        Date date = new Date();
+        solo.setDatePicker(0, 2017, 2, date.getDay());
+
+        solo.clickOnText("Ok"); // TODO intent testing doesn't click ok for some reason
+
+        assertTrue(solo.searchText("Save"));
+        solo.clickOnText("Save");
+
+        createHappy(solo);  //creating second mood
+
+        solo.clickLongInList(1);
+        assertTrue(solo.searchText("Edit"));
+        solo.clickOnText("Edit");
+        solo.assertCurrentActivity("Wrong activity", EditMoodActivity.class);
+        assertTrue(solo.searchText("Happiness"));
+
+        assertTrue(solo.searchText("Anger"));
+        solo.clickOnText("Anger");  //changing to anger emotion to distinguish
+
+        solo.setDatePicker(0, 2017, 3, 17);
+
+        solo.clickOnText("Ok");
+
+        assertTrue(solo.searchText("Save"));
+        solo.clickOnText("Save");
+
+        solo.clickOnButton(R.id.filterButton);
+        solo.clickOnText("Filter");
+        solo.clickOnText("Time");
+        solo.clickOnText("Day");
+
+        assertTrue(solo.searchText("Happiness"));
+        assertFalse(solo.searchText("Anger"));
+
+        // clean up
+        deleteFirstMood();
+        solo.clickOnButton(R.id.filterButton);
+        solo.clickOnText("Filter");
+        solo.clickOnText("All Moods");
+        deleteFirstMood();
+    }
+
+    public void testFilterMood(){
+        logIn(solo);
+        createHappy(solo);
+
+        createHappy(solo);  // creating a second mood as happy and editing it to be angry
+        solo.clickLongInList(1);
+        solo.clickOnText("Edit");
+        solo.clickOnText("Happiness");
+        solo.clickOnText("Anger");
+        solo.clickOnText("Save");
+
+        solo.clickOnButton(R.id.filterButton);  //filtering by anger
+        solo.clickOnText("Filter");
+        solo.clickOnText("Emotions");
+        solo.clickOnText("Anger");
+
+        assertTrue(solo.searchText("Anger"));   // only anger should be present
+        assertFalse(solo.searchText("Happiness"));
+
+        solo.clickLongOnText("Anger");
+        solo.clickOnText("Edit");
+        assertTrue(solo.searchText("Anger"));
+        solo.clickOnText("Save");
+        solo.clickLongInList(0);
+        solo.clickOnText("View");
+        assertTrue(solo.searchText("Anger"));
+
+        // clean up
+        deleteFirstMood();
+        solo.clickOnButton(R.id.filterButton);
+        solo.clickOnText("Filter");
+        solo.clickOnText("All Moods");
+        deleteFirstMood();
     }
 
     public void deleteFirstMood(){ //deletes the first mood
