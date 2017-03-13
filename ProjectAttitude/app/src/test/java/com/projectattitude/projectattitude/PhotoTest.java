@@ -23,34 +23,34 @@
  * SOFTWARE.
  */
 
-package com.projectattitude.projectattitude.Objects;
+package com.projectattitude.projectattitude;
 
-import java.util.HashMap;
-import java.util.Map;
+import android.test.ActivityInstrumentationTestCase2;
 
-import static android.graphics.Color.rgb;
+import com.projectattitude.projectattitude.Activities.MainActivity;
 
 /**
- * Created by Chris on 3/8/2017.
- * This object functions the exact same as a HashMap, except it contains preset values for
- * associating color and emotion
- * @See HashMap
- *
- * How to use:
- *      ColorMap<String, Integer> map = new ColorMap<>(); //Creating the Hash
- *      r1.setBackgroundColor((Integer) map.get(mood.getEmotionState())); //r1 is the view, have to cast to int though
+ * Created by bfleyshe on 3/13/17.
  */
 
-public class ColorMap<S, I extends Number> extends HashMap {
-    public ColorMap(){
-        this.put("Anger", rgb(255, 0, 0)); //red
-        this.put("Confusion", rgb(217, 217, 217)); //grey
-        this.put("Disgust", rgb(179, 179, 0)); //green/yellow
-        this.put("Fear", rgb(46, 46, 31)); //black
-        this.put("Happiness", rgb(68, 204, 0)); //green
-        this.put("Sadness", rgb(191, 128, 64)); //brown
-        this.put("Shame", rgb(51, 153, 255)); //blue
-        this.put("Surprise", rgb(204, 51, 255)); //purple
-        this.put("", rgb(255, 255, 255));
+public class PhotoTest extends ActivityInstrumentationTestCase2 {
+
+    public PhotoTest() {
+        super(MainActivity.class);
+    }
+
+    public void testGetPhoto(){
+        Photo photo = new Photo();
+
+        photo.setPhoto("testPhoto");
+        assertEquals("testPhoto", photo.getPhoto());
+    }
+
+
+    public void testSetPhoto(){
+        Photo photo = new Photo();
+
+        photo.setPhoto("testPhoto");
+        assertEquals("testPhoto", photo.getPhoto());
     }
 }

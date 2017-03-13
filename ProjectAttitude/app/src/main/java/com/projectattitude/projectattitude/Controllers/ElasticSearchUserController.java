@@ -1,9 +1,33 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2017 CMPUT301W17T12
+ * Authors rsauveho vuk bfleyshe henrywei cs3
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.projectattitude.projectattitude.Controllers;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.projectattitude.projectattitude.Objects.Photo;
 import com.projectattitude.projectattitude.Objects.User;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
@@ -17,10 +41,9 @@ import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
-import io.searchbox.core.Update;
 
 /**
- * Created by Vuk on 3/9/2017.
+ * ElasticSearchUserController contains tasks that communicate and update the dtabase with users
  */
 
 public class ElasticSearchUserController {
@@ -30,6 +53,10 @@ public class ElasticSearchUserController {
     protected ElasticSearchUserController() {
     }
 
+    /**
+     * gets instance of the db
+     * @return instance
+     */
     public static ElasticSearchUserController getInstance() {
         return instance;
     }
@@ -42,7 +69,12 @@ public class ElasticSearchUserController {
     //index on server
     private static final String INDEX = "cmput301w17t12";
 
-
+    /**
+     * function used to check if user exists and get them from db, or if they dont exist, add them
+     * to db
+     * @param user
+     * @return boolean
+     */
     public boolean verifyUser(User user) {
         GetUserTask getUserTask = new GetUserTask();
         User temp = new User();
@@ -66,15 +98,17 @@ public class ElasticSearchUserController {
         return  false;
     }
 
+    /**
+     * delete user from db
+     * @param user
+     * @return boolean
+     */
     public boolean deleteUser(User user){
         DeleteUserTask deleteUserTask = new DeleteUserTask();
         deleteUserTask.execute(user);
         return true;
     }
 
-//    public void saveInFile(){
-//
-//    }
 
     //add user to ES DB
     public static class AddUserTask extends AsyncTask<User, Void, Boolean> {
@@ -136,86 +170,39 @@ public class ElasticSearchUserController {
             catch(IOException e) {
 
             }
-
             return true;
         }
     }
 
-    public static class AddPhotoTask extends AsyncTask<Photo, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Photo...search_parameters){
-            verifySettings();
-
-            Index index = new Index.Builder(search_parameters[0]).index(INDEX).type("Photo").build();
-            //Log.d("photoString1", search_parameters[0]);
-
-            try {
-                DocumentResult result = client.execute(index);
-
-                if (result.isSucceeded()){
-                    Log.d("photoSynced", result.getId());
-                }
-                else {
-                    Log.i("photoSync3", "Elasticsearch was not able to add photo.");
-                }
-            }
-            catch (IOException e) {
-                Log.d("photoSync", "The application failed to build and send the Photo");
-            }
-            return true;
-        }
-
-        public static class GetPhotoTask extends AsyncTask<String, Void, User> {
-
-            @Override
-            protected User doInBackground(String... search_parameters) {
-                verifySettings();
-                Get get = new Get.Builder(INDEX, search_parameters[0]).type(TYPE).id(search_parameters[0]).build();
-
-                User Photo = null;
-                try {
-                    JestResult result = client.execute(get);
-                    Photo = result.getSourceAsObject(User.class);
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return Photo;
-            }
-        }
-    }
-
-
-    /**
-     * doesnt work for some reason
-     */
-    public static class UpdateUserTask extends  AsyncTask<User, Void, Void> {
-        @Override
-        protected Void doInBackground(User... search_parameters) {
-            verifySettings();
-
-            //for (User user : users) {
-                Update update = new Update.Builder(search_parameters[0]).index(INDEX).type(TYPE).id(search_parameters[0].getUserName()).build();
-            Log.d("Username:", search_parameters[0].getUserName());
-            Log.d("Username moodList", search_parameters[0].getMoodList().toString());
-
-                try {
-                    // where is the client
-                    JestResult result = client.execute(update);
-                    //Log.d("InAsyncTask ID", result.getId());
-                    if (result.isSucceeded()) {
-                        //Log.d("In AsyncTask ID", result.getId());
-                    } else {
-                        Log.i("Error", "Elasticsearch was not able to update the user.");
-                    }
-                } catch (Exception e) {
-                    Log.i("Error", "The application failed to build and send the user");
-                }
-            //}
-            return null;
-        }
-    }
+//    /**
+//     * doesnt work for some reason
+//     */
+//    public static class UpdateUserTask extends  AsyncTask<User, Void, Void> {
+//        @Override
+//        protected Void doInBackground(User... search_parameters) {
+//            verifySettings();
+//
+//            //for (User user : users) {
+//                Update update = new Update.Builder(search_parameters[0]).index(INDEX).type(TYPE).id(search_parameters[0].getUserName()).build();
+//            Log.d("Username:", search_parameters[0].getUserName());
+//            Log.d("Username moodList", search_parameters[0].getMoodList().toString());
+//
+//                try {
+//                    // where is the client
+//                    JestResult result = client.execute(update);
+//                    //Log.d("InAsyncTask ID", result.getId());
+//                    if (result.isSucceeded()) {
+//                        //Log.d("In AsyncTask ID", result.getId());
+//                    } else {
+//                        Log.i("Error", "Elasticsearch was not able to update the user.");
+//                    }
+//                } catch (Exception e) {
+//                    Log.i("Error", "The application failed to build and send the user");
+//                }
+//            //}
+//            return null;
+//        }
+//    }
 
     //copied from lonelytwitter
     private static void verifySettings(){
