@@ -30,8 +30,6 @@ public class Mood implements Serializable {
     private String id;
     private String photo;
 
-//    public Mood(String s) {
-//    }
 
     /**
      * Initiates the mood object.
@@ -178,11 +176,19 @@ public class Mood implements Serializable {
         this.id = id;
     }
 
+    /**
+     * Sets photo variable as string of 64 bit encoded
+     * @param photo photo
+     */
     public void setPhoto(String photo){
-        //Log.d("photoClassString", photo);
+
         this.photo = photo;
     }
-//
+
+    /**
+     * Returns photo as string
+     * @return photo
+     */
     public String getPhoto(){
         return photo;
     }

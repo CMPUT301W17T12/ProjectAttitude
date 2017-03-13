@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -33,16 +32,12 @@ import java.util.Date;
 
 public class EditMoodActivity extends MoodActivity {
     Button completeButton;
-    Button cancelButton;
-
-    Intent intent;
 
     DatePickerEditText date;
     Spinner emotionSpinner;
     EditText etTrigger;
     Spinner socialSituationSpinner;
     private Mood newMood;
-    CheckBox saveLocation;
 
     private ImageView imageView;
     private byte[] byteArray;
