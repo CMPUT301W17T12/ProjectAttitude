@@ -19,11 +19,7 @@ public class User implements Serializable {
     private ArrayList<Mood> moods;
 
     private String id;
-
-    //Initiates the user with a string
-//    public User(String s){
-//    }
-
+  
     /**
      * Creates the user object as well as initiating an arrayList of mood objects.
      */

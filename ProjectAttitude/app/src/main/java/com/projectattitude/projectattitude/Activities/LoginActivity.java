@@ -19,15 +19,14 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * LoginActivity allows users to log into the service and connect to the Database.
- * Users who do not currently have an account can create an account by entering a username
- * and password. Otherwise, entering a username with a valid corresponding password
+ * Users who do not currently have an account can create an account by entering a username a username
+ * and if its unique, it creates the account for them, Otherwise, entering a username with a valid existing username
  * will log into the account, and load the appropriate information on the database in regards
  * to that user.
  */
 public class LoginActivity extends AppCompatActivity {
 
     private EditText usernameView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         final Button signInButton = (Button) findViewById(R.id.signInButton);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {   // button for signing in
+            public void onClick(View v) {
                 usernameView.setError(null);
 
                 User user = new User();
@@ -48,8 +47,7 @@ public class LoginActivity extends AppCompatActivity {
                 user.setUserName(username);
 
                 Boolean cancel = false;
-
-                // If username exists continue with log in, otherwise create new account
+                //no username entered
                 if (username.equals("")){
                     usernameView.setError(getString(R.string.error_field_required));
                     cancel = true;
@@ -59,10 +57,9 @@ public class LoginActivity extends AppCompatActivity {
                     usernameView.requestFocus();
                 }
                 else {
-
                     if(isNetworkAvailable()){
                         //need to get a static instance, check for existence of user
-                        //user doesnt exist
+                        //user does not exist
                         if (ElasticSearchUserController.getInstance().verifyUser(user)) {
 
                             //creates user using ElasticSearchUserController and switch to MainActivity
@@ -95,7 +92,6 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Must be connected to internet to login!",
                                 Toast.LENGTH_LONG).show();
                     }
-
                 }
             }
         });
@@ -104,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * This returns a boolean value if the device is connected to the internet
      * Taken from http://stackoverflow.com/questions/5474089/how-to-check-currently-internet-connection-is-available-or-not-in-android
-     * @return
+     * @return boolean
      */
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager

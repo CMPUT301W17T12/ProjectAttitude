@@ -1,11 +1,13 @@
 package com.projectattitude.projectattitude.Objects;
 
-import java.util.HashMap;
-
 import com.projectattitude.projectattitude.R;
+
+import java.util.HashMap;
 
 /**
  * Created by rfsh on 2017-03-13.
+ * This object functions the exact same as a HashMap, except it contains preset values for
+ * associating emoticons and emotion
  */
 
 public class EmoticonMap<S, I extends Number> extends HashMap {

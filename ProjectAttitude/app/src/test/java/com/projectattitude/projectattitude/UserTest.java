@@ -19,18 +19,20 @@ public class UserTest extends ActivityInstrumentationTestCase2{
     }
 
     public void testGetUserName(){
-        User user = new User("UserName");
+        User user = new User();
+        user.setUserName("UserName");
         assertEquals("UserName", user.getUserName());
     }
 
     public void testSetUserName(){
-        User user = new User("UserName");
+        User user = new User();
         user.setUserName("newUserName");
         assertEquals("newUserName", user.getUserName());
     }
 
     public void testGetFollowList(){
-        User user = new User("UserName");
+        User user = new User();
+        user.setUserName("UserName");
         ArrayList<String> testArray = new ArrayList<String>();
 
         assertEquals(null, user.getFollowList());
@@ -40,7 +42,8 @@ public class UserTest extends ActivityInstrumentationTestCase2{
     }
 
     public void testGetFollowedList(){
-        User user = new User("UserName");
+        User user = new User();
+        user.setUserName("UserName");
         ArrayList<String> testArray = new ArrayList<String>();
 
         assertEquals(null, user.getFollowedList());
@@ -50,28 +53,32 @@ public class UserTest extends ActivityInstrumentationTestCase2{
     }
 
     public void testAddFollow(){
-        User user = new User("UserName");
+        User user = new User();
+        user.setUserName("UserName");
 
         user.addFollow("followName");
         assertTrue(user.getFollowList() != null);
     }
 
     public void testAddFollowed(){
-        User user = new User("UserName");
+        User user = new User();
+        user.setUserName("UserName");
 
         user.addFollowed("followedName");
         assertTrue(user.getFollowedList() != null);
     }
 
     public void testSetID(){
-        User user = new User("UserName");
+        User user = new User();
+        user.setUserName("UserName");
 
         user.setId("1234");
         assertEquals(user.getId(), "1234");
     }
 
     public void testGetID(){
-        User user = new User("UserName");
+        User user = new User();
+        user.setUserName("UserName");
 
         user.setId("1234");
         assertEquals(user.getId(), "1234");

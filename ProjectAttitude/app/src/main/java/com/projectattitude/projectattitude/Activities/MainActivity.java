@@ -38,7 +38,9 @@ import java.util.Date;
  * syncing to the database individually for each username. A list of moods
  * is displayed filled with moods created by the user. Long clicking on a mood will provide
  * additional options such as to view the mood, edit the mood or delete the mood. Filtering
- * is available in the top right corner, as well as search functionality.
+ * is available in the top right corner, as well as search functionality. For filtering, after
+ * applying a filter, you must click on filter, then "All Moods" to refresh the list to filter.
+ * Searching only works for searching through reasons (triggers) of moods
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -85,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
 
         //adapter is fed from moodList inside user
-        moodAdapter = new MoodMainAdapter(this, moodList); //userController.getActiveUser().getMoodList()
+        moodAdapter = new MoodMainAdapter(this, moodList);
         moodListView.setAdapter(moodAdapter);
         viewingMyList = false;
         Button viewMapButton = (Button) findViewById(R.id.viewMapButton);
@@ -114,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(netWorkChangeReceiver, new IntentFilter("networkConnectBroadcast"));
 
         try{
-//            ArrayList<Mood> tempList = getMoodsTask.get();
             ArrayList<Mood> tempList = userController.getActiveUser().getMoodList();
             Log.d("moodlist1", tempList.toString());
             refreshMoodList();
@@ -123,10 +124,6 @@ public class MainActivity extends AppCompatActivity {
         catch(Exception e){
             Log.d("Error", "Failed to get the moods from the async object");
         }
-
-//        controller.setMyMoodList(new MoodList(moodList));
-//        moodAdapter = new MoodMainAdapter(this, moodList);
-//        moodListView.setAdapter(moodAdapter);
     }
 
     //-------POPUP MENU FUNCTIONS-------
@@ -407,43 +404,27 @@ public class MainActivity extends AppCompatActivity {
     // requestCode 2 = Edit Mood
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Mood returnedMood;
-        Photo returnedPhoto;
 
-        //CreateMoodActivity results, updating mood listview
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
-                returnedPhoto = (Photo) data.getSerializableExtra("addPhotoIntent");
 
-                //moodList.add(returnedMood);
                 userController.getActiveUser().getMoodList().add(returnedMood);
                 userController.saveInFile();
 
                 refreshMoodList();
                 moodAdapter.notifyDataSetChanged();
-                //RefreshMoodList accomplishes the next 2 lines of code already
-                //moodList.add(returnedMood);
-                //controller.setMyMoodList(new MoodList(moodList));
+
                 //TODO: Only update moodList if displaying myMoodList, not following list, otherwise moodList = followingList
                 //This to-do applies to the viewMoodActivity and EditMoodActivity result too
 
                 Log.d("userController Added", userController.getActiveUser().getMoodList().toString());
 
-//                if(returnedPhoto.getPhoto() == ""){
-                    if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-                        ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-                        addUserTask.execute(UserController.getInstance().getActiveUser());
-                    }
-//                }
-//                else {
-//                    ElasticSearchUserController.AddPhotoTask addPhotoTask = new ElasticSearchUserController.AddPhotoTask();
-//                    addPhotoTask.execute(returnedPhoto);
-//
-//                    if (ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())) {
-//                        ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-//                        addUserTask.execute(UserController.getInstance().getActiveUser());
-//                    }
-//                }
+                //update the user
+                if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+                    addUserTask.execute(UserController.getInstance().getActiveUser());
+                }
             }
 
         }
@@ -541,24 +522,4 @@ public class MainActivity extends AppCompatActivity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 
     }
-
-//    @Override
-//    protected void onStart(){
-//        super.onStart();
-//
-//        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
-//        getMoodsTask.execute("");
-//
-//        try{
-//            moodList = getMoodsTask.get();
-//        }
-//        catch(Exception e){
-//            Log.d("Error", "Failed to get the moods from the async object");
-//        }
-//
-//        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodList);
-//        moodListView.setAdapter(adapter);
-//
-//
-//    }
 }
