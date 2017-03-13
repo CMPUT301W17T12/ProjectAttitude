@@ -24,6 +24,7 @@ import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.NetWorkUtil;
+import com.projectattitude.projectattitude.Objects.Photo;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
@@ -99,10 +100,6 @@ public class MainActivity extends AppCompatActivity {
                 goToMap();
             }
         });
-
-        //return all moods from db, so it can populate view on start
-//        ElasticSearchController.GetMoodsTask getMoodsTask = new ElasticSearchController.GetMoodsTask();
-//        getMoodsTask.execute("");
 
         //check if person is online every 30 seconds, and updates the db every time there is a connection
 //        mTimerTask = new TimerTask() {
@@ -390,11 +387,13 @@ public class MainActivity extends AppCompatActivity {
     // requestCode 2 = Edit Mood
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Mood returnedMood;
+        Photo returnedPhoto;
 
         //CreateMoodActivity results, updating mood listview
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
+                returnedPhoto = (Photo) data.getSerializableExtra("addPhotoIntent");
 
                 //moodList.add(returnedMood);
                 userController.getActiveUser().getMoodList().add(returnedMood);
@@ -410,13 +409,25 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d("userController Added", userController.getActiveUser().getMoodList().toString());
 
-//                if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-//                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-//                    addUserTask.execute(UserController.getInstance().getActiveUser());
-//                }
 
-                ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
-                updateUserTask.execute(UserController.getInstance().getActiveUser());
+                if(returnedPhoto.getPhoto() == ""){
+                    if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+                        ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+                        addUserTask.execute(UserController.getInstance().getActiveUser());
+                    }
+                }
+                else {
+                    ElasticSearchUserController.AddPhotoTask addPhotoTask = new ElasticSearchUserController.AddPhotoTask();
+                    addPhotoTask.execute(returnedPhoto);
+
+                    if (ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())) {
+                        ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+                        addUserTask.execute(UserController.getInstance().getActiveUser());
+                    }
+                }
+
+//                ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+//                updateUserTask.execute(UserController.getInstance().getActiveUser());
                 //add newly created mood to DB
 //                ElasticSearchController.AddMoodsTask addMoodsTask = new ElasticSearchController.AddMoodsTask();
 //                addMoodsTask.execute(returnedMood);

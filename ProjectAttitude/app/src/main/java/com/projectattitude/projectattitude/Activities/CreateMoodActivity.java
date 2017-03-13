@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import com.projectattitude.projectattitude.Abstracts.MoodActivity;
 import com.projectattitude.projectattitude.Objects.DatePickerEditText;
 import com.projectattitude.projectattitude.Objects.Mood;
+import com.projectattitude.projectattitude.Objects.Photo;
 import com.projectattitude.projectattitude.R;
 
 import java.io.ByteArrayOutputStream;
@@ -29,10 +32,10 @@ import java.io.ByteArrayOutputStream;
 public class CreateMoodActivity extends MoodActivity {
 
     private Mood newMood;   // initializing the mood object
+    private Photo newPhoto;
     private ImageView imageView;
     private byte[] byteArray;
-    //private String s;
-    //private short[] short;
+    private String s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,7 @@ public class CreateMoodActivity extends MoodActivity {
         final EditText etTrigger = (EditText) findViewById(R.id.triggerField);
         final Spinner socialSituationSpinner = (Spinner) findViewById(R.id.spinner);
         final CheckBox saveLocation = (CheckBox) findViewById(R.id.saveLocation); // geoPoint location saving
+        s = "";
 
         /**
          * The complete button checks if there are any errors and then sets all the values of the
@@ -67,6 +71,9 @@ public class CreateMoodActivity extends MoodActivity {
                     //newMood.setPhoto(imageView.getDrawingCache());
                    // newMood.setPhoto(byteArray);
                     //newMood.setPhoto(s);
+                    newPhoto = new Photo();
+                    newPhoto.setPhoto(s);
+                    //newPhoto.setPhoto(byteArray);
 
 
                     /*if(saveLocation.isChecked()){ //TODO check location
@@ -77,6 +84,7 @@ public class CreateMoodActivity extends MoodActivity {
 
                     Intent returnCreateMoodIntent = new Intent();
                     returnCreateMoodIntent.putExtra("addMoodIntent", newMood);
+                    returnCreateMoodIntent.putExtra("addPhotoIntent", newPhoto);
                     setResult(RESULT_OK, returnCreateMoodIntent);
                     finish();
                 }
@@ -99,17 +107,32 @@ public class CreateMoodActivity extends MoodActivity {
 
         if(requestCode == 3 && resultCode == RESULT_OK && null != data ){
             Bitmap photo = (Bitmap) data.getExtras().get("data");
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byteArray = stream.toByteArray();
-            //s = new String(byteArray);
-            //s = new String(byteArray, "UTF-16");
-            //s = Base64.encodeToString(byteArray, Base64.DEFAULT);
-            //short[] shorts = new short[byteArray.length/2];
-            //Log.d("StringShort", shorts.toString());
+            Log.d("PhotoBytes1", photo.getByteCount()+"");
+            Log.d("PhotoHeight1", photo.getHeight()+"");
+            Log.d("PhotoHeight1", photo.getWidth()+"");
 
-            //Log.d("PhotoString", s);
-            imageView.setImageBitmap(photo);
+            if(photo.getByteCount() > 65536) {
+                Bitmap photo1 = Bitmap.createScaledBitmap(photo, (photo.getWidth() / 3), (photo.getHeight() / 3), false);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                photo1.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                Log.d("Compressed", photo1.getByteCount() + "");
+                byteArray = stream.toByteArray();
+                s = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                imageView.setImageBitmap(photo1);
+            }
+
+            else{
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byteArray = stream.toByteArray();
+                s = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                imageView.setImageBitmap(photo);
+            }
+        }
+
+        else{
+            s = "";
+            Log.d("PhotoEmpty", s);
         }
 
     }
