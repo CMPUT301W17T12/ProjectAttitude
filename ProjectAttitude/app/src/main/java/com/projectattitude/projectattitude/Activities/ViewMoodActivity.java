@@ -34,7 +34,6 @@ public class ViewMoodActivity extends MoodActivity {
     private ImageView emotionStateIcon;
 
     RelativeLayout r1;
-    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +48,15 @@ public class ViewMoodActivity extends MoodActivity {
         editButton = (Button) findViewById(R.id.EditButton);
         deleteButton = (Button) findViewById(R.id.DeleteButton);
         r1 = (RelativeLayout) findViewById(R.id.activity_view_mood);
+        imageView = (ImageView) findViewById(R.id.imageView3);
+
+        //set all text fields
         emotionState.setText("");
         date.setText("");
         trigger.setText("");
         socialSituation.setText("");
+
+
         imageView = (ImageView) findViewById(R.id.imageView3);
         emotionStateIcon = (ImageView) findViewById(R.id.EmotionalStateImage);
 
