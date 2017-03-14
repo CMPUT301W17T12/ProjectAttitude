@@ -147,6 +147,14 @@ public class MainActivity extends AppCompatActivity {
         TwitterAuthConfig authConfig =  new TwitterAuthConfig("consumerKey", "consumerSecret");
         Fabric.with(this, new TwitterCore(authConfig), new TweetComposer());
 
+        // sync on start
+        if(isNetworkAvailable()) {
+            if (ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())) {
+                ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+                addUserTask.execute(UserController.getInstance().getActiveUser());
+            }
+        }
+
         try{
             ArrayList<Mood> tempList = userController.getActiveUser().getMoodList();
             Log.d("moodlist1", tempList.toString());
