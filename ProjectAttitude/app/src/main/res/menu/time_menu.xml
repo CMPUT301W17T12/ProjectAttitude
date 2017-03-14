@@ -28,6 +28,9 @@
     <item android:id="@+id/dayOption"
         android:title="@string/day_option"
         android:onClick="filterMoodsByTime"/>
+    <item android:id="@+id/weekOption"
+        android:title="@string/week_option"
+        android:onClick="filterMoodsByTime"/>
     <item android:id="@+id/monthOption"
         android:title="@string/month_option"
         android:onClick="filterMoodsByTime"/>
