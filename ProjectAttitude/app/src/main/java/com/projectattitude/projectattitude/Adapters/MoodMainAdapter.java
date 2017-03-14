@@ -93,7 +93,7 @@ public class MoodMainAdapter extends ArrayAdapter<Mood> {
             tvTrigger.setText("Reason: " + mood.getTrigger());
         }
 
-        if(mood.getSocialSituation().equals("Select a social situation")){
+        if(mood.getSocialSituation().equals("")){
             tvSocialSituation.setText("Situation: None");
         }
         else{

@@ -92,7 +92,13 @@ public class CreateMoodActivity extends MoodActivity {
                     newMood.setEmotionState(emotionSpinner.getSelectedItem().toString());
                     newMood.setMoodDate(date.getDate());
                     newMood.setTrigger(etTrigger.getText().toString().trim());
-                    newMood.setSocialSituation(socialSituationSpinner.getSelectedItem().toString());
+
+                    if(socialSituationSpinner.getSelectedItem().toString().equals("Select a social situation")){
+                        newMood.setSocialSituation("");
+                    }
+                    else{
+                        newMood.setSocialSituation(socialSituationSpinner.getSelectedItem().toString());
+                    }
                     newMood.setPhoto(s);
 
                     /*if(saveLocation.isChecked()){ //TODO check location
