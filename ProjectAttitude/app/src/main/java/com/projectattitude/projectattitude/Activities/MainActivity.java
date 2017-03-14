@@ -49,7 +49,6 @@ import com.projectattitude.projectattitude.Controllers.ElasticSearchUserControll
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
-import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.Objects.NetWorkChangeReceiver;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
@@ -112,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
         //adapter is fed from moodList inside user
         moodAdapter = new MoodMainAdapter(this, moodList);
+        //moodAdapter = new MoodMainAdapter(this, userController.getActiveUser().getMoodList());
         moodListView.setAdapter(moodAdapter);
         viewingMyList = false;
         Button viewMapButton = (Button) findViewById(R.id.viewMapButton);
@@ -216,10 +216,14 @@ public class MainActivity extends AppCompatActivity {
      * This method takes a mood the user made and brings them to the edit mood view
      */
     private void editMood(Mood returnedMood){
+        Mood moodCheck = userController.getActiveUser().getMoodList().get(itemPosition);
+        Log.d("moodCheckEdit", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
         userController.getActiveUser().getMoodList().set(itemPosition, returnedMood);
         userController.saveInFile();
         refreshMoodList();
         moodAdapter.notifyDataSetChanged();
+
+        Log.d("editing", userController.getActiveUser().getMoodList().get(itemPosition).toString());
 
         //updating db
         if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
@@ -237,10 +241,15 @@ public class MainActivity extends AppCompatActivity {
         //Mood delMood = moodList.get(i);
         Log.d("deleting", userController.getActiveUser().getMoodList().get(i).toString());
 
+       //Mood moodCheck = userController.getActiveUser().getMoodList().get(itemPosition);
+        //Log.d("moodCheckDelete", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
+
         ArrayList<Mood> tmpList = userController.getActiveUser().getMoodList();
         for (int j = 0; j < tmpList.size(); j++) {
             if (tmpList.get(j).equals(moodList.get(i))) {
                 Mood delMood = userController.getActiveUser().getMoodList().get(j);
+                Mood moodCheck = userController.getActiveUser().getMoodList().get(j);
+                Log.d("moodCheckDelete", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
                 //moodList = controller.getMyMoodList().getMoodList();
                 //moodList.remove(delMood);
                 userController.getActiveUser().getMoodList().remove(delMood);
@@ -449,6 +458,10 @@ public class MainActivity extends AppCompatActivity {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
 
                 userController.getActiveUser().getMoodList().add(returnedMood);
+
+                Mood moodCheck = returnedMood;
+                Log.d("moodCheckAdd", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
+
                 userController.saveInFile();
 
                 refreshMoodList();
@@ -520,6 +533,7 @@ public class MainActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info =
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         itemPosition = info.position;
+        Log.d("Adapter click position", itemPosition+"");
         boolean edit = true; //For some reason view as also bringing up the edit window
         //This bool fixes that
         switch(item.getItemId()) {
