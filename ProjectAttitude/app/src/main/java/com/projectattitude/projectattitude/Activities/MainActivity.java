@@ -49,13 +49,17 @@ import com.projectattitude.projectattitude.Controllers.ElasticSearchUserControll
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
-import com.projectattitude.projectattitude.Objects.MoodList;
 import com.projectattitude.projectattitude.Objects.NetWorkChangeReceiver;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * The MainActivity is where the primary information for the user can be found. This is achieved by
@@ -123,14 +127,14 @@ public class MainActivity extends AppCompatActivity {
 
         registerForContextMenu(moodListView);
 
-        //on click listener for adding moods
+        // on click listener for adding moods
         addMoodButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 createMood();
             }
         });
 
-        //on click listener for viewing map
+        // on click listener for viewing map
         viewMapButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 goToMap();
@@ -138,6 +142,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         registerReceiver(netWorkChangeReceiver, new IntentFilter("networkConnectBroadcast"));
+
+        // twitter init
+        TwitterAuthConfig authConfig =  new TwitterAuthConfig("consumerKey", "consumerSecret");
+        Fabric.with(this, new TwitterCore(authConfig), new TweetComposer());
 
         try{
             ArrayList<Mood> tempList = userController.getActiveUser().getMoodList();
@@ -553,6 +561,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.delete: //When delete is pressed the item is removed, and everything is updated
                 deleteMood(itemPosition);
                 return true;
+            // When tweet is pressed TODO build a proper string
+            case R.id.tweet:
+                TweetComposer.Builder builder = new TweetComposer.Builder(this)
+                        .text("Today I'm feeling " + moodList.get(itemPosition).toString());
+                builder.show();
             default:
                 return super.onContextItemSelected(item);
         }
