@@ -40,6 +40,9 @@ import com.projectattitude.projectattitude.Controllers.ElasticSearchUserControll
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import io.fabric.sdk.android.Fabric;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -51,12 +54,19 @@ import java.util.concurrent.ExecutionException;
  */
 public class LoginActivity extends AppCompatActivity {
 
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+    private static final String TWITTER_KEY = "HzITcd99DosfymtjdZzjGviFU";
+    private static final String TWITTER_SECRET = "k4P5AadHdAbhqSVjIbF1kzc2TppZ7kQOwJm23JPXhBRTrIVgt7";
+
+
     private EditText usernameView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
         setContentView(R.layout.activity_login);
 
         usernameView = (EditText) findViewById(R.id.usernameField);

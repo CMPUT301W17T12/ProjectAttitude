@@ -26,12 +26,7 @@
 package com.projectattitude.projectattitude.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,16 +85,16 @@ public class MoodMainAdapter extends ArrayAdapter<Mood> {
         int res = (int) eMap.get(mood.getEmotionState());
         moodEmoticon.setImageResource(res);
 
-        if(mood.getTrigger().equalsIgnoreCase("")){
-            tvTrigger.setVisibility(View.GONE);
+        if(mood.getTrigger().equals("")){
+            tvTrigger.setText("Trigger: None");
         }
         else{
             //fix this hardcoded string with string resources, I don't know how to -VUK
             tvTrigger.setText("Reason: " + mood.getTrigger());
         }
 
-        if(mood.getSocialSituation().equalsIgnoreCase("Select a social situation")){
-            tvSocialSituation.setVisibility(View.GONE);
+        if(mood.getSocialSituation().equals("")){
+            tvSocialSituation.setText("Situation: None");
         }
         else{
             //fix this hardcoded string with string resources, I don't know how to -VUK
@@ -108,4 +103,6 @@ public class MoodMainAdapter extends ArrayAdapter<Mood> {
 
         return convertView;
     }
+
+
 }

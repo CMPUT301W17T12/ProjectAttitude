@@ -52,9 +52,14 @@ import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.NetWorkChangeReceiver;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * The MainActivity is where the primary information for the user can be found. This is achieved by
@@ -111,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
         //adapter is fed from moodList inside user
         moodAdapter = new MoodMainAdapter(this, moodList);
+        //moodAdapter = new MoodMainAdapter(this, userController.getActiveUser().getMoodList());
         moodListView.setAdapter(moodAdapter);
         viewingMyList = false;
         Button viewMapButton = (Button) findViewById(R.id.viewMapButton);
@@ -122,14 +128,14 @@ public class MainActivity extends AppCompatActivity {
 
         registerForContextMenu(moodListView);
 
-        //on click listener for adding moods
+        // on click listener for adding moods
         addMoodButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 createMood();
             }
         });
 
-        //on click listener for viewing map
+        // on click listener for viewing map
         viewMapButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 goToMap();
@@ -137,6 +143,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         registerReceiver(netWorkChangeReceiver, new IntentFilter("networkConnectBroadcast"));
+
+        // twitter init
+        TwitterAuthConfig authConfig =  new TwitterAuthConfig("consumerKey", "consumerSecret");
+        Fabric.with(this, new TwitterCore(authConfig), new TweetComposer());
+
+        // sync on start
+        if(isNetworkAvailable()) {
+            if (ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())) {
+                ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+                addUserTask.execute(UserController.getInstance().getActiveUser());
+            }
+        }
 
         try{
             ArrayList<Mood> tempList = userController.getActiveUser().getMoodList();
@@ -215,10 +233,14 @@ public class MainActivity extends AppCompatActivity {
      * This method takes a mood the user made and brings them to the edit mood view
      */
     private void editMood(Mood returnedMood){
-        userController.getActiveUser().getMoodList().set(itemPosition,returnedMood);
+        Mood moodCheck = userController.getActiveUser().getMoodList().get(itemPosition);
+        Log.d("moodCheckEdit", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
+        userController.getActiveUser().getMoodList().set(itemPosition, returnedMood);
         userController.saveInFile();
         refreshMoodList();
         moodAdapter.notifyDataSetChanged();
+
+        Log.d("editing", userController.getActiveUser().getMoodList().get(itemPosition).toString());
 
         //updating db
         if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
@@ -235,18 +257,29 @@ public class MainActivity extends AppCompatActivity {
         //Log.d("deleting", moodList.get(i).toString());
         //Mood delMood = moodList.get(i);
         Log.d("deleting", userController.getActiveUser().getMoodList().get(i).toString());
-        Mood delMood = userController.getActiveUser().getMoodList().get(i);
-        //moodList = controller.getMyMoodList().getMoodList();
-        //moodList.remove(delMood);
-        userController.getActiveUser().getMoodList().remove(delMood);
-        //controller.setMyMoodList(new MoodList(moodList));
-        //Log.d("deleting", moodList.get(i).toString());
-        userController.saveInFile();
-        Log.d("userController deleted", userController.getActiveUser().getMoodList().toString());
 
-        refreshMoodList();
-        moodAdapter.notifyDataSetChanged();
+       //Mood moodCheck = userController.getActiveUser().getMoodList().get(itemPosition);
+        //Log.d("moodCheckDelete", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
 
+        ArrayList<Mood> tmpList = userController.getActiveUser().getMoodList();
+        for (int j = 0; j < tmpList.size(); j++) {
+            if (tmpList.get(j).equals(moodList.get(i))) {
+                Mood delMood = userController.getActiveUser().getMoodList().get(j);
+                Mood moodCheck = userController.getActiveUser().getMoodList().get(j);
+                Log.d("moodCheckDelete", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
+                //moodList = controller.getMyMoodList().getMoodList();
+                //moodList.remove(delMood);
+                userController.getActiveUser().getMoodList().remove(delMood);
+                //controller.setMyMoodList(new MoodList(moodList));
+                //Log.d("deleting", moodList.get(i).toString());
+                userController.saveInFile();
+                Log.d("userController deleted", userController.getActiveUser().getMoodList().toString());
+
+                refreshMoodList();
+                moodAdapter.notifyDataSetChanged();
+                break;
+            }
+        }
         //updating db
         if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
             ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
@@ -327,6 +360,10 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.dayOption:
                 controller.filterListByTime(moodList, (long)8.64e+7); //1 day's worth of milliseconds
+                break;
+
+            case R.id.weekOption:
+                controller.filterListByTime(moodList, (long)6.048e+8); //1 week's worth of milliseconds
                 break;
 
             case R.id.monthOption:
@@ -438,6 +475,10 @@ public class MainActivity extends AppCompatActivity {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
 
                 userController.getActiveUser().getMoodList().add(returnedMood);
+
+                Mood moodCheck = returnedMood;
+                Log.d("moodCheckAdd", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
+
                 userController.saveInFile();
 
                 refreshMoodList();
@@ -509,6 +550,7 @@ public class MainActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info =
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         itemPosition = info.position;
+        Log.d("Adapter click position", itemPosition+"");
         boolean edit = true; //For some reason view as also bringing up the edit window
         //This bool fixes that
         switch(item.getItemId()) {
@@ -518,15 +560,23 @@ public class MainActivity extends AppCompatActivity {
                 edit = false;//Makes it so the edit window will not pop up
                 Intent intentView = new Intent(MainActivity.this, ViewMoodActivity.class);
                 //intentView.putExtra("mood", moodList.get(itemPosition));
-                intentView.putExtra("mood", userController.getActiveUser().getMoodList().get(itemPosition));
+                intentView.putExtra("mood", moodList.get(itemPosition));
                 startActivityForResult(intentView, 1);
 
             case R.id.edit: //When edit is pressed
                 if (edit) {
                     Intent intentEdit = new Intent(MainActivity.this, EditMoodActivity.class);
 //                    intentEdit.putExtra("mood", moodList.get(itemPosition));
-                    intentEdit.putExtra("mood", userController.getActiveUser().getMoodList().get(itemPosition));
+                    intentEdit.putExtra("mood", moodList.get(itemPosition));
                     startActivityForResult(intentEdit, 2); //Handled in the results section
+                    //calculate itemPosition in user list
+                    ArrayList<Mood> tmpList = userController.getActiveUser().getMoodList();
+                    for (int i = 0; i < tmpList.size(); i++) {
+                        if (tmpList.get(i).equals(moodList.get(itemPosition))) {
+                            itemPosition = i;
+                            break;
+                        }
+                    }
                     listItem = itemPosition;
                 }
                 return true;
@@ -534,6 +584,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.delete: //When delete is pressed the item is removed, and everything is updated
                 deleteMood(itemPosition);
                 return true;
+            // When tweet is pressed TODO build a proper string
+            case R.id.tweet:
+                TweetComposer.Builder builder = new TweetComposer.Builder(this)
+                        .text("Today I'm feeling " + moodList.get(itemPosition).toString());
+                builder.show();
             default:
                 return super.onContextItemSelected(item);
         }

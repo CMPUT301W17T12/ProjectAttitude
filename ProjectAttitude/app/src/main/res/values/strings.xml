@@ -64,6 +64,7 @@
 
     <!-- Strings related to filter by time menu-->
     <string name="day_option">Day</string>
+    <string name="week_option">Week</string>
     <string name="month_option">Month</string>
     <string name="year_option">Year</string>
 
