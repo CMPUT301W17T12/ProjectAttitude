@@ -216,16 +216,10 @@ public class MainActivity extends AppCompatActivity {
      * This method takes a mood the user made and brings them to the edit mood view
      */
     private void editMood(Mood returnedMood){
-        ArrayList<Mood> tmpList = userController.getActiveUser().getMoodList();
-        for (int i = 0; i < tmpList.size(); i++) {
-            if (tmpList.get(i).equals(returnedMood)){
-                userController.getActiveUser().getMoodList().set(i, returnedMood);
-                userController.saveInFile();
-                refreshMoodList();
-                moodAdapter.notifyDataSetChanged();
-                break;
-            }
-        }
+        userController.getActiveUser().getMoodList().set(itemPosition, returnedMood);
+        userController.saveInFile();
+        refreshMoodList();
+        moodAdapter.notifyDataSetChanged();
 
         //updating db
         if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
@@ -340,6 +334,10 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.dayOption:
                 controller.filterListByTime(moodList, (long)8.64e+7); //1 day's worth of milliseconds
+                break;
+
+            case R.id.weekOption:
+                controller.filterListByTime(moodList, (long)6.048e+8); //1 week's worth of milliseconds
                 break;
 
             case R.id.monthOption:
@@ -540,6 +538,14 @@ public class MainActivity extends AppCompatActivity {
 //                    intentEdit.putExtra("mood", moodList.get(itemPosition));
                     intentEdit.putExtra("mood", moodList.get(itemPosition));
                     startActivityForResult(intentEdit, 2); //Handled in the results section
+                    //calculate itemPosition in user list
+                    ArrayList<Mood> tmpList = userController.getActiveUser().getMoodList();
+                    for (int i = 0; i < tmpList.size(); i++) {
+                        if (tmpList.get(i).equals(moodList.get(itemPosition))) {
+                            itemPosition = i;
+                            break;
+                        }
+                    }
                     listItem = itemPosition;
                 }
                 return true;
