@@ -53,8 +53,8 @@ public class ViewMoodActivity extends MoodActivity {
     private TextView date;
     private TextView trigger;
     private TextView socialSituation;
-    private Button editButton;
-    private Button deleteButton;
+//    private Button editButton;
+//    private Button deleteButton;
     private ImageView imageView;
     private ImageView emotionStateIcon;
 
@@ -70,8 +70,8 @@ public class ViewMoodActivity extends MoodActivity {
         date = (TextView) findViewById(R.id.DateView);
         trigger = (TextView) findViewById(R.id.TriggerView);
         socialSituation = (TextView) findViewById(R.id.SocialSituationView);
-        editButton = (Button) findViewById(R.id.EditButton);
-        deleteButton = (Button) findViewById(R.id.DeleteButton);
+//        editButton = (Button) findViewById(R.id.EditButton);
+//        deleteButton = (Button) findViewById(R.id.DeleteButton);
         r1 = (RelativeLayout) findViewById(R.id.activity_view_mood);
         imageView = (ImageView) findViewById(R.id.imageView3);
 
@@ -107,18 +107,18 @@ public class ViewMoodActivity extends MoodActivity {
         r1.setBackgroundColor((Integer) map.get(mood.getEmotionState()));
 
         //on click listener editing moods
-        editButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                editMood(mood);
-            }
-        });
+//        editButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                editMood(mood);
+//            }
+//        });
 
         //on click listener for deleting moods
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                deleteMood(mood);
-            }
-        });
+//        deleteButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                deleteMood(mood);
+//            }
+//        });
 
     }
 
@@ -132,8 +132,6 @@ public class ViewMoodActivity extends MoodActivity {
         Intent intentEdit = new Intent(ViewMoodActivity.this, EditMoodActivity.class);
         intentEdit.putExtra("mood", mood);
         startActivityForResult(intentEdit, 0); //Handled in the results section
-        //TODO make edit mood
-
 
     }
 
