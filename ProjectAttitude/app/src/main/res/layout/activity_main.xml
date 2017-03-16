@@ -110,14 +110,10 @@
         android:layout_height="wrap_content"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"
-        fab:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="1dp"
+        android:layout_marginRight="8dp"
         fab:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="5dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginLeft="8dp"
-        fab:layout_constraintLeft_toLeftOf="parent"
-        fab:layout_constraintHorizontal_bias="0.96">
+        fab:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp">
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fabLogout"
