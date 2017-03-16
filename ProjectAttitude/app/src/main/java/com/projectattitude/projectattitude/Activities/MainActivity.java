@@ -92,12 +92,12 @@ public class MainActivity extends AppCompatActivity {
     NetWorkChangeReceiver netWorkChangeReceiver = new NetWorkChangeReceiver() {
         @Override
         public void onReceive(Context context, Intent intent){
-            if(isNetworkAvailable()){
-                if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-                    addUserTask.execute(UserController.getInstance().getActiveUser());
-                }
+        if(isNetworkAvailable()){
+            if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+                ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+                addUserTask.execute(UserController.getInstance().getActiveUser());
             }
+        }
         }
     };
 

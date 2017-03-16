@@ -24,18 +24,14 @@
   ~ SOFTWARE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    <org.osmdroid.views.MapView android:id="@+id/map"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
-    <org.osmdroid.views.MapView
-        android:id="@+id/mapview"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tilesource="Mapnik" />
-</LinearLayout>
-
+        class="com.google.android.gms.maps.SupportMapFragment"/>
+        <!--tools:context="com.projectattitude.projectattitude.Activities.MapActivity"/>-->
+</FrameLayout>
