@@ -31,7 +31,6 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
@@ -44,6 +43,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Controllers.MainController;
@@ -112,14 +113,12 @@ public class MainActivity extends AppCompatActivity {
         userController.setActiveUser(user);
 
         moodListView = (ListView) findViewById(R.id.moodListView);
-        FloatingActionButton addMoodButton = (FloatingActionButton) findViewById(R.id.addMoodButton);
 
         //adapter is fed from moodList inside user
         moodAdapter = new MoodMainAdapter(this, moodList);
         //moodAdapter = new MoodMainAdapter(this, userController.getActiveUser().getMoodList());
         moodListView.setAdapter(moodAdapter);
         viewingMyList = false;
-        Button viewMapButton = (Button) findViewById(R.id.viewMapButton);
 
         //Load user and mood, and update current displayed list
         userController.loadFromFile();
@@ -127,20 +126,6 @@ public class MainActivity extends AppCompatActivity {
         refreshMoodList();
 
         registerForContextMenu(moodListView);
-
-        // on click listener for adding moods
-        addMoodButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                createMood();
-            }
-        });
-
-        // on click listener for viewing map
-        viewMapButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                goToMap();
-            }
-        });
 
         registerReceiver(netWorkChangeReceiver, new IntentFilter("networkConnectBroadcast"));
 
@@ -165,6 +150,50 @@ public class MainActivity extends AppCompatActivity {
         catch(Exception e){
             Log.d("Error", "Failed to get the moods from the async object");
         }
+
+        // Floating action menu
+        final FloatingActionMenu fabMenu = (FloatingActionMenu) findViewById(R.id.main_fab_menu);
+        FloatingActionButton fabAddMood = (FloatingActionButton) findViewById(R.id.fabAddMood);
+        FloatingActionButton fabMap = (FloatingActionButton) findViewById(R.id.fabMap);
+        FloatingActionButton fabProfile = (FloatingActionButton) findViewById(R.id.fabProfile);
+        FloatingActionButton fabLogout = (FloatingActionButton) findViewById(R.id.fabLogout);
+
+        // on click listener for adding moods
+        fabAddMood.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                fabMenu.close(true);
+                createMood();
+            }
+        });
+
+        fabMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fabMenu.close(true);
+                Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
+                startActivityForResult(viewMapIntent, 0);
+            }
+        });
+
+        fabProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fabMenu.close(true);
+                Intent intent = new Intent(MainActivity.this, ViewProfileActivity.class);
+                intent.putExtra("moodCount", moodList.size());
+                startActivity(intent);
+            }
+        });
+
+        fabLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fabMenu.close(true);
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                finish();
+                startActivity(intent);
+            }
+        });
     }
 
     //-------POPUP MENU FUNCTIONS-------
@@ -206,18 +235,6 @@ public class MainActivity extends AppCompatActivity {
         PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.filter_menu, popup.getMenu());
-        popup.show();
-    }
-
-    /**
-     * OpenMainMenu
-     * Is used when the main menu button is pressed to display a menu
-     * @param view - the main menu button
-     */
-    public void openMainMenu(View view){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.menuButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.main_menu, popup.getMenu());
         popup.show();
     }
 
@@ -417,37 +434,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         moodAdapter.notifyDataSetChanged();
-    }
-
-
-    /**
-     * When the user clicks the map button this takes them to the map view
-     */
-
-    private void goToMap(){
-        Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
-        startActivityForResult(viewMapIntent, 0);
-    }
-
-    /**
-     * When the user clicks the profile button it will take them to the profile view
-     * Later may take a profile as an argument to go to someone elses profile.
-     */
-    public void viewProfile(MenuItem item){
-        Intent intent = new Intent(MainActivity.this, ViewProfileActivity.class);
-        intent.putExtra("moodCount", moodList.size());
-        startActivity(intent);
-    }
-
-    /**
-     * Logs the current profile out of the application and returns the user to the log in view.
-     * No data will be saved if user logs out while offline
-     * and you will not be able to log back in when offline
-     */
-    public void logOut(MenuItem item){
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        finish();
-        startActivity(intent);
     }
 
     /**
