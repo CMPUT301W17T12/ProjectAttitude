@@ -30,10 +30,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.projectattitude.projectattitude.Abstracts.MoodActivity;
@@ -41,6 +39,9 @@ import com.projectattitude.projectattitude.Objects.ColorMap;
 import com.projectattitude.projectattitude.Objects.EmoticonMap;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.R;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 /**
  * This activity allows the user to view a mood object in extended detail, such
@@ -58,7 +59,7 @@ public class ViewMoodActivity extends MoodActivity {
     private ImageView imageView;
     private ImageView emotionStateIcon;
 
-    RelativeLayout r1;
+    ScrollView r1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,7 @@ public class ViewMoodActivity extends MoodActivity {
         socialSituation = (TextView) findViewById(R.id.SocialSituationView);
 //        editButton = (Button) findViewById(R.id.EditButton);
 //        deleteButton = (Button) findViewById(R.id.DeleteButton);
-        r1 = (RelativeLayout) findViewById(R.id.activity_view_mood);
+        r1 = (ScrollView) findViewById(R.id.activity_view_mood);
         imageView = (ImageView) findViewById(R.id.imageView3);
 
         //set all text fields
@@ -88,7 +89,8 @@ public class ViewMoodActivity extends MoodActivity {
         //TODO Set texts from the mood
         final Mood mood = (Mood) getIntent().getSerializableExtra("mood");
         emotionState.setText(mood.getEmotionState());
-        date.setText(mood.getMoodDate().toString());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA);
+        date.setText(sdf.format(mood.getMoodDate()));
         trigger.setText(mood.getTrigger());
         socialSituation.setText(mood.getSocialSituation());
 
@@ -105,21 +107,6 @@ public class ViewMoodActivity extends MoodActivity {
         //Handle colors
         ColorMap<String, Integer> map = new ColorMap<>();
         r1.setBackgroundColor((Integer) map.get(mood.getEmotionState()));
-
-        //on click listener editing moods
-//        editButton.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                editMood(mood);
-//            }
-//        });
-
-        //on click listener for deleting moods
-//        deleteButton.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                deleteMood(mood);
-//            }
-//        });
-
     }
 
     /**
