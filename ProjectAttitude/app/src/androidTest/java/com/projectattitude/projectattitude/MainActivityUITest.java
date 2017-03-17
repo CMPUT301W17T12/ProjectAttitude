@@ -149,7 +149,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         Date date = new Date();
         solo.setDatePicker(0, 2017, 2, date.getDay());
 
-        solo.clickOnText("Ok"); // TODO intent testing doesn't click ok for some reason
+        solo.clickOnText("OK"); // TODO check if this now works
 
         assertTrue(solo.searchText("Save"));
         solo.clickOnText("Save");
@@ -167,7 +167,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
 
         solo.setDatePicker(0, 2017, 3, 17);
 
-        solo.clickOnText("Ok");
+        solo.clickOnText("OK");
 
         assertTrue(solo.searchText("Save"));
         solo.clickOnText("Save");
