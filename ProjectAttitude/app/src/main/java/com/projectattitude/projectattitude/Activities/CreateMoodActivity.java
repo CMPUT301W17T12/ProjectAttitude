@@ -75,6 +75,7 @@ public class CreateMoodActivity extends MoodActivity {
         s = "";
 
 
+        imageView.setVisibility(View.GONE);
         imageView.setImageBitmap(null);
 
         /**
@@ -122,6 +123,7 @@ public class CreateMoodActivity extends MoodActivity {
             public void onClick(View v){
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, 3);
+                imageView.setVisibility(View.VISIBLE);
             }
         });
     }

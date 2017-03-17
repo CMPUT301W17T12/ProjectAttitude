@@ -127,6 +127,15 @@ public class MainActivity extends AppCompatActivity {
 
         registerForContextMenu(moodListView);
 
+        moodListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intentView = new Intent(MainActivity.this, ViewMoodActivity.class);
+                intentView.putExtra("mood", moodList.get(position));
+                startActivityForResult(intentView, 1);
+            }
+        });
+
         registerReceiver(netWorkChangeReceiver, new IntentFilter("networkConnectBroadcast"));
 
         // twitter init
@@ -540,15 +549,6 @@ public class MainActivity extends AppCompatActivity {
         boolean edit = true; //For some reason view as also bringing up the edit window
         //This bool fixes that
         switch(item.getItemId()) {
-            case R.id.view:
-                //TODO Make this MVC. Use a controller that calls this code?
-                //On second though this is all UI so it doenst need a controller?
-                edit = false;//Makes it so the edit window will not pop up
-                Intent intentView = new Intent(MainActivity.this, ViewMoodActivity.class);
-                //intentView.putExtra("mood", moodList.get(itemPosition));
-                intentView.putExtra("mood", moodList.get(itemPosition));
-                startActivityForResult(intentView, 1);
-
             case R.id.edit: //When edit is pressed
                 if (edit) {
                     Intent intentEdit = new Intent(MainActivity.this, EditMoodActivity.class);

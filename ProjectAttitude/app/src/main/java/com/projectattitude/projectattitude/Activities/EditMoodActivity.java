@@ -30,11 +30,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPopupHelper;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -62,6 +65,7 @@ public class EditMoodActivity extends MoodActivity {
     Spinner emotionSpinner;
     EditText etTrigger;
     Spinner socialSituationSpinner;
+    CheckBox saveLocation;
     private Mood newMood;
 
     private ImageView imageView;
@@ -80,9 +84,11 @@ public class EditMoodActivity extends MoodActivity {
         emotionSpinner = (Spinner) findViewById(R.id.emotionSpinner);
         etTrigger = (EditText) findViewById(R.id.triggerField);
         socialSituationSpinner = (Spinner) findViewById(R.id.spinner);
+        saveLocation = (CheckBox) findViewById(R.id.saveLocation);
 
         Button addPhoto = (Button) findViewById(R.id.addPhoto);
         imageView = (ImageView) findViewById(R.id.imageView);
+        imageView.setVisibility(View.GONE);
         s = "";
 
 
@@ -107,7 +113,7 @@ public class EditMoodActivity extends MoodActivity {
         socialSituationSpinner.setSelection(((ArrayAdapter<String>) socialSituationSpinner
                 .getAdapter()).getPosition(mood.getSocialSituation()));
 
-        byte[] imageBytes = Base64.decode(mood.getPhoto(), Base64.DEFAULT);
+        final byte[] imageBytes = Base64.decode(mood.getPhoto(), Base64.DEFAULT);
         final Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
         imageView.setImageBitmap(decodedImage);
 
@@ -152,6 +158,7 @@ public class EditMoodActivity extends MoodActivity {
             public void onClick(View v) {
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, 3);
+                imageView.setVisibility(View.VISIBLE);
             }
         });
     }
