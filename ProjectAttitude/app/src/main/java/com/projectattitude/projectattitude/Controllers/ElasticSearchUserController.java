@@ -28,6 +28,8 @@ package com.projectattitude.projectattitude.Controllers;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.projectattitude.projectattitude.Objects.User;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
@@ -39,8 +41,10 @@ import java.util.concurrent.ExecutionException;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
-import io.searchbox.core.Get;
 import io.searchbox.core.Index;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
+import io.searchbox.core.Update;
 
 /**
  * ElasticSearchUserController contains tasks that communicate and update the dtabase with users
@@ -142,12 +146,24 @@ public class ElasticSearchUserController {
         @Override
         protected User doInBackground(String... search_parameters) {
             verifySettings();
-            Get get = new Get.Builder(INDEX, search_parameters[0]).type(TYPE).id(search_parameters[0]).build();
+
+            //Get get = new Get.Builder(INDEX, search_parameters[0]).type(TYPE).id(search_parameters[0]).build();
+            Search get = new Search.Builder("{\"query\" : {\"term\" : { \"userName\" : \"" + search_parameters[0] + "\" }}}").addIndex(INDEX).addType(TYPE).build();
+
+            //Log.d("test1", search_parameters[0]);
 
             User user = null;
             try {
-                JestResult result = client.execute(get);
-                user = result.getSourceAsObject(User.class);
+//                JestResult result = client.execute(get);
+                SearchResult result = client.execute(get);
+                //user = result.getSourceAsObject(User.class);
+                if(result.getHits(User.class).size()!=0){
+                    Log.d("Error", (result.getHits(User.class).size()) + "");
+                    SearchResult.Hit<User, Void> thing = result.getFirstHit(User.class);
+                    user = thing.source;
+                }
+
+                //Log.d("test1", user.getUserName());
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -177,32 +193,45 @@ public class ElasticSearchUserController {
 //    /**
 //     * doesnt work for some reason
 //     */
-//    public static class UpdateUserTask extends  AsyncTask<User, Void, Void> {
-//        @Override
-//        protected Void doInBackground(User... search_parameters) {
-//            verifySettings();
-//
-//            //for (User user : users) {
-//                Update update = new Update.Builder(search_parameters[0]).index(INDEX).type(TYPE).id(search_parameters[0].getUserName()).build();
-//            Log.d("Username:", search_parameters[0].getUserName());
-//            Log.d("Username moodList", search_parameters[0].getMoodList().toString());
-//
-//                try {
-//                    // where is the client
-//                    JestResult result = client.execute(update);
-//                    //Log.d("InAsyncTask ID", result.getId());
-//                    if (result.isSucceeded()) {
-//                        //Log.d("In AsyncTask ID", result.getId());
-//                    } else {
-//                        Log.i("Error", "Elasticsearch was not able to update the user.");
-//                    }
-//                } catch (Exception e) {
-//                    Log.i("Error", "The application failed to build and send the user");
-//                }
-//            //}
-//            return null;
-//        }
-//    }
+    public static class UpdateUserTask extends  AsyncTask<User, Void, Void> {
+        @Override
+        protected Void doInBackground(User... search_parameters) {
+            verifySettings();
+
+            //query = "{\"doc\" : { \"type\" : \"nested\", \"followList\" : " + user.getGsonFollowList() + "}}";
+
+            //for (User user : users) {
+            String query = "";
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.create();
+
+            String json = gson.toJson(search_parameters[0].getMoodList());
+
+            json = json.replace("\\\"", "\"");
+            json = json.replace("}\"", "}");
+            json = json.replace("\"{","{");
+
+            query = "{\"doc\" : { \"type\" : \"nested\", \"moods\" : " + json + "}}";
+            Update update = new Update.Builder(query).index(INDEX).type(TYPE).id(search_parameters[0].getUserName()).build();
+            Log.d("Username:", search_parameters[0].getUserName());
+            Log.d("Username moodList", search_parameters[0].getMoodList().toString());
+
+                try {
+                    // where is the client
+                    JestResult result = client.execute(update);
+                    //Log.d("InAsyncTask ID", result.getId());
+                    if (result.isSucceeded()) {
+                        //Log.d("In AsyncTask ID", result.getId());
+                    } else {
+                        Log.i("Error", "Elasticsearch was not able to update the user.");
+                    }
+                } catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the user");
+                }
+            //}
+            return null;
+        }
+    }
 
     //copied from lonelytwitter
     private static void verifySettings(){

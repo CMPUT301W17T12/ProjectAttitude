@@ -39,7 +39,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -485,10 +484,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("userController Added", userController.getActiveUser().getMoodList().toString());
 
                 //update the user
-                if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-                    addUserTask.execute(UserController.getInstance().getActiveUser());
-                }
+//                if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+//                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+//                    addUserTask.execute(UserController.getInstance().getActiveUser());
+//                }
+
+                ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+                updateUserTask.execute(UserController.getInstance().getActiveUser());
             }
 
         }

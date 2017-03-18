@@ -31,6 +31,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,11 +40,12 @@ import android.widget.Toast;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
-
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
-import io.fabric.sdk.android.Fabric;
+
 import java.util.concurrent.ExecutionException;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * LoginActivity allows users to log into the service and connect to the Database.
@@ -97,20 +99,21 @@ public class LoginActivity extends AppCompatActivity {
                         //need to get a static instance, check for existence of user
                         //user does not exist
                         if (ElasticSearchUserController.getInstance().verifyUser(user)) {
-
+                            Log.d("Error", "didnt got the user");
                             //creates user using ElasticSearchUserController and switch to MainActivity
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.putExtra("PassUserToMain", user);
                             startActivity(intent);
                             finish();
                         } else {
-
+                            Log.d("Error", "got the user");
                             //grab user from db and pass to MainActivity, since they exist
                             User user1 = new User();
                             ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
 
                             try {
                                 user1 = getUserTask.execute(user.getUserName()).get();
+                                Log.d("Success", user1.toString());
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             } catch (ExecutionException e) {
