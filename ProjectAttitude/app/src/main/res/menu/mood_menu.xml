@@ -24,30 +24,47 @@
   ~ SOFTWARE.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     //anger, confusion, disgust, fear, happiness, sadness, shame, and surprise
-    <item android:id="@+id/angerOption"
-        android:title="@string/anger_option"
-        android:onClick="filterMoodsByEmotion"/>
-    <item android:id="@+id/confusionOption"
-        android:title="@string/confusion_option"
-        android:onClick="filterMoodsByEmotion"/>
-    <item android:id="@+id/disgustOption"
-        android:title="@string/disgust_option"
-        android:onClick="filterMoodsByEmotion"/>
-    <item android:id="@+id/fearOption"
-        android:title="@string/fear_option"
-        android:onClick="filterMoodsByEmotion"/>
-    <item android:id="@+id/happinessOption"
-        android:title="@string/happiness_option"
-        android:onClick="filterMoodsByEmotion"/>
-    <item android:id="@+id/sadnessOption"
-        android:title="@string/sadness_option"
-        android:onClick="filterMoodsByEmotion"/>
-    <item android:id="@+id/shameOption"
-        android:title="@string/shame_option"
-        android:onClick="filterMoodsByEmotion"/>
-    <item android:id="@+id/surpriseOption"
-        android:title="@string/surprise_option"
-        android:onClick="filterMoodsByEmotion"/>
+    <item
+        android:id="@+id/angerOption"
+        android:onClick="filterMoodsByEmotion"
+        app:showAsAction="always"
+        android:title="@string/anger_option" />
+    <item
+        android:id="@+id/confusionOption"
+        android:onClick="filterMoodsByEmotion"
+        app:showAsAction="always"
+        android:title="@string/confusion_option" />
+    <item
+        android:id="@+id/disgustOption"
+        android:onClick="filterMoodsByEmotion"
+        app:showAsAction="always"
+        android:title="@string/disgust_option" />
+    <item
+        android:id="@+id/fearOption"
+        android:onClick="filterMoodsByEmotion"
+        app:showAsAction="always"
+        android:title="@string/fear_option" />
+    <item
+        android:id="@+id/happinessOption"
+        android:onClick="filterMoodsByEmotion"
+        app:showAsAction="always"
+        android:title="@string/happiness_option" />
+    <item
+        android:id="@+id/sadnessOption"
+        android:onClick="filterMoodsByEmotion"
+        app:showAsAction="always"
+        android:title="@string/sadness_option" />
+    <item
+        android:id="@+id/shameOption"
+        android:onClick="filterMoodsByEmotion"
+        app:showAsAction="always"
+        android:title="@string/shame_option" />
+    <item
+        android:id="@+id/surpriseOption"
+        android:onClick="filterMoodsByEmotion"
+        app:showAsAction="always"
+        android:title="@string/surprise_option" />
 </menu>

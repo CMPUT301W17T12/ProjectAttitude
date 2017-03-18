@@ -24,107 +24,130 @@
   ~ SOFTWARE.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="left"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context="com.projectattitude.projectattitude.Activities.MainActivity"
     android:focusableInTouchMode="true">
 
     <ImageButton
-        android:id="@+id/menuButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/menu_button"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="openMainMenu"
-        />
-  
-    <TextView
-        android:id="@+id/moodTextView" 
-        android:text="@string/mood_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@id/menuButton"
-        android:layout_toStartOf="@+id/menuButton"
-        android:textSize="35sp"/>
-
-    <ImageButton
         android:id="@+id/filterButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/moodTextView"
         android:src="@drawable/filter_button"
-        android:layout_alignParentEnd="true"
         android:onClick="openSFMenu"
-        />
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        fab:layout_constraintRight_toRightOf="parent"
+        fab:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="8dp"
+        fab:layout_constraintBottom_toTopOf="@+id/moodListView" />
 
     <ImageButton
         android:id="@+id/searchButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/moodTextView"
-        android:layout_toStartOf="@id/filterButton"
         android:src="@drawable/search_button"
         android:onClick="filterMoodByTrigger"
-        />
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        fab:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        fab:layout_constraintRight_toLeftOf="@+id/filterButton"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        fab:layout_constraintBottom_toTopOf="@+id/moodListView" />
 
     <EditText
         android:id="@+id/searchBar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/moodTextView"
-        android:layout_toStartOf="@+id/searchButton"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:hint="@string/search_bar"
-        />
+        fab:layout_constraintLeft_toLeftOf="parent"
+        fab:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintBaseline_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        fab:layout_constraintRight_toLeftOf="@+id/searchButton"
+        android:layout_marginRight="8dp" />
 
     <ListView
         android:id="@+id/moodListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/addMoodButton"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="8dp"
         android:scrollbars="vertical"
-        android:layout_below="@+id/searchBar" />
+        fab:layout_constraintBottom_toBottomOf="parent"
+        fab:layout_constraintHorizontal_bias="1.0"
+        fab:layout_constraintLeft_toLeftOf="parent"
+        fab:layout_constraintRight_toRightOf="parent"
+        fab:layout_constraintTop_toBottomOf="@+id/searchBar"
+        fab:layout_constraintVertical_bias="0.0"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
 
-    <android.support.design.widget.FloatingActionButton
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/main_fab_menu"
+        fab:menu_colorNormal="@color/accent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        app:srcCompat="@android:drawable/ic_input_add"
-        android:id="@+id/addMoodButton"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        android:layout_marginRight="8dp"
+        fab:layout_constraintRight_toRightOf="parent"
+        fab:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp">
 
-    <Button
-        android:id="@+id/viewMapButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/searchBar"
-        android:layout_toLeftOf="@+id/menuButton"
-        android:layout_toStartOf="@+id/menuButton"
-        android:text="Map" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabLogout"
+            fab:fab_label="Logout"
+            android:src="@drawable/ic_exit_to_app_white_18dp"
+            fab:fab_colorNormal="@color/accent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-</RelativeLayout>
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabProfile"
+            fab:fab_label="Profile"
+            android:src="@drawable/ic_face_white_18dp"
+            fab:fab_colorNormal="@color/accent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabMap"
+            fab:fab_label="Map"
+            android:src="@drawable/ic_map_white_18dp"
+            fab:fab_colorNormal="@color/accent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabAddMood"
+            fab:fab_label="Add Mood"
+            android:src="@drawable/add_button"
+            fab:fab_colorNormal="@color/accent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </com.github.clans.fab.FloatingActionMenu>
+
+</android.support.constraint.ConstraintLayout>
 
 
