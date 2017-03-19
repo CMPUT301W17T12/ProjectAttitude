@@ -55,7 +55,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:src="@drawable/search_button"
-        android:onClick="filterMoodByTrigger"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"
         fab:layout_constraintTop_toTopOf="parent"

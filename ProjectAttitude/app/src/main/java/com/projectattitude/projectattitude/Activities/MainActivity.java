@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private MoodMainAdapter moodAdapter;
     private ListView moodListView;
     private MainController controller;
-    private boolean viewingMyList;
+    private boolean filteringTriggers;
     private Integer itemPosition;
 
     private UserController userController = UserController.getInstance();
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         moodAdapter = new MoodMainAdapter(this, moodList);
         //moodAdapter = new MoodMainAdapter(this, userController.getActiveUser().getMoodList());
         moodListView.setAdapter(moodAdapter);
-        viewingMyList = false;
+        filteringTriggers = false;
 
         //Load user and mood, and update current displayed list
         userController.loadFromFile();
@@ -210,13 +210,14 @@ public class MainActivity extends AppCompatActivity {
         //Sorting and filtering menu
         final Context activityContext = this;
         final ImageButton SFButton = (ImageButton) findViewById(R.id.filterButton);
+        ImageButton SearchButton = (ImageButton) findViewById(R.id.searchButton);
 
         SFButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PopupMenu popup = new PopupMenu(activityContext, SFButton);
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
+                    //Listener for Sort/Filter Menu
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         PopupMenu popup = new PopupMenu(activityContext, SFButton);
@@ -233,11 +234,13 @@ public class MainActivity extends AppCompatActivity {
                                 popup.show();
                                 break;
                             case R.id.emotionOption:
+                                //Listener for filter by mood menu:
                                 inflater.inflate(R.menu.mood_menu, popup.getMenu());
                                 popup.show();
                                 break;
                             case R.id.allOption:
                                 //TODO redo all option
+                                filteringTriggers = false;
                                 userController.loadFromFile();
                                 refreshMoodList();
                                 moodAdapter.notifyDataSetChanged();
@@ -245,10 +248,17 @@ public class MainActivity extends AppCompatActivity {
                         }
                         return false;
                     }
-                });
+                });//Code End of Listener for Sort/Filter Menu
                 MenuInflater inflater = popup.getMenuInflater();
                 inflater.inflate(R.menu.sort_filter_menu, popup.getMenu());
                 popup.show();
+            }
+        });
+
+        SearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterMood(null);
             }
         });
 
@@ -368,14 +378,23 @@ public class MainActivity extends AppCompatActivity {
      */
     public void sortMood(MenuItem item){
         if(item == null){
+            //Taken from http://stackoverflow.com/questions/24717981/android-popupmenu-checkable-item-does-not-check
+            //Date: 3/19/2017
+            MenuItem subMenuItem = item.getSubMenu().getItem(0);
+            subMenuItem.setChecked(!subMenuItem.isChecked());
             controller.sortList(moodList, "Sort"); //True = sorting by date
             return;
         }
+        MenuItem subMenuItem;
         switch (item.getItemId()) {
             case R.id.dateOption:
+                subMenuItem = item.getSubMenu().getItem(0);
+                subMenuItem.setChecked(!subMenuItem.isChecked());
                 controller.sortList(moodList, "Sort"); //True = sorting by date
                 break;
             case R.id.reverseDateOption:
+                subMenuItem = item.getSubMenu().getItem(1);
+                subMenuItem.setChecked(!subMenuItem.isChecked());
                 controller.sortList(moodList, "Reverse Sort"); //False = sorting by reverse date
                 break;
         }
@@ -383,23 +402,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Handles filtering the list
+     * Handles filtering the list - specifically multi-filtering
      * @param item - one of the options from the filter menu
      * @see #filterMoodsByEmotion(MenuItem)
      * @see #filterMoodsByTime(MenuItem)
+     * @see #filterMoodByTrigger(View)
      */
     public void filterMood(MenuItem item){
+        MenuItem subMenuItem = item.getSubMenu().getItem(0);
+        subMenuItem.setChecked(!subMenuItem.isChecked());
+        //TODO: Make sure list is up to date
+        //TODO: Finish implementing checking
         PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
         MenuInflater inflater = popup.getMenuInflater();
         switch (item.getItemId()) {
             case R.id.timeOption:
                 inflater.inflate(R.menu.time_menu, popup.getMenu());
                 popup.show();
-                break;
-
-            case R.id.followingOption:
-                //TODO: Following
-                viewingMyList = !viewingMyList;
                 break;
 
             case R.id.emotionOption:
@@ -430,7 +449,6 @@ public class MainActivity extends AppCompatActivity {
      * @param item
      */
     public void filterMoodsByTime(MenuItem item){
-        //TODO: Make sure moods are up to date?
         switch (item.getItemId()) {
             case R.id.dayOption:
                 controller.filterListByTime(moodList, (long)8.64e+7); //1 day's worth of milliseconds
