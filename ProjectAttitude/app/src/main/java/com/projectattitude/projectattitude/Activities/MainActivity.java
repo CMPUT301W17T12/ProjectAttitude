@@ -42,6 +42,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -205,6 +206,52 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        //Sorting and filtering menu
+        final Context activityContext = this;
+        final ImageButton SFButton = (ImageButton) findViewById(R.id.filterButton);
+
+        SFButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(activityContext, SFButton);
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        PopupMenu popup = new PopupMenu(activityContext, SFButton);
+                        MenuInflater inflater = popup.getMenuInflater();
+                        switch(item.getItemId()){
+                            case R.id.dateOption:
+                                sortMood(item);
+                                break;
+                            case R.id.reverseDateOption:
+                                sortMood(item);
+                                break;
+                            case R.id.timeOption:
+                                inflater.inflate(R.menu.time_menu, popup.getMenu());
+                                popup.show();
+                                break;
+                            case R.id.emotionOption:
+                                inflater.inflate(R.menu.mood_menu, popup.getMenu());
+                                popup.show();
+                                break;
+                            case R.id.allOption:
+                                //TODO redo all option
+                                userController.loadFromFile();
+                                refreshMoodList();
+                                moodAdapter.notifyDataSetChanged();
+                                break;
+                        }
+                        return false;
+                    }
+                });
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.sort_filter_menu, popup.getMenu());
+                popup.show();
+            }
+        });
+
     }
 
     //-------POPUP MENU FUNCTIONS-------
@@ -270,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("editing", userController.getActiveUser().getMoodList().get(itemPosition).toString());
 
-        //updating db
+        //updating dbfa
         if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
             ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
             addUserTask.execute(UserController.getInstance().getActiveUser());
@@ -361,7 +408,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.allOption:
-                //TODO: Add following to allOption
                 userController.loadFromFile();
                 refreshMoodList();
                  moodAdapter.notifyDataSetChanged();
