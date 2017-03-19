@@ -37,13 +37,10 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -111,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //get passed user from LoginActivity
-        User user = (User) getIntent().getSerializableExtra("PassUserToMain");
+        final User user = (User) getIntent().getSerializableExtra("PassUserToMain");
         userController.setActiveUser(user);
 
         moodListView = (ListView) findViewById(R.id.moodListView);
@@ -192,6 +189,8 @@ public class MainActivity extends AppCompatActivity {
                 fabMenu.close(true);
                 Intent intent = new Intent(MainActivity.this, ViewProfileActivity.class);
                 intent.putExtra("moodCount", moodList.size());
+                intent.putExtra("mood", moodList.get(0));   //TODO This returns the first item in the list, but if its been sorted, that would be wrong
+                intent.putExtra("user", user);
                 startActivity(intent);
             }
         });
