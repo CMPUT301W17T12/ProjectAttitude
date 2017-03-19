@@ -99,21 +99,21 @@ public class LoginActivity extends AppCompatActivity {
                         //need to get a static instance, check for existence of user
                         //user does not exist
                         if (ElasticSearchUserController.getInstance().verifyUser(user)) {
-                            Log.d("Error", "didnt got the user");
+                            Log.d("Error", "User did not exist");
                             //creates user using ElasticSearchUserController and switch to MainActivity
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.putExtra("PassUserToMain", user);
                             startActivity(intent);
                             finish();
                         } else {
-                            Log.d("Error", "got the user");
+                            Log.d("Error", "User did exist");
                             //grab user from db and pass to MainActivity, since they exist
                             User user1 = new User();
                             ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
 
                             try {
                                 user1 = getUserTask.execute(user.getUserName()).get();
-                                Log.d("Success", user1.toString());
+                                Log.d("Error", "Success" + user1.getUserName() + " " + user1.getMoodList());
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             } catch (ExecutionException e) {

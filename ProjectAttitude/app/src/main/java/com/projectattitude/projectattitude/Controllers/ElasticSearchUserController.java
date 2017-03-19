@@ -41,9 +41,8 @@ import java.util.concurrent.ExecutionException;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
+import io.searchbox.core.Get;
 import io.searchbox.core.Index;
-import io.searchbox.core.Search;
-import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
 
 /**
@@ -147,26 +146,50 @@ public class ElasticSearchUserController {
         protected User doInBackground(String... search_parameters) {
             verifySettings();
 
-            //Get get = new Get.Builder(INDEX, search_parameters[0]).type(TYPE).id(search_parameters[0]).build();
-            Search get = new Search.Builder("{\"query\" : {\"term\" : { \"userName\" : \"" + search_parameters[0] + "\" }}}").addIndex(INDEX).addType(TYPE).build();
+            Log.d("Error", "name: " + search_parameters[0]);
+            Get get = new Get.Builder(INDEX, search_parameters[0]).type(TYPE).build();
+            //Search get = new Search.Builder("{\"query\" : {\"term\" : { \"userName\" : \"" + search_parameters[0] + "\" }}}").addIndex(INDEX).addType(TYPE).build();
 
             //Log.d("test1", search_parameters[0]);
 
             User user = null;
             try {
-//                JestResult result = client.execute(get);
-                SearchResult result = client.execute(get);
+                JestResult result = client.execute(get);
+                //SearchResult result = client.execute(get);
                 //user = result.getSourceAsObject(User.class);
-                if(result.getHits(User.class).size()!=0){
-                    Log.d("Error", (result.getHits(User.class).size()) + "");
-                    SearchResult.Hit<User, Void> thing = result.getFirstHit(User.class);
-                    user = thing.source;
+//                if(result.getHits(User.class).size()!=0){
+//                    Log.d("Error", (result.getHits(User.class).size()) + "");
+//                    SearchResult.Hit<User, Void> thing = result.getFirstHit(User.class);
+//                    user = thing.source;
+//                }
+                if(result.isSucceeded()){
+                    Log.d("Error", "success getting user");
+                    //user = result.getSourceAsObject(User.class);
+                    Log.d("Error", "Name that was gotten: " + result.getJsonObject());
+//                    Log.d("Error", "Name that was gotten: " + result.getSourceAsObject(User.class).getUserName());
+//                    Log.d("Error", "List that was gotten: " + result.getSourceAsObject(User.class).getMoodList());
+                   String userJson = result.getSourceAsString();
+
+                    //Json string is exactley whats expected following the retrieve document guide on ES
+                    Log.d("Error", "JsonString: " + userJson);
+
+                    Gson gson = new Gson();
+//                    GsonBuilder gsonBuilder = new GsonBuilder();
+//                    Gson gson = gsonBuilder.create();
+
+                    user = gson.fromJson(userJson, User.class);
+                    Log.d("Error", "Username: " + user.getUserName() + " MoodList: " + user.getMoodList());
+                   //user = result.getSourceAsObject(User.class);
+                }
+
+                else{
+                    Log.d("Error", "Elasticsearch was not able to get the user.");
                 }
 
                 //Log.d("test1", user.getUserName());
             }
             catch (IOException e) {
-                e.printStackTrace();
+                Log.i("Error", "The application failed to connect to DB");
             }
             return user;
         }
@@ -207,20 +230,28 @@ public class ElasticSearchUserController {
 
             String json = gson.toJson(search_parameters[0].getMoodList());
 
-            json = json.replace("\\\"", "\"");
-            json = json.replace("}\"", "}");
-            json = json.replace("\"{","{");
+//            json = json.replace("\\\"", "\"");
+//            json = json.replace("}\"", "}");
+//            json = json.replace("\"{","{");
 
-            query = "{\"doc\" : { \"type\" : \"nested\", \"moods\" : " + json + "}}";
+//            query = "{\"doc\" : { \"type\" : \"nested\", \"moods\" : " + json + "}}";
+            query = "{\"doc\" : { \"moods\" : " + json + "}}";
             Update update = new Update.Builder(query).index(INDEX).type(TYPE).id(search_parameters[0].getUserName()).build();
-            Log.d("Username:", search_parameters[0].getUserName());
-            Log.d("Username moodList", search_parameters[0].getMoodList().toString());
+            Log.d("error", "UserName of update: " + search_parameters[0].getUserName());
+            Log.d("error", "list of update: " +  search_parameters[0].getMoodList().toString());
+
+            //this is also correct when following ES partial update to documents guide, post request
+            Log.d("error", "Check update value string: " + update.toString());
 
                 try {
                     // where is the client
                     JestResult result = client.execute(update);
                     //Log.d("InAsyncTask ID", result.getId());
                     if (result.isSucceeded()) {
+                        //If the request succeeds, we see a response similar to that of the index request: Similar to the jest
+                        //partial update to doc guide, this part looks good, response to post request
+                        //if you check db, you can see the update happened.
+                        Log.d("error", "Check update Json String " + result.getJsonString());
                         //Log.d("In AsyncTask ID", result.getId());
                     } else {
                         Log.i("Error", "Elasticsearch was not able to update the user.");
