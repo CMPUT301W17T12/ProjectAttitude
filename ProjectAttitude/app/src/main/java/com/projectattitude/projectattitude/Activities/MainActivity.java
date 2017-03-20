@@ -35,6 +35,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -258,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
         SearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                filteringTriggers = true;
                 filterMood(null);
             }
         });
@@ -273,7 +275,6 @@ public class MainActivity extends AppCompatActivity {
      * @see #openFilterMenu(MenuItem)
      */
     public void openSFMenu(View view){
-        //TODO: Test all this popupmenu crap
         PopupMenu popup = new PopupMenu(this, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.sort_filter_menu, popup.getMenu());
@@ -409,29 +410,69 @@ public class MainActivity extends AppCompatActivity {
      * @see #filterMoodByTrigger(View)
      */
     public void filterMood(MenuItem item){
-        MenuItem subMenuItem = item.getSubMenu().getItem(0);
-        subMenuItem.setChecked(!subMenuItem.isChecked());
+        if(item != null){
+            MenuItem subMenuItem = item.getSubMenu().findItem(item.getItemId()); //TODO: Replace this 0 with something valuable
+            subMenuItem.setChecked(!subMenuItem.isChecked());
+            if(item.getItemId() == R.id.dayOption
+                    || item.getItemId() == R.id.weekOption
+                    || item.getItemId() == R.id.monthOption
+                    || item.getItemId() == R.id.yearOption){ //item is related to time
+                PopupMenu nestedPopup = new PopupMenu(this, findViewById(R.id.filterButton));
+                nestedPopup.inflate(R.menu.filter_menu);
+                if(item.isChecked()){ //If menuItem is checked, set check to filter by date
+                    nestedPopup.getMenu().findItem(R.id.timeOption).setChecked(true);
+                }else{ //If menuItem is checked, uncheck filter by date
+                    nestedPopup.getMenu().findItem(R.id.timeOption).setChecked(false);
+                }
+            }else if(!item.isChecked()) { //item is related to emotions
+                PopupMenu nestedPopup = new PopupMenu(this, findViewById(R.id.filterButton));
+                nestedPopup.inflate(R.menu.filter_menu);
+                if(item.isChecked()){ //If menuItem is checked, set check to filter by emotion
+                    nestedPopup.getMenu().findItem(R.id.emotionOption).setChecked(true);
+                }else{ //If menuItem is checked, uncheck filter by emotion
+                    nestedPopup.getMenu().findItem(R.id.emotionOption).setChecked(false);
+                }
+            }
+        }
         //TODO: Make sure list is up to date
         //TODO: Finish implementing checking
+        //Implemented assumption that checkables stay checked in popup menu
         PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        switch (item.getItemId()) {
-            case R.id.timeOption:
-                inflater.inflate(R.menu.time_menu, popup.getMenu());
-                popup.show();
-                break;
-
-            case R.id.emotionOption:
-                inflater.inflate(R.menu.mood_menu, popup.getMenu());
-                popup.show();
-                break;
-
-            case R.id.allOption:
-                userController.loadFromFile();
-                refreshMoodList();
-                 moodAdapter.notifyDataSetChanged();
-                break;
+        popup.inflate(R.menu.filter_menu);
+        //See if option in filter is checked. If so, do appropiate filtering.
+        if(popup.getMenu().findItem(R.id.timeOption).isChecked()){
+            PopupMenu nestedPopup = new PopupMenu(this, findViewById(R.id.filterButton));
+            nestedPopup.inflate(R.menu.time_menu);
+            MenuItem checkedItem = null;
+            Menu nestedMenu = nestedPopup.getMenu();
+            //Loop through filter by time menu looking for checked option
+            for(int i = 0; i < nestedMenu.size(); i++){
+                MenuItem tempItem = nestedMenu.getItem(i);
+                if(tempItem.isChecked()){
+                    //Break loop when checked item is found
+                    checkedItem = tempItem;
+                    break;
+                }
+            }
+            filterMoodsByTime(checkedItem);
         }
+        if(popup.getMenu().findItem(R.id.emotionOption).isChecked()){
+            PopupMenu nestedPopup = new PopupMenu(this, findViewById(R.id.filterButton));
+            nestedPopup.inflate(R.menu.mood_menu);
+            MenuItem checkedItem = null;
+            Menu nestedMenu = nestedPopup.getMenu();
+            //Loop through filter by time menu looking for checked option
+            for(int i = 0; i < nestedMenu.size(); i++){
+                MenuItem tempItem = nestedMenu.getItem(i);
+                if(tempItem.isChecked()){
+                    //Break loop when checked item is found
+                    checkedItem = tempItem;
+                    break;
+                }
+            }
+            filterMoodsByEmotion(checkedItem);
+        }
+
     }
 
     /**
@@ -449,6 +490,10 @@ public class MainActivity extends AppCompatActivity {
      * @param item
      */
     public void filterMoodsByTime(MenuItem item){
+        //If argument is null, do not filter anything
+        if(item == null){
+            return;
+        }
         switch (item.getItemId()) {
             case R.id.dayOption:
                 controller.filterListByTime(moodList, (long)8.64e+7); //1 day's worth of milliseconds
@@ -474,6 +519,10 @@ public class MainActivity extends AppCompatActivity {
      * @param item - option from the filter emotion menu
      */
     public void filterMoodsByEmotion(MenuItem item){
+        //If argument is null, do not filter anything
+        if(item == null){
+            return;
+        }
         Long milliseconds = new Date().getTime();
         switch (item.getItemId()) {
             case R.id.angerOption:
