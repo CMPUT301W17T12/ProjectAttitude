@@ -115,6 +115,13 @@ public class User implements Serializable {
     }
 
     /**
+     * Returns the first mood
+     * @return mood
+     */
+    public Mood getFirstMood(){
+        return moods.get(0);    //TODO What if the list is empty?
+    }
+    /**
      * Returns the user ID
      * @return id
      */

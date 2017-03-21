@@ -26,13 +26,8 @@
 package com.projectattitude.projectattitude;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.test.ActivityInstrumentationTestCase2;
-import android.text.Layout;
-import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 
 import com.projectattitude.projectattitude.Activities.CreateMoodActivity;
 import com.projectattitude.projectattitude.Activities.EditMoodActivity;
@@ -40,9 +35,6 @@ import com.projectattitude.projectattitude.Activities.LoginActivity;
 import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Activities.ViewMoodActivity;
 import com.robotium.solo.Solo;
-
-import java.util.Date;
-import java.util.zip.Inflater;
 
 /**
  * Created by Boris on 12/03/2017.

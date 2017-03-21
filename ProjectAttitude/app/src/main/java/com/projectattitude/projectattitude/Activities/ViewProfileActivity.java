@@ -25,24 +25,36 @@
 
 package com.projectattitude.projectattitude.Activities;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
+import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Controllers.UserController;
+import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
+
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 
 /**
  * This is a temporary profile, just shows name and number of moods
  */
 public class ViewProfileActivity extends AppCompatActivity {
+    protected ArrayList<Mood> recentMoodList = new ArrayList<Mood>();
     private UserController userController = UserController.getInstance();
+    private MoodMainAdapter moodAdapter;
 
     private TextView nameView;
     private TextView countView;
+    private ListView recentMoodView;    // refers to user's most recent mood
+    private ListView followingMoodView; // refers to moods user is following
+    private ArrayList<String> usersFollowed;
+    private ArrayList<Mood> usersFollowedMoods;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +63,43 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         nameView = (TextView) findViewById(R.id.profileUname);
         countView = (TextView) findViewById(R.id.profileCount);
+        recentMoodView = (ListView) findViewById(R.id.recentMood);
+        followingMoodView = (ListView) findViewById(R.id.followListView);
+        moodAdapter = new MoodMainAdapter(this, recentMoodList);
+        recentMoodView.setAdapter(moodAdapter);
     }
 
     @Override
     protected void onStart(){
         super.onStart();
 
+        //Profile setup
         Integer count = getIntent().getIntExtra("moodCount", 0);
         nameView.setText(userController.getActiveUser().getUserName());
         countView.setText("Number of moods: " + Integer.toString(count));
+
+        //Adding the mood to the user's most recent mood
+        Mood userMood = (Mood) getIntent().getSerializableExtra("mood");
+        recentMoodList.add(userMood);
+        moodAdapter.notifyDataSetChanged();
+
+        //adding recent moods for each follower
+        User user = (User) getIntent().getSerializableExtra("user");
+        usersFollowed = user.getFollowList();
+        for(int i = 0; i < usersFollowed.size(); i++){
+            String stringFollowedUser = usersFollowed.get(i);
+            ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+            try {
+                User followedUser = getUserTask.execute(stringFollowedUser).get();
+                Mood userFollowedMood = followedUser.getFirstMood();
+                usersFollowedMoods.add(userFollowedMood);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
 }
