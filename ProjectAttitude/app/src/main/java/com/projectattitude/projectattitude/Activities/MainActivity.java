@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        registerReceiver(netWorkChangeReceiver, new IntentFilter("networkConnectBroadcast"));
+        registerReceiver(netWorkChangeReceiver, new IntentFilter("networkConnectBroadcast"));   //TODO is crashing the app sometimes when returning from the profile page
 
         // twitter init
         TwitterAuthConfig authConfig =  new TwitterAuthConfig("consumerKey", "consumerSecret");
