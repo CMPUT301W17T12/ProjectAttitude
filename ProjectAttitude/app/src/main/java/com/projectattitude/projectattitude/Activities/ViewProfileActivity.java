@@ -75,7 +75,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         //Profile setup
         Integer count = getIntent().getIntExtra("moodCount", 0);
-        nameView.setText(userController.getActiveUser().getUserName());
+        nameView.setText(userController.getActiveUser().getUserName()); //getting the name of the user
         countView.setText("Number of moods: " + Integer.toString(count));
 
         //Adding the mood to the user's most recent mood
@@ -86,19 +86,22 @@ public class ViewProfileActivity extends AppCompatActivity {
         //adding recent moods for each follower
         User user = (User) getIntent().getSerializableExtra("user");
         usersFollowed = user.getFollowList();
-        for(int i = 0; i < usersFollowed.size(); i++){
-            String stringFollowedUser = usersFollowed.get(i);
-            ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
-            try {
-                User followedUser = getUserTask.execute(stringFollowedUser).get();
-                Mood userFollowedMood = followedUser.getFirstMood();
-                usersFollowedMoods.add(userFollowedMood);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+        if(usersFollowed != null){
+            for(int i = 0; i < usersFollowed.size(); i++){
+                String stringFollowedUser = usersFollowed.get(i);
+                ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+                try {
+                    User followedUser = getUserTask.execute(stringFollowedUser).get();
+                    Mood userFollowedMood = followedUser.getFirstMood();
+                    usersFollowedMoods.add(userFollowedMood);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
         }
+
 
     }
 
