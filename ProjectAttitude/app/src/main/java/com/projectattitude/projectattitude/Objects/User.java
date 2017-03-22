@@ -44,7 +44,7 @@ public class User implements Serializable {
     private ArrayList<Mood> moods;
 
     private String id;
-  
+
     /**
      * Creates the user object as well as initiating an arrayList of mood objects.
      */
@@ -114,6 +114,13 @@ public class User implements Serializable {
         return followedList;
     }
 
+    /**
+     * Returns the first mood
+     * @return mood
+     */
+    public Mood getFirstMood(){
+        return moods.get(0);    //TODO What if the list is empty?
+    }
     /**
      * Returns the user ID
      * @return id

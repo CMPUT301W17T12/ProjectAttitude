@@ -38,14 +38,11 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -105,15 +102,19 @@ public class MainActivity extends AppCompatActivity {
         }
         }
     };
+    //2017-03-21T17:03:03-0600 <----- stored
+    //Tue Mar 21 17:16:14 MDT 2017 <----Henry print
+    //2017-03-21T17:32:04-0600<------old db
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         controller = new MainController();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //get passed user from LoginActivity
-        User user = (User) getIntent().getSerializableExtra("PassUserToMain");
+        final User user = (User) getIntent().getSerializableExtra("PassUserToMain");
         userController.setActiveUser(user);
 
         moodListView = (ListView) findViewById(R.id.moodListView);
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        registerReceiver(netWorkChangeReceiver, new IntentFilter("networkConnectBroadcast"));
+        registerReceiver(netWorkChangeReceiver, new IntentFilter("networkConnectBroadcast"));   //TODO is crashing the app sometimes when returning from the profile page
 
         // twitter init
         TwitterAuthConfig authConfig =  new TwitterAuthConfig("consumerKey", "consumerSecret");
@@ -194,6 +195,8 @@ public class MainActivity extends AppCompatActivity {
                 fabMenu.close(true);
                 Intent intent = new Intent(MainActivity.this, ViewProfileActivity.class);
                 intent.putExtra("moodCount", moodList.size());
+                intent.putExtra("mood", moodList.get(0));   //TODO This returns the first item in the list, but if its been sorted, that would be wrong
+                intent.putExtra("user", user);
                 startActivity(intent);
             }
         });
@@ -328,11 +331,10 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("editing", userController.getActiveUser().getMoodList().get(itemPosition).toString());
 
-        //updating dbfa
-        if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-            ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-            addUserTask.execute(UserController.getInstance().getActiveUser());
-        }
+
+        //updating db
+        ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+        updateUserTask.execute(UserController.getInstance().getActiveUser());
     }
 
     /**
@@ -367,10 +369,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         //updating db
-        if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-            ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-            addUserTask.execute(UserController.getInstance().getActiveUser());
-        }
+        ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+        updateUserTask.execute(UserController.getInstance().getActiveUser());
     }
 
     /**
@@ -600,10 +600,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("userController Added", userController.getActiveUser().getMoodList().toString());
 
                 //update the user
-                if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-                    addUserTask.execute(UserController.getInstance().getActiveUser());
-                }
+//                if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+//                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+//                    addUserTask.execute(UserController.getInstance().getActiveUser());
+//                }
+
+                ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+                updateUserTask.execute(UserController.getInstance().getActiveUser());
             }
 
         }
