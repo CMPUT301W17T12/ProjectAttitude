@@ -96,7 +96,7 @@ public class MapActivity extends AppCompatActivity
         map.addMarker(new MarkerOptions()   // adding a marker
                 .position(new LatLng(53.5444, -113.4909))   // Edmonton location
                 .title("Edmonton"));
-        
+
         User user = (User) getIntent().getSerializableExtra("user");
         ArrayList<Mood> userMoodList = user.getMoodList();
         for(int i = 0;i < userMoodList.size();i++){ //TODO this will get EVERY mood from the user, which could be too many
