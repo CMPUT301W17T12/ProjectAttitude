@@ -173,7 +173,10 @@ public class ElasticSearchUserController {
                     //Json string is exactley whats expected following the retrieve document guide on ES
                     Log.d("Error", "JsonString: " + userJson);
 
-                    Gson gson = new Gson();
+                    //Gson gson = new Gson();
+                    GsonBuilder gsonBuilder = new GsonBuilder();
+                    Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
+
 //                    GsonBuilder gsonBuilder = new GsonBuilder();
 //                    Gson gson = gsonBuilder.create();
 

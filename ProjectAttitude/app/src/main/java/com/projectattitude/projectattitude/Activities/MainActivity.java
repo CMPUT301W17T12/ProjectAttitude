@@ -100,9 +100,13 @@ public class MainActivity extends AppCompatActivity {
         }
         }
     };
+    //2017-03-21T17:03:03-0600 <----- stored
+    //Tue Mar 21 17:16:14 MDT 2017 <----Henry print
+    //2017-03-21T17:32:04-0600<------old db
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         controller = new MainController();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
