@@ -243,16 +243,16 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             case R.id.timeOption:
                                 inflater.inflate(R.menu.time_menu, popup.getMenu());
+                                Log.d("Error", filteringTime);
                                 if(filteringTime.length() != 0){
-                                    Log.d("Filtering Time", filteringTime);
                                     findItemInMenu(popup.getMenu(), item).setChecked(true);
                                 }
                                 popup.show();
                                 break;
                             case R.id.emotionOption:
                                 inflater.inflate(R.menu.mood_menu, popup.getMenu());
+                                Log.d("Error", filteringEmotion);
                                 if(filteringEmotion.length() != 0){
-                                    Log.d("Filtering Emotion", filteringTime);
                                     findItemInMenu(popup.getMenu(), item).setChecked(true);
                                 }
                                 popup.show();
