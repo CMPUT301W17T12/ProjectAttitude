@@ -25,16 +25,18 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:id="@+id/context_menu" android:checkableBehavior="single">
+    <group android:id="@+id/date_menu" android:checkableBehavior="single">
         <item android:id="@+id/dateOption"
             android:title="@string/date_option"/>
         <item android:id="@+id/reverseDateOption"
             android:title="@string/reverse_date_option"/>
     </group>
+    <group android:id="@+id/filter_menu" android:checkableBehavior="all">
     <item android:id="@+id/timeOption"
         android:title="@string/time_option"/>
     <item android:id="@+id/emotionOption"
         android:title="@string/emotion_option"/>
+    </group>
     <item android:id="@+id/allOption"
         android:title="@string/all_option"/>
 </menu>

@@ -83,6 +83,12 @@ public class MainActivity extends AppCompatActivity {
 
     private UserController userController = UserController.getInstance();
 
+    //Private variables for sorting/filtering
+    private String sortingDate = "Sort"; //Possible options: "Sort" and "Reverse Sort"
+    private String filteringTime = ""; //Possible options: "Day", "Week", "Month", "Year"
+    private String filteringEmotion = ""; //Possible options: "emotionTitle",...
+
+
     private static final String LOG_TAG = "CheckNetworkStatus";
     private NetWorkChangeReceiver receiver;
     private boolean isConnected = false;
@@ -228,22 +234,33 @@ public class MainActivity extends AppCompatActivity {
                         MenuInflater inflater = popup.getMenuInflater();
                         switch(item.getItemId()){
                             case R.id.dateOption:
+                                item.setChecked(true);
                                 sortMood(item);
                                 break;
                             case R.id.reverseDateOption:
+                                item.setChecked(true);
                                 sortMood(item);
                                 break;
                             case R.id.timeOption:
                                 inflater.inflate(R.menu.time_menu, popup.getMenu());
+                                if(filteringTime.length() != 0){
+                                    Log.d("Filtering Time", filteringTime);
+                                    findItemInMenu(popup.getMenu(), item).setChecked(true);
+                                }
                                 popup.show();
                                 break;
                             case R.id.emotionOption:
-                                //Listener for filter by mood menu:
                                 inflater.inflate(R.menu.mood_menu, popup.getMenu());
+                                if(filteringEmotion.length() != 0){
+                                    Log.d("Filtering Emotion", filteringTime);
+                                    findItemInMenu(popup.getMenu(), item).setChecked(true);
+                                }
                                 popup.show();
                                 break;
                             case R.id.allOption:
                                 //TODO redo all option
+                                filteringTime = "";
+                                filteringEmotion = "";
                                 filteringTriggers = false;
                                 userController.loadFromFile();
                                 refreshMoodList();
@@ -253,8 +270,22 @@ public class MainActivity extends AppCompatActivity {
                         return false;
                     }
                 });//Code End of Listener for Sort/Filter Menu
+
                 MenuInflater inflater = popup.getMenuInflater();
                 inflater.inflate(R.menu.sort_filter_menu, popup.getMenu());
+                //Set up checkables
+                Menu popupMenu = popup.getMenu();
+                if(sortingDate.equals("Sort")){
+                    popupMenu.findItem(R.id.dateOption).setChecked(true);
+                }else if (sortingDate.equals("Reverse Sort")){
+                    popupMenu.findItem(R.id.reverseDateOption).setChecked(true);
+                }
+                if(filteringTime.length() != 0){
+                    popupMenu.findItem(R.id.timeOption).setChecked(true);
+                }
+                if(filteringEmotion.length() != 0){
+                    popupMenu.findItem(R.id.emotionOption).setChecked(true);
+                }
                 popup.show();
             }
         });
@@ -267,47 +298,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    //-------POPUP MENU FUNCTIONS-------
-    /**
-     * OpenSFMenu - Open Sort/Filter Menu
-     * Is used when the sort/filter button is pressed to display a menu
-     * @param view - the sort/filter button
-     * @see #openSortMenu(MenuItem)
-     * @see #openFilterMenu(MenuItem)
-     */
-    public void openSFMenu(View view){
-        PopupMenu popup = new PopupMenu(this, view);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.sort_filter_menu, popup.getMenu());
-        popup.show();
-    }
-
-    /**
-     * openSortMenu
-     * Is used when the sort option in sort/filter menu is pressed to display a menu
-     * @param item - the sort option in sort_filter_menu
-     * @see #sortMood(MenuItem)
-     */
-    public void openSortMenu(MenuItem item){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.sort_menu, popup.getMenu());
-        popup.show();
-    }
-
-    /**
-     * openFilterMenu
-     * Is used when the filter option in sort/filter menu is pressed to display a menu
-     * @param item - the filter option in sort_filter_menu
-     * @see #filterMood(MenuItem)
-     */
-    public void openFilterMenu(MenuItem item){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.filter_menu, popup.getMenu());
-        popup.show();
+        sortMood(null);
     }
 
     /**
@@ -379,23 +370,18 @@ public class MainActivity extends AppCompatActivity {
      */
     public void sortMood(MenuItem item){
         if(item == null){
-            //Taken from http://stackoverflow.com/questions/24717981/android-popupmenu-checkable-item-does-not-check
-            //Date: 3/19/2017
-            MenuItem subMenuItem = item.getSubMenu().getItem(0);
-            subMenuItem.setChecked(!subMenuItem.isChecked());
+            sortingDate = "Sort";
             controller.sortList(moodList, "Sort"); //True = sorting by date
             return;
         }
-        MenuItem subMenuItem;
+
         switch (item.getItemId()) {
             case R.id.dateOption:
-                subMenuItem = item.getSubMenu().getItem(0);
-                subMenuItem.setChecked(!subMenuItem.isChecked());
+                sortingDate = "Sort";
                 controller.sortList(moodList, "Sort"); //True = sorting by date
                 break;
             case R.id.reverseDateOption:
-                subMenuItem = item.getSubMenu().getItem(1);
-                subMenuItem.setChecked(!subMenuItem.isChecked());
+                sortingDate = "Reverse Sort";
                 controller.sortList(moodList, "Reverse Sort"); //False = sorting by reverse date
                 break;
         }
@@ -410,69 +396,37 @@ public class MainActivity extends AppCompatActivity {
      * @see #filterMoodByTrigger(View)
      */
     public void filterMood(MenuItem item){
+        //Check what item is filtered
+        refreshMoodList();
         if(item != null){
-            MenuItem subMenuItem = item.getSubMenu().findItem(item.getItemId()); //TODO: Replace this 0 with something valuable
-            subMenuItem.setChecked(!subMenuItem.isChecked());
-            if(item.getItemId() == R.id.dayOption
-                    || item.getItemId() == R.id.weekOption
-                    || item.getItemId() == R.id.monthOption
-                    || item.getItemId() == R.id.yearOption){ //item is related to time
-                PopupMenu nestedPopup = new PopupMenu(this, findViewById(R.id.filterButton));
-                nestedPopup.inflate(R.menu.filter_menu);
-                if(item.isChecked()){ //If menuItem is checked, set check to filter by date
-                    nestedPopup.getMenu().findItem(R.id.timeOption).setChecked(true);
-                }else{ //If menuItem is checked, uncheck filter by date
-                    nestedPopup.getMenu().findItem(R.id.timeOption).setChecked(false);
-                }
-            }else if(!item.isChecked()) { //item is related to emotions
-                PopupMenu nestedPopup = new PopupMenu(this, findViewById(R.id.filterButton));
-                nestedPopup.inflate(R.menu.filter_menu);
-                if(item.isChecked()){ //If menuItem is checked, set check to filter by emotion
-                    nestedPopup.getMenu().findItem(R.id.emotionOption).setChecked(true);
-                }else{ //If menuItem is checked, uncheck filter by emotion
-                    nestedPopup.getMenu().findItem(R.id.emotionOption).setChecked(false);
-                }
+            String itemTitle = item.getTitle().toString();
+            item.setChecked(true);
+            if(itemTitle.equals(R.string.day_option)
+                    || itemTitle.equals(R.string.week_option)
+                    || itemTitle.equals(R.string.month_option)
+                    || itemTitle.equals(R.string.year_option)){ //item is related to time
+                filteringTime = itemTitle;
+
+            }else{//filtering by title
+                filteringEmotion = itemTitle;
             }
         }
-        //TODO: Make sure list is up to date
-        //TODO: Finish implementing checking
-        //Implemented assumption that checkables stay checked in popup menu
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        popup.inflate(R.menu.filter_menu);
-        //See if option in filter is checked. If so, do appropiate filtering.
-        if(popup.getMenu().findItem(R.id.timeOption).isChecked()){
-            PopupMenu nestedPopup = new PopupMenu(this, findViewById(R.id.filterButton));
-            nestedPopup.inflate(R.menu.time_menu);
-            MenuItem checkedItem = null;
-            Menu nestedMenu = nestedPopup.getMenu();
-            //Loop through filter by time menu looking for checked option
-            for(int i = 0; i < nestedMenu.size(); i++){
-                MenuItem tempItem = nestedMenu.getItem(i);
-                if(tempItem.isChecked()){
-                    //Break loop when checked item is found
-                    checkedItem = tempItem;
-                    break;
-                }
-            }
-            filterMoodsByTime(checkedItem);
+        if(filteringTime.length() != 0){
+            //find menuitem with corresponding title
+            PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+            popup.inflate(R.menu.time_menu);
+            filterMoodsByTime(findItemInMenu(popup.getMenu(), item));
         }
-        if(popup.getMenu().findItem(R.id.emotionOption).isChecked()){
-            PopupMenu nestedPopup = new PopupMenu(this, findViewById(R.id.filterButton));
-            nestedPopup.inflate(R.menu.mood_menu);
-            MenuItem checkedItem = null;
-            Menu nestedMenu = nestedPopup.getMenu();
-            //Loop through filter by time menu looking for checked option
-            for(int i = 0; i < nestedMenu.size(); i++){
-                MenuItem tempItem = nestedMenu.getItem(i);
-                if(tempItem.isChecked()){
-                    //Break loop when checked item is found
-                    checkedItem = tempItem;
-                    break;
-                }
-            }
-            filterMoodsByEmotion(checkedItem);
+        if(filteringEmotion.length() != 0){
+            //find menuitem with corresponding title
+            PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
+            popup.inflate(R.menu.mood_menu);
+            filterMoodsByEmotion(findItemInMenu(popup.getMenu(), item));
         }
 
+        if(filteringTriggers){ //global variable for filtering trigger words
+            filterMoodByTrigger(null);
+        }
     }
 
     /**
@@ -561,6 +515,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * findItemInMenu
+     * Given a menu and a menuitem, attempts to find the menuitem in menu
+     * If no menu item found, returns null
+     */
+    public MenuItem findItemInMenu(Menu menu, MenuItem item){
+        MenuItem checkedItem = null;
+        int menuSize = menu.size();
+        //Loop through filter by time menu looking for checked option
+        for(int i = 0; i < menuSize; i++){
+            checkedItem = menu.getItem(i);
+            if(filteringEmotion.equals(checkedItem.getTitle().toString())){
+                //Break loop when checked item is found
+                break;
+            }
+        }
+        return checkedItem;
+    }
+
+    /**
      * refreshMood - Used to refresh the mood list with the most current moods.
      * Currently works by using the global variable moodList
      */
@@ -569,7 +542,6 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Mood> newList = userController.getActiveUser().getMoodList();
         moodList.clear();
         moodList.addAll(newList);
-        sortMood(null);
     }
 
     //accept returned information from activities
