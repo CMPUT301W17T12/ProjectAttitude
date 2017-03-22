@@ -272,10 +272,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d("editing", userController.getActiveUser().getMoodList().get(itemPosition).toString());
 
         //updating db
-        if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-            ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-            addUserTask.execute(UserController.getInstance().getActiveUser());
-        }
+        ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+        updateUserTask.execute(UserController.getInstance().getActiveUser());
     }
 
     /**
@@ -310,10 +308,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         //updating db
-        if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-            ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-            addUserTask.execute(UserController.getInstance().getActiveUser());
-        }
+        ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+        updateUserTask.execute(UserController.getInstance().getActiveUser());
     }
 
     /**

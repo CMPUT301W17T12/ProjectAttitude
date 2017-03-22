@@ -174,6 +174,8 @@ public class ElasticSearchUserController {
                     Log.d("Error", "JsonString: " + userJson);
 
                     //Gson gson = new Gson();
+                    //Taken from http://stackoverflow.com/questions/7910734/gsonbuilder-setdateformat-for-2011-10-26t202959-0700
+                    //Date: 3/21/2017
                     GsonBuilder gsonBuilder = new GsonBuilder();
                     Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
 
@@ -229,7 +231,7 @@ public class ElasticSearchUserController {
             //for (User user : users) {
             String query = "";
             GsonBuilder gsonBuilder = new GsonBuilder();
-            Gson gson = gsonBuilder.create();
+            Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
 
             String json = gson.toJson(search_parameters[0].getMoodList());
 
