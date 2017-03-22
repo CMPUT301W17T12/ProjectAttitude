@@ -100,9 +100,13 @@ public class MainActivity extends AppCompatActivity {
         }
         }
     };
+    //2017-03-21T17:03:03-0600 <----- stored
+    //Tue Mar 21 17:16:14 MDT 2017 <----Henry print
+    //2017-03-21T17:32:04-0600<------old db
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         controller = new MainController();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -270,10 +274,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d("editing", userController.getActiveUser().getMoodList().get(itemPosition).toString());
 
         //updating db
-        if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-            ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-            addUserTask.execute(UserController.getInstance().getActiveUser());
-        }
+        ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+        updateUserTask.execute(UserController.getInstance().getActiveUser());
     }
 
     /**
@@ -308,10 +310,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         //updating db
-        if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-            ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-            addUserTask.execute(UserController.getInstance().getActiveUser());
-        }
+        ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+        updateUserTask.execute(UserController.getInstance().getActiveUser());
     }
 
     /**
@@ -486,10 +486,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("userController Added", userController.getActiveUser().getMoodList().toString());
 
                 //update the user
-                if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-                    addUserTask.execute(UserController.getInstance().getActiveUser());
-                }
+//                if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+//                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+//                    addUserTask.execute(UserController.getInstance().getActiveUser());
+//                }
+
+                ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+                updateUserTask.execute(UserController.getInstance().getActiveUser());
             }
 
         }
