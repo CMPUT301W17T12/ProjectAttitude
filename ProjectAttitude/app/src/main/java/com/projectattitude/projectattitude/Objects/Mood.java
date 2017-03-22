@@ -25,9 +25,8 @@
 
 package com.projectattitude.projectattitude.Objects;
 
+import android.location.Location;
 import android.media.Image;
-
-import org.osmdroid.util.GeoPoint;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -45,7 +44,7 @@ public class Mood implements Serializable {
 
     private Date moodDate;
     private String emotionState;
-    private GeoPoint geoLocation;
+    private Location geoLocation;
     private String trigger;
     private String explanation;
     private Image image;
@@ -90,7 +89,7 @@ public class Mood implements Serializable {
      * Gets the geoLocation.
      * @return geoLocation
      */
-    public GeoPoint getGeoLocation() {
+    public Location getGeoLocation() {
         return geoLocation;
     }
 
@@ -98,7 +97,7 @@ public class Mood implements Serializable {
      * Sets the geoLocation
      * @param geoLocation geoLocation
      */
-    public void setGeoLocation(GeoPoint geoLocation) {
+    public void setGeoLocation(Location geoLocation) {
         this.geoLocation = geoLocation;
     }
 
