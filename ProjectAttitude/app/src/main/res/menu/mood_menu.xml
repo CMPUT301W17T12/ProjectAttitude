@@ -29,42 +29,42 @@
     <group android:id="@+id/context_menu" android:checkableBehavior="single">
     <item
         android:id="@+id/angerOption"
-        android:onClick="filterMoodsByEmotion"
+        android:onClick="filterMood"
         app:showAsAction="always"
         android:title="@string/anger_option" />
     <item
         android:id="@+id/confusionOption"
-        android:onClick="filterMoodsByEmotion"
+        android:onClick="filterMood"
         app:showAsAction="always"
         android:title="@string/confusion_option" />
     <item
         android:id="@+id/disgustOption"
-        android:onClick="filterMoodsByEmotion"
+        android:onClick="filterMood"
         app:showAsAction="always"
         android:title="@string/disgust_option" />
     <item
         android:id="@+id/fearOption"
-        android:onClick="filterMoodsByEmotion"
+        android:onClick="filterMood"
         app:showAsAction="always"
         android:title="@string/fear_option" />
     <item
         android:id="@+id/happinessOption"
-        android:onClick="filterMoodsByEmotion"
+        android:onClick="filterMood"
         app:showAsAction="always"
         android:title="@string/happiness_option" />
     <item
         android:id="@+id/sadnessOption"
-        android:onClick="filterMoodsByEmotion"
+        android:onClick="filterMood"
         app:showAsAction="always"
         android:title="@string/sadness_option" />
     <item
         android:id="@+id/shameOption"
-        android:onClick="filterMoodsByEmotion"
+        android:onClick="filterMood"
         app:showAsAction="always"
         android:title="@string/shame_option" />
     <item
         android:id="@+id/surpriseOption"
-        android:onClick="filterMoodsByEmotion"
+        android:onClick="filterMood"
         app:showAsAction="always"
         android:title="@string/surprise_option" />
     </group>

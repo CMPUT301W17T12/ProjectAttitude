@@ -244,16 +244,14 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.timeOption:
                                 inflater.inflate(R.menu.time_menu, popup.getMenu());
                                 if(filteringTime.length() != 0){
-                                    //TODO: gets title
-                                    popup.getMenu().getItem(0)
-                                    findItemInMenu(popup.getMenu(), item).setChecked(true);
+                                    findItemInMenu(popup.getMenu(), filteringTime).setChecked(true);
                                 }
                                 popup.show();
                                 break;
                             case R.id.emotionOption:
                                 inflater.inflate(R.menu.mood_menu, popup.getMenu());
                                 if(filteringEmotion.length() != 0){
-                                    findItemInMenu(popup.getMenu(), item).setChecked(true);
+                                    findItemInMenu(popup.getMenu(), filteringEmotion).setChecked(true);
                                 }
                                 popup.show();
                                 break;
@@ -393,39 +391,46 @@ public class MainActivity extends AppCompatActivity {
      * @param item - one of the options from the filter menu
      * @see #filterMoodsByEmotion(MenuItem)
      * @see #filterMoodsByTime(MenuItem)
-     * @see #filterMoodByTrigger(View)
+     * @see #filterMoodByTrigger()
      */
     public void filterMood(MenuItem item){
         //Check what item is filtered
         refreshMoodList();
         if(item != null){
             String itemTitle = item.getTitle().toString();
-            item.setChecked(true);
+            item.setChecked(!item.isChecked());
             if(itemTitle.equals(R.string.day_option)
                     || itemTitle.equals(R.string.week_option)
                     || itemTitle.equals(R.string.month_option)
                     || itemTitle.equals(R.string.year_option)){ //item is related to time
-                filteringTime = itemTitle;
-
-            }else{//filtering by title
-                filteringEmotion = itemTitle;
+                if(item.isChecked()){
+                    filteringTime = itemTitle;
+                }else{//item not checked
+                    filteringTime = "";
+                }
+            }else{//filtering by emotion
+                if(item.isChecked()){
+                    filteringEmotion = itemTitle;
+                }else{//item not checked
+                    filteringEmotion = "";
+                }
             }
         }
         if(filteringTime.length() != 0){
             //find menuitem with corresponding title
             PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
             popup.inflate(R.menu.time_menu);
-            filterMoodsByTime(findItemInMenu(popup.getMenu(), item));
+            filterMoodsByTime(findItemInMenu(popup.getMenu(), filteringTime));
         }
         if(filteringEmotion.length() != 0){
             //find menuitem with corresponding title
             PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
             popup.inflate(R.menu.mood_menu);
-            filterMoodsByEmotion(findItemInMenu(popup.getMenu(), item));
+            filterMoodsByEmotion(findItemInMenu(popup.getMenu(), filteringEmotion));
         }
 
         if(filteringTriggers){ //global variable for filtering trigger words
-            filterMoodByTrigger(null);
+            filterMoodByTrigger();
         }
     }
 
@@ -433,7 +438,7 @@ public class MainActivity extends AppCompatActivity {
      * This is the method that handles finding moods with a given keyword
      * Called by pressing the searchButton on main_layout
      */
-    public void filterMoodByTrigger(View view){
+    public void filterMoodByTrigger(){
         //Get text from search bar and then call controller function
         controller.filterListByTrigger(moodList, ((EditText)findViewById(R.id.searchBar)).getText().toString());
         moodAdapter.notifyDataSetChanged();
@@ -519,13 +524,13 @@ public class MainActivity extends AppCompatActivity {
      * Given a menu and a menuitem, attempts to find the menuitem in menu
      * If no menu item found, returns null
      */
-    public MenuItem findItemInMenu(Menu menu, MenuItem item){
+    public MenuItem findItemInMenu(Menu menu, String stringToCheck){
         MenuItem checkedItem = null;
         int menuSize = menu.size();
         //Loop through filter by time menu looking for checked option
         for(int i = 0; i < menuSize; i++){
             checkedItem = menu.getItem(i);
-            if(filteringEmotion.equals(checkedItem.getTitle().toString())){
+            if(stringToCheck.equals(checkedItem.getTitle().toString())){
                 //Break loop when checked item is found
                 break;
             }
