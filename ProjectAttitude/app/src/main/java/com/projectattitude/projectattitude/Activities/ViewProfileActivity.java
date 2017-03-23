@@ -48,8 +48,10 @@ import java.util.concurrent.ExecutionException;
  */
 public class ViewProfileActivity extends AppCompatActivity {
     protected ArrayList<Mood> recentMoodList = new ArrayList<Mood>();
+    protected ArrayList<Mood> followingMoodList = new ArrayList<Mood>();
     private UserController userController = UserController.getInstance();
-    private MoodMainAdapter moodAdapter;
+    private MoodMainAdapter recentMoodAdapter;
+    private MoodMainAdapter followingMoodAdapter;
 
     private Button searchButton;
     private EditText searchBar;
@@ -71,8 +73,12 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         recentMoodView = (ListView) findViewById(R.id.latestMood);
         followingMoodView = (ListView) findViewById(R.id.followListView);
-        moodAdapter = new MoodMainAdapter(this, recentMoodList);
-        recentMoodView.setAdapter(moodAdapter);
+
+        recentMoodAdapter = new MoodMainAdapter(this, recentMoodList);
+        recentMoodView.setAdapter(recentMoodAdapter);
+
+        followingMoodAdapter = new MoodMainAdapter(this, followingMoodList);
+        followingMoodView.setAdapter(followingMoodAdapter);
     }
 
     @Override
@@ -85,7 +91,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         //Adding the mood to the user's most recent mood
         Mood userMood = (Mood) getIntent().getSerializableExtra("mood");
         recentMoodList.add(userMood);
-        moodAdapter.notifyDataSetChanged();
+        recentMoodAdapter.notifyDataSetChanged();
 
         //adding recent moods for each follower
         User user = (User) getIntent().getSerializableExtra("user");
@@ -105,6 +111,9 @@ public class ViewProfileActivity extends AppCompatActivity {
                 }
             }
         }
+        followingMoodList.add(userMood);    //TODO Temporary place holder, remove
+
+        followingMoodAdapter.notifyDataSetChanged();
 
 
     }

@@ -25,14 +25,18 @@
 
 package com.projectattitude.projectattitude.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.location.Criteria;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -71,7 +75,7 @@ public class CreateMoodActivity extends MoodActivity {
         final Spinner emotionSpinner = (Spinner) findViewById(R.id.emotionSpinner);
         final EditText etTrigger = (EditText) findViewById(R.id.triggerField);
         final Spinner socialSituationSpinner = (Spinner) findViewById(R.id.spinner);
-        //final CheckBox saveLocation = (CheckBox) findViewById(R.id.saveLocation); // geoPoint location saving
+        final CheckBox saveLocation = (CheckBox) findViewById(R.id.saveLocation); // geoPoint location saving
         s = "";
 
 
@@ -102,10 +106,20 @@ public class CreateMoodActivity extends MoodActivity {
                     }
                     newMood.setPhoto(s);
 
-                    /*if(saveLocation.isChecked()){ //TODO check location
-                        GeoPoint myLocation = LocationServices.FusedLocationApi.getLastLocation()
-                        newMood.setGeoLocation(myLocation);
-                    }*/
+                    if(saveLocation.isChecked()){ //TODO check location
+
+                        LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+
+                        // Creating an empty criteria object
+                        Criteria criteria = new Criteria();
+
+                        // Getting the name of the provider that meets the criteria
+                        String provider = locationManager.getBestProvider(criteria, false);
+
+                        //Location location = locationManager.getLastKnownLocation(provider);
+                        //LocationServices location = LocationServices.FusedLocationApi.getLastLocation()
+                        //newMood.setGeoLocation(location);
+                    }
 
 
                     Intent returnCreateMoodIntent = new Intent();
