@@ -255,6 +255,27 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
 
     }
 
+    /**
+     * This test checks if a users name pops up in the profile screen
+     * Also checks that the latest mood is there and correct
+     */
+    public void testProfile(){
+        logIn(solo);
+        createHappy(solo);
+        solo.clickLongInList(0);
+        solo.clickOnText("Edit");
+        solo.clickOnText("Happiness");
+        solo.clickOnText("Disgust");
+        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnScreen(890, 1664); //The location of the fab button
+        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.fabProfile));
+        assertTrue(solo.searchText("tester")); //Checks for the user name
+        assertTrue(solo.searchText("Disgust")); //Checks most recent mood
+        solo.goBack();
+        deleteFirstMood();//Clean up
+    }
+
     public void createHappy(Solo solo){ //Creates a happy mood and returns to main
         solo.clickOnScreen(890, 1664); //This is the location of the fab button
         solo.clickOnView(solo.getView(R.id.fabAddMood));
