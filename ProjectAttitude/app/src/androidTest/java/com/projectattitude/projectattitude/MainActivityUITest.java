@@ -196,17 +196,11 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.clickOnImageButton(0);
         solo.clickOnText("Filter");
         solo.clickOnText("Emotions");
-        solo.clickOnText("Anger");
+        solo.clickOnScreen(721,396);
 
         assertTrue(solo.searchText("Anger"));   // only anger should be present
         assertFalse(solo.searchText("Happiness"));
 
-//        solo.clickOnText("Anger");
-//        assertTrue(solo.searchText("Anger"));
-//        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
-//        solo.clickLongInList(0);
-//        solo.clickOnText("View");
-//        assertTrue(solo.searchText("Anger"));
 
         // clean up
         deleteFirstMood();
