@@ -27,6 +27,7 @@ package com.projectattitude.projectattitude.Activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -88,34 +89,38 @@ public class ViewProfileActivity extends AppCompatActivity {
         //Profile setup
         nameView.setText(userController.getActiveUser().getUserName()); //getting the name of the user
 
-        //Adding the mood to the user's most recent mood
-        Mood userMood = (Mood) getIntent().getSerializableExtra("mood");
-        recentMoodList.add(userMood);
-        recentMoodAdapter.notifyDataSetChanged();
+        int moodCount = (int) getIntent().getSerializableExtra("moodCount");
 
-        //adding recent moods for each follower
-        User user = (User) getIntent().getSerializableExtra("user");
-        usersFollowed = user.getFollowList();
-        if(usersFollowed != null){
-            for(int i = 0; i < usersFollowed.size(); i++){
-                String stringFollowedUser = usersFollowed.get(i);
-                ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
-                try {
-                    User followedUser = getUserTask.execute(stringFollowedUser).get();
-                    Mood userFollowedMood = followedUser.getFirstMood();
-                    usersFollowedMoods.add(userFollowedMood);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
+        Mood userMood;
+        if (moodCount > 0) {
+            //Adding the mood to the user's most recent mood
+            userMood = (Mood) getIntent().getSerializableExtra("mood");
+            recentMoodList.add(userMood);
+            recentMoodAdapter.notifyDataSetChanged();
+
+            //adding recent moods for each follower
+            User user = (User) getIntent().getSerializableExtra("user");
+            usersFollowed = user.getFollowList();
+            if(usersFollowed != null){
+                for(int i = 0; i < usersFollowed.size(); i++){
+                    String stringFollowedUser = usersFollowed.get(i);
+                    ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+                    try {
+                        User followedUser = getUserTask.execute(stringFollowedUser).get();
+                        Mood userFollowedMood = followedUser.getFirstMood();
+                        usersFollowedMoods.add(userFollowedMood);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+            followingMoodList.add(userMood);    //TODO Temporary place holder, remove
+
+            followingMoodAdapter.notifyDataSetChanged();
+
         }
-        followingMoodList.add(userMood);    //TODO Temporary place holder, remove
-
-        followingMoodAdapter.notifyDataSetChanged();
-
-
     }
 
 }
