@@ -29,17 +29,23 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.PermissionUtils;
+import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
+
+import java.util.ArrayList;
 
 /**
  * This class is used for managing the Map activity. The user is able to interact with the map
@@ -84,6 +90,28 @@ public class MapActivity extends AppCompatActivity
 
         mMap.setOnMyLocationButtonClickListener(this);
         enableMyLocation();
+
+        //Taken from https://developers.google.com/maps/documentation/android-api/marker
+        //On March 21st at 17:53
+        map.addMarker(new MarkerOptions()   // adding a marker
+                .position(new LatLng(53.5444, -113.4909))   // Edmonton location
+                .title("Edmonton"));
+
+        User user = (User) getIntent().getSerializableExtra("user");
+        ArrayList<Mood> userMoodList = user.getMoodList();
+        for(int i = 0;i < userMoodList.size();i++){ //TODO this will get EVERY mood from the user, which could be too many
+            Mood mood = userMoodList.get(i);
+
+            if(mood.getGeoLocation() != null){
+                double latitude = mood.getGeoLocation().getLatitude();  //get lat
+                double longitude = mood.getGeoLocation().getLongitude();    //get long
+
+                map.addMarker(new MarkerOptions()   // adding a marker for mood
+                        .position(new LatLng(latitude, longitude))   // Mood location
+                        .title(userMoodList.get(i).getTrigger()));  // named after the trigger
+            }
+        }
+
     }
 
     /**
