@@ -7,9 +7,9 @@ import java.util.ArrayList;
  */
 
 public abstract class FilterDecorator {
-    protected String filterType;
-    protected String filterParameter;
-    protected FilterDecorator enclosedDecorator;
+    private String filterType;
+    private String filterParameter;
+    private FilterDecorator enclosedDecorator;
 
     public FilterDecorator(String filterParameter){
         this.filterParameter = filterParameter;
@@ -27,6 +27,14 @@ public abstract class FilterDecorator {
 
     public void setFilterParameter(String filterParameter) {
         this.filterParameter = filterParameter;
+    }
+
+    public void setFilterType(String filterType) {
+        //Can only set filterType once
+        if(this.filterType == null){
+            this.filterType = filterType;
+        }
+
     }
 
     public String getFilterType() {

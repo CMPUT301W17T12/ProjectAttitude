@@ -50,6 +50,9 @@ import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Controllers.UserController;
+import com.projectattitude.projectattitude.Objects.FilterDecorator;
+import com.projectattitude.projectattitude.Objects.FilterDecoratorHandler;
+import com.projectattitude.projectattitude.Objects.FilterTriggerDecorator;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.NetWorkChangeReceiver;
 import com.projectattitude.projectattitude.Objects.User;
@@ -78,15 +81,13 @@ public class MainActivity extends AppCompatActivity {
     private MoodMainAdapter moodAdapter;
     private ListView moodListView;
     private MainController controller;
-    private boolean filteringTriggers;
     private Integer itemPosition;
+    private String sortingDate;
 
     private UserController userController = UserController.getInstance();
+    private FilterDecorator filterDecorator = null;
 
     //Private variables for sorting/filtering
-    private String sortingDate = "Sort"; //Possible options: "Sort" and "Reverse Sort"
-    private String filteringTime = ""; //Possible options: "Day", "Week", "Month", "Year"
-    private String filteringEmotion = ""; //Possible options: "emotionTitle",...
 
 
     private static final String LOG_TAG = "CheckNetworkStatus";
@@ -129,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
         moodAdapter = new MoodMainAdapter(this, moodList);
         //moodAdapter = new MoodMainAdapter(this, userController.getActiveUser().getMoodList());
         moodListView.setAdapter(moodAdapter);
-        filteringTriggers = false;
 
         //Load user and mood, and update current displayed list
         userController.loadFromFile();
@@ -292,8 +292,10 @@ public class MainActivity extends AppCompatActivity {
         SearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                filteringTriggers = true;
-                filterMood(null);
+                //Enter new trigger filter into decorator head
+                filterDecorator = FilterDecoratorHandler.findAndReplace(filterDecorator,
+                        new FilterTriggerDecorator(((EditText)findViewById(R.id.searchBar)).getText().toString()));
+                filterMood();
             }
         });
 
@@ -388,50 +390,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Handles filtering the list - specifically multi-filtering
-     * @param item - one of the options from the filter menu
-     * @see #filterMoodsByEmotion(MenuItem)
-     * @see #filterMoodsByTime(MenuItem)
-     * @see #filterMoodByTrigger()
+     * Handles filtering the list (multi-filtering included)
      */
-    public void filterMood(MenuItem item){
+    public void filterMood(){
         //Check what item is filtered
         refreshMoodList();
-        if(item != null){
-            String itemTitle = item.getTitle().toString();
-            item.setChecked(!item.isChecked());
-            if(itemTitle.equals(R.string.day_option)
-                    || itemTitle.equals(R.string.week_option)
-                    || itemTitle.equals(R.string.month_option)
-                    || itemTitle.equals(R.string.year_option)){ //item is related to time
-                if(item.isChecked()){
-                    filteringTime = itemTitle;
-                }else{//item not checked
-                    filteringTime = "";
-                }
-            }else{//filtering by emotion
-                if(item.isChecked()){
-                    filteringEmotion = itemTitle;
-                }else{//item not checked
-                    filteringEmotion = "";
-                }
-            }
-        }
-        if(filteringTime.length() != 0){
-            //find menuitem with corresponding title
-            PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-            popup.inflate(R.menu.time_menu);
-            filterMoodsByTime(findItemInMenu(popup.getMenu(), filteringTime));
-        }
-        if(filteringEmotion.length() != 0){
-            //find menuitem with corresponding title
-            PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-            popup.inflate(R.menu.mood_menu);
-            filterMoodsByEmotion(findItemInMenu(popup.getMenu(), filteringEmotion));
-        }
-
-        if(filteringTriggers){ //global variable for filtering trigger words
-            filterMoodByTrigger();
+        if(filterDecorator != null){
+            filterDecorator.filter(moodList);
         }
     }
 

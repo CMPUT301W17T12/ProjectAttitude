@@ -12,7 +12,7 @@ public class FilterTriggerDecorator extends FilterDecorator {
 
     public FilterTriggerDecorator(String filterParameter){
         super(filterParameter);
-        filterType = "Trigger";
+        this.setFilterType("Trigger");
     }
 
     public FilterTriggerDecorator(String filterParameter, FilterDecorator enclosedDecorator){
@@ -25,13 +25,13 @@ public class FilterTriggerDecorator extends FilterDecorator {
      * @param moodList - moods to be filtered
      */
     public void specificFilter(ArrayList<Mood> moodList){
-        filterParameter = filterParameter.toLowerCase(); //Not case-sensitive searching
+        String filterParameter = this.getFilterParameter().toLowerCase(); //Not case-sensitive searching
         for(int i = moodList.size() - 1; i >= 0; --i){
             //Split mood's trigger sentence into individual words, then try to find the word specified by reason
             String currentTrigger = moodList.get(i).getTrigger().toLowerCase();
             String triggerWords[] = currentTrigger.split(" ");
             boolean foundWord = false; //Flag for if word is found or not
-            for(int k = 0; k < triggerWords.length; ++k){
+            for(int k = 0; k < triggerWords.length; ++k){ //See if any of the mood's individual word matches what's in the search bar
                 if(filterParameter.equals(triggerWords[k])){
                     foundWord = true;
                     break;

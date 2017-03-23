@@ -12,7 +12,7 @@ public class FilterTimeDecorator extends FilterDecorator {
 
     public FilterTimeDecorator( String filterParameter){
         super(filterParameter);
-        filterType = "Time";
+        this.setFilterType("Time");
     }
 
     public FilterTimeDecorator(String filterParameter, FilterDecorator enclosedDecorator){
@@ -26,7 +26,7 @@ public class FilterTimeDecorator extends FilterDecorator {
      */
     public void specificFilter(ArrayList<Mood> moodList){
         long timeParameter;
-        switch(filterParameter){
+        switch(this.getFilterParameter()){
             case "Day":
                 timeParameter = (long)8.64e+7; //1 day's worth of milliseconds
                 break;
@@ -43,7 +43,7 @@ public class FilterTimeDecorator extends FilterDecorator {
                 timeParameter = (long)3.154e+10; //1 year's worth of milliseconds approximately
                 break;
 
-            default:
+            default: //Default filter by day
                 timeParameter = (long)8.64e+7;
                 break;
 

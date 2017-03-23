@@ -12,7 +12,7 @@ public class FilterEmotionDecorator extends FilterDecorator {
 
     public FilterEmotionDecorator(String filterParameter){
         super(filterParameter);
-        filterType = "Emotion";
+        this.setFilterType("Emotion");
     }
 
     public FilterEmotionDecorator(String filterParameter, FilterDecorator enclosedDecorator){
@@ -26,7 +26,7 @@ public class FilterEmotionDecorator extends FilterDecorator {
      */
     public void specificFilter(ArrayList<Mood> moodList){
         for(int i = moodList.size() - 1; i >= 0; --i){
-            if(!(moodList.get(i).getEmotionState().equals(filterParameter))){ //If mood's emotion is not equal to emotion Parameter
+            if(!(moodList.get(i).getEmotionState().equals(this.getFilterParameter()))){ //If mood's emotion is not equal to emotion Parameter
                 moodList.remove(i);
             }
         }
