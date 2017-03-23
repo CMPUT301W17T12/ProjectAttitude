@@ -36,6 +36,8 @@ import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Activities.ViewMoodActivity;
 import com.robotium.solo.Solo;
 
+import java.util.Date;
+
 /**
  * Created by Boris on 12/03/2017.
  *
@@ -128,59 +130,55 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         assertFalse(solo.searchText("Happiness"));
     }
 
-//    public void testFilterByDay(){
-//        logIn(solo);
-//        createHappy(solo);
-//
-//        solo.clickLongInList(0);
-//        assertTrue(solo.searchText("Edit"));
-//        solo.clickOnText("Edit");
-//        solo.assertCurrentActivity("Wrong activity", EditMoodActivity.class);
-//        assertTrue(solo.searchText("Happiness"));
-//        solo.clickOnText("2017");
-//
-//        Date date = new Date();
-//        solo.setDatePicker(0, 2017, 2, date.getDay());
-//
-//        solo.clickOnText("OK"); // TODO check if this now works
-//
-//        assertTrue(solo.searchText("Save"));
-//        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
-//
-//        createHappy(solo);  //creating second mood
-//
-//        solo.clickLongInList(1);
-//        assertTrue(solo.searchText("Edit"));
-//        solo.clickOnText("Edit");
-//        solo.assertCurrentActivity("Wrong activity", EditMoodActivity.class);
-//        assertTrue(solo.searchText("Happiness"));
-//
-//        assertTrue(solo.searchText("Anger"));
-//        solo.clickOnText("Anger");  //changing to anger emotion to distinguish
-//
-//        solo.setDatePicker(0, 2017, 3, 17);
-//
-//        solo.clickOnText("OK");
-//
-//        assertTrue(solo.searchText("Save"));
-//        solo.clickOnText("Save"); //Probably clicks on the save location
-//        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
-//
-//        solo.clickOnButton(R.id.filterButton);
-//        solo.clickOnText("Filter");
-//        solo.clickOnText("Time");
-//        solo.clickOnText("Day");
-//
-//        assertTrue(solo.searchText("Happiness"));
-//        assertFalse(solo.searchText("Anger"));
-//
-//        // clean up
-//        deleteFirstMood();
-//        solo.clickOnButton(R.id.filterButton);
-//        solo.clickOnText("Filter");
-//        solo.clickOnText("All Moods");
-//        deleteFirstMood();
-//    }
+    public void testFilterByDay(){
+        logIn(solo);
+        createHappy(solo);
+
+        solo.clickLongInList(0);
+        assertTrue(solo.searchText("Edit"));
+        solo.clickOnText("Edit");
+        solo.assertCurrentActivity("Wrong activity", EditMoodActivity.class);
+        assertTrue(solo.searchText("Happiness"));
+
+        assertTrue(solo.searchText("Save"));
+        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
+
+        createHappy(solo);  //creating second mood
+
+        solo.clickLongInList(1);
+        assertTrue(solo.searchText("Edit"));
+        solo.clickOnText("Edit");
+        solo.assertCurrentActivity("Wrong activity", EditMoodActivity.class);
+        assertTrue(solo.searchText("Happiness"));
+        solo.clickOnText("Happiness");
+
+        assertTrue(solo.searchText("Anger"));
+        solo.clickOnText("Anger");  //changing to anger emotion to distinguish
+
+        solo.clickOnText("2017");
+        solo.setDatePicker(0, 2017, 3, 17);
+
+        solo.clickOnText("OK");
+
+        assertTrue(solo.searchText("Save"));
+        solo.clickOnText("Save"); //Probably clicks on the save location
+        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
+
+        solo.clickOnImageButton(0);
+        solo.clickOnText("Filter");
+        solo.clickOnText("Time");
+        solo.clickOnText("Day");
+
+        assertTrue(solo.searchText("Happiness"));
+        assertFalse(solo.searchText("Anger"));
+
+        // clean up
+        deleteFirstMood();
+        solo.clickOnImageButton(0);
+        solo.clickOnText("Filter");
+        solo.clickOnText("All Moods");
+        deleteFirstMood();
+    }
 
     public void testFilterMood(){
         logIn(solo);
