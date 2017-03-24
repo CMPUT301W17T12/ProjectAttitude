@@ -30,8 +30,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.view.menu.MenuBuilder;
-import android.support.v7.view.menu.MenuPopupHelper;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -241,7 +239,6 @@ also error checks trigger input field for character length*/
     }
 
     /**
-     * I don't know what this does either
      * @see CreateMoodActivity
      * @return an Image most likely
      */

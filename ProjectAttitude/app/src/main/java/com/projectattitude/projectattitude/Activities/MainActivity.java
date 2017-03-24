@@ -202,7 +202,10 @@ public class MainActivity extends AppCompatActivity {
                 fabMenu.close(true);
                 Intent intent = new Intent(MainActivity.this, ViewProfileActivity.class);
                 intent.putExtra("moodCount", moodList.size());
-                intent.putExtra("mood", moodList.get(0));   //TODO This returns the first item in the list, but if its been sorted, that would be wrong
+                if (moodList.size() > 0) {
+                    //TODO This returns the first item in the list, but if its been sorted, that would be wrong
+                    intent.putExtra("mood", moodList.get(0));
+                }
                 intent.putExtra("user", user);
                 startActivity(intent);
             }
