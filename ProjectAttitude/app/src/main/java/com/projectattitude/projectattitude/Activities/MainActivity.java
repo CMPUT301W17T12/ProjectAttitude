@@ -228,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
         final Context activityContext = this;
         final ImageButton SFButton = (ImageButton) findViewById(R.id.filterButton);
         ImageButton SearchButton = (ImageButton) findViewById(R.id.searchButton);
+        ImageButton ClearButton = (ImageButton) findViewById(R.id.clearButton);
 
         SFButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -296,6 +297,7 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.allOption:
                                 //Delete all filters and refresh data
                                 filterDecorator = null;
+                                findViewById(R.id.clearButton).setVisibility(View.INVISIBLE);
                                 userController.loadFromFile();
                                 refreshMoodList();
                                 moodAdapter.notifyDataSetChanged();
@@ -333,6 +335,16 @@ public class MainActivity extends AppCompatActivity {
                 filterDecorator = FilterDecoratorHandler.findAndReplace(filterDecorator,
                         new FilterTriggerDecorator(((EditText)findViewById(R.id.searchBar)).getText().toString()));
                 filterMood();
+                findViewById(R.id.clearButton).setVisibility(View.VISIBLE); //Make clear button visible
+            }
+        });
+
+        ClearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterDecorator = FilterDecoratorHandler.findAndDelete(filterDecorator, "Trigger");
+                filterMood();
+                findViewById(R.id.clearButton).setVisibility(View.INVISIBLE); //Make clear button visible
             }
         });
 
@@ -426,16 +438,6 @@ public class MainActivity extends AppCompatActivity {
         if(filterDecorator != null){
             filterDecorator.filter(moodList); //Go through filter decorator
         }
-        moodAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * This is the method that handles finding moods with a given keyword
-     * Called by pressing the searchButton on main_layout
-     */
-    public void filterMoodByTrigger(){
-        //Get text from search bar and then call controller function
-        controller.filterListByTrigger(moodList, ((EditText)findViewById(R.id.searchBar)).getText().toString());
         moodAdapter.notifyDataSetChanged();
     }
 

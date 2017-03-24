@@ -165,8 +165,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
 
         solo.clickOnImageButton(0);
-        solo.clickOnText("Filter");
-        solo.clickOnText("Time");
+        solo.clickOnText("Filter By Time");
         solo.clickOnText("Day");
 
         assertTrue(solo.searchText("Happiness"));
@@ -175,8 +174,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         // clean up
         deleteFirstMood();
         solo.clickOnImageButton(0);
-        solo.clickOnText("Filter");
-        solo.clickOnText("All Moods");
+        solo.clickOnText("Clear Filters");
         deleteFirstMood();
     }
 
@@ -192,8 +190,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
 
         solo.clickOnImageButton(0);
-        solo.clickOnText("Filter");
-        solo.clickOnText("Emotions");
+        solo.clickOnText("Filter By Emotions");
         solo.clickOnScreen(721,396);
 
         assertTrue(solo.searchText("Anger"));   // only anger should be present
@@ -203,8 +200,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         // clean up
         deleteFirstMood();
         solo.clickOnImageButton(0);
-        solo.clickOnText("Filter");
-        solo.clickOnText("All Moods");
+        solo.clickOnText("Clear Filters");
         deleteFirstMood();
     }
 
