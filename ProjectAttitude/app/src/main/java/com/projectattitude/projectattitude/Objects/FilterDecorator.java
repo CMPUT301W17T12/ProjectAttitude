@@ -13,7 +13,6 @@ public abstract class FilterDecorator {
 
     public FilterDecorator(String filterParameter){
         this.filterParameter = filterParameter;
-        this.enclosedDecorator = null;
     }
 
     public FilterDecorator(String filterParameter, FilterDecorator enclosedDecorator){

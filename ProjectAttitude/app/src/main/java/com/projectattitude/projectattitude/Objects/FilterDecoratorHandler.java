@@ -4,10 +4,29 @@ package com.projectattitude.projectattitude.Objects;
  * Created by henrywei on 3/23/17.
  */
 
+import android.util.Log;
+
 /**
  * FilterDecoratorHandler used to handle implementation of the FilterDecorator
  */
 public class FilterDecoratorHandler {
+
+    /**
+     * Given the decorator head and new decorator, find a decorator with corresponding filterType.
+     * @param decoratorHead - the decorator that encapsulates the other decorators
+     * @return Returns the decorator with corresponding filterType, or null if not found
+     */
+    public static FilterDecorator find(FilterDecorator decoratorHead, String filterType){
+        FilterDecorator tempDecorator = decoratorHead; //used to find decorator
+        while(tempDecorator!=null){
+            //If filter type not found yet, go to next encapsulated decorator
+            if(tempDecorator.getFilterType().equals(filterType)){
+                break;
+            }
+            tempDecorator = tempDecorator.getEnclosedDecorator();
+        }
+        return tempDecorator;
+    }
 
     /**
      * Given the decorator head and new decorator, replace an existing decorator with a new decorator with the same filterType.
@@ -47,6 +66,7 @@ public class FilterDecoratorHandler {
         FilterDecorator tempDecorator = decoratorHead; //used to find decorator
         FilterDecorator oldDecorator = null;
         while(tempDecorator != null){
+            Log.d("error", "delete: decorator type:"+ tempDecorator.getFilterType());
             if(tempDecorator.getFilterType().equals(filterType)){
                 //If a decorator was found with corresponding filterType, break out of loop
                 break;
