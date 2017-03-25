@@ -12,6 +12,7 @@ import com.projectattitude.projectattitude.R;
 public class ViewNotificationsActivity extends AppCompatActivity {
 
     //I created a notification_item.xml to handle notifications
+    //On second thought we could use toast pop ups to handle instead of buttons
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
