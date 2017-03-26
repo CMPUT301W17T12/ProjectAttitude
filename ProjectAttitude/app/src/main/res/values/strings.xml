@@ -57,10 +57,9 @@
 
     <!-- Strings related to filter menu-->
     <string name="filter_menu">Filter</string>
-    <string name="time_option">Time</string>
-    <string name="following_option">Following</string>
-    <string name="emotion_option">Emotions</string>
-    <string name="all_option">All Moods</string>
+    <string name="time_option">Filter By Time</string>
+    <string name="emotion_option">Filter by Emotions</string>
+    <string name="all_option">Clear Filters</string>
 
     <!-- Strings related to filter by time menu-->
     <string name="day_option">Day</string>
