@@ -158,6 +158,14 @@
             fab:fab_colorNormal="@color/accent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabNotification"
+            fab:fab_colorNormal="@color/accent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_label="Notifications"
+            android:src="@android:drawable/ic_dialog_alert"
+            />
     </com.github.clans.fab.FloatingActionMenu>
 
 </android.support.constraint.ConstraintLayout>
