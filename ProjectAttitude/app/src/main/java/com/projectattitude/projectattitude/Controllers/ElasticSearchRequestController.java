@@ -11,12 +11,16 @@ import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
 
 /**
  * Created by henry on 3/26/2017.
@@ -72,42 +76,42 @@ public class ElasticSearchRequestController {
         }
     }
 
-    //search for username in DB, and return user, either as null or as the object
-    public static class GetRequestTask extends AsyncTask<FollowRequest, Void, FollowRequest> {
+    //search for requests in DB, and return list of followrequests or null
+    public static class GetRequestsTask extends AsyncTask<String, Void, ArrayList<FollowRequest>> {
 
         @Override
-        protected FollowRequest doInBackground(FollowRequest... search_parameters) {
+        protected ArrayList<FollowRequest> doInBackground(String... search_parameters) { //enter requestee's username
             verifySettings();
 
-            Get get = new Get.Builder(INDEX, search_parameters[0].getID()).type(TYPE).build();
-            FollowRequest request = null;
+            ArrayList<FollowRequest> requests = null;
+
+            String query = "{\n" +
+                    "    \"id\": \"myTemplateId\"," +
+                    "    \"params\": {\n" +
+                    "        \"requestee\" : \""+search_parameters[0]+"\"" + //requestee's username
+                    "    }\n" +
+                    "}";
+
+            Search search = new Search.TemplateBuilder(query)
+                    .addIndex(INDEX)
+                    .addType(TYPE)
+                    .build();
+
             try {
-                JestResult result = client.execute(get);
+                SearchResult result = client.execute(search);
                 if(result.isSucceeded()){
                     Log.d("Error", "Success getting request");
-                    String requestJson = result.getSourceAsString();
-
-                    //Json string is exactly whats expected following the retrieve document guide on ES
-                    Log.d("Error", "JsonString: " + requestJson);
-
-                    //Gson gson = new Gson();
-                    //Taken from http://stackoverflow.com/questions/7910734/gsonbuilder-setdateformat-for-2011-10-26t202959-0700
-                    //Date: 3/21/2017
-                    GsonBuilder gsonBuilder = new GsonBuilder();
-                    Gson gson = gsonBuilder.create();
-                    request = gson.fromJson(requestJson, FollowRequest.class);
-                    Log.d("Error", "Requestee: " + request.getRequestee() + " Requester: " + request.getRequester());
+                    List<FollowRequest> foundRequests = result.getSourceAsObjectList(FollowRequest.class);
+                    requests.addAll(foundRequests);
                 }
-
                 else{
-                    Log.d("Error", "Elasticsearch was not able to get the request.");
+                    Log.d("Error", "Elasticsearch was not able to get requests.");
                 }
-
             }
             catch (IOException e) {
                 Log.i("Error", "The application failed to connect to DB");
             }
-            return request;
+            return requests;
         }
     }
 
