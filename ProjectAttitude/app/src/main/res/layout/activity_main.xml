@@ -40,22 +40,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/filter_button"
-        android:onClick="openSFMenu"
         tools:layout_constraintTop_creator="1"
-        tools:layout_constraintLeft_creator="1"
         android:layout_marginTop="8dp"
         android:layout_marginRight="8dp"
         fab:layout_constraintRight_toRightOf="parent"
         fab:layout_constraintTop_toTopOf="parent"
         android:layout_marginBottom="8dp"
-        fab:layout_constraintBottom_toTopOf="@+id/moodListView" />
+        fab:layout_constraintBottom_toTopOf="@+id/moodListView"
+        android:layout_marginEnd="8dp" />
 
     <ImageButton
         android:id="@+id/searchButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:src="@drawable/search_button"
-        android:onClick="filterMoodByTrigger"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"
         fab:layout_constraintTop_toTopOf="parent"
@@ -63,7 +61,8 @@
         fab:layout_constraintRight_toLeftOf="@+id/filterButton"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        fab:layout_constraintBottom_toTopOf="@+id/moodListView" />
+        fab:layout_constraintBottom_toTopOf="@+id/moodListView"
+        android:layout_marginEnd="8dp" />
 
     <EditText
         android:id="@+id/searchBar"
@@ -74,21 +73,33 @@
         android:hint="@string/search_bar"
         fab:layout_constraintLeft_toLeftOf="parent"
         fab:layout_constraintTop_toTopOf="parent"
-        tools:layout_constraintBaseline_creator="1"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         fab:layout_constraintRight_toLeftOf="@+id/searchButton"
-        android:layout_marginRight="8dp" />
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <ImageButton
+        android:id="@+id/clearButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/clear_button"
+        android:visibility="invisible"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        fab:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        fab:layout_constraintRight_toLeftOf="@+id/searchButton"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        fab:layout_constraintBottom_toTopOf="@+id/moodListView"
+        android:layout_marginEnd="8dp" />
 
     <ListView
         android:id="@+id/moodListView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginStart="0dp"
         android:layout_marginTop="8dp"
         android:scrollbars="vertical"
         fab:layout_constraintBottom_toBottomOf="parent"
@@ -113,7 +124,8 @@
         android:layout_marginRight="8dp"
         fab:layout_constraintRight_toRightOf="parent"
         fab:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp">
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fabLogout"
@@ -146,6 +158,14 @@
             fab:fab_colorNormal="@color/accent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabNotification"
+            fab:fab_colorNormal="@color/accent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_label="Notifications"
+            android:src="@android:drawable/ic_dialog_alert"
+            />
     </com.github.clans.fab.FloatingActionMenu>
 
 </android.support.constraint.ConstraintLayout>

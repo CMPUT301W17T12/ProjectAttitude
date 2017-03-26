@@ -28,9 +28,6 @@
     <item android:id="@+id/timeOption"
         android:title="@string/time_option"
         android:onClick="filterMood"/>
-    <item android:id="@+id/followingOption"
-        android:title="@string/following_option"
-        android:onClick="filterMood"/>
     <item android:id="@+id/emotionOption"
         android:title="@string/emotion_option"
         android:onClick="filterMood"/>
