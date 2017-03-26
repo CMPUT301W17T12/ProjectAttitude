@@ -35,11 +35,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -48,6 +50,11 @@ import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Controllers.UserController;
+import com.projectattitude.projectattitude.Objects.FilterDecorator;
+import com.projectattitude.projectattitude.Objects.FilterDecoratorHandler;
+import com.projectattitude.projectattitude.Objects.FilterEmotionDecorator;
+import com.projectattitude.projectattitude.Objects.FilterTimeDecorator;
+import com.projectattitude.projectattitude.Objects.FilterTriggerDecorator;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.NetWorkChangeReceiver;
 import com.projectattitude.projectattitude.Objects.User;
@@ -76,10 +83,14 @@ public class MainActivity extends AppCompatActivity {
     private MoodMainAdapter moodAdapter;
     private ListView moodListView;
     private MainController controller;
-    private boolean viewingMyList;
     private Integer itemPosition;
+    private String sortingDate;
 
     private UserController userController = UserController.getInstance();
+    private FilterDecorator filterDecorator = null;
+
+    //Private variables for sorting/filtering
+
 
     private static final String LOG_TAG = "CheckNetworkStatus";
     private NetWorkChangeReceiver receiver;
@@ -121,11 +132,11 @@ public class MainActivity extends AppCompatActivity {
         moodAdapter = new MoodMainAdapter(this, moodList);
         //moodAdapter = new MoodMainAdapter(this, userController.getActiveUser().getMoodList());
         moodListView.setAdapter(moodAdapter);
-        viewingMyList = false;
 
         //Load user and mood, and update current displayed list
         userController.loadFromFile();
         Log.d("userController load", userController.getActiveUser().getMoodList().toString());
+        sortingDate = "Sort";
         refreshMoodList();
 
         registerForContextMenu(moodListView);
@@ -213,56 +224,140 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        fabNotifications.setOnClickListener(new View.OnClickListener() {
+//         fabNotifications.setOnClickListener(new View.OnClickListener() {
+//             @Override
+//             public void onClick(View v) {
+//                 fabMenu.close(true);
+//                 Intent intent = new Intent(MainActivity.this, ViewNotificationsActivity.class);
+//                 startActivity(intent);
+//             }
+//         });
+//     }
+
+        //Sorting and filtering menu
+        final Context activityContext = this;
+        final ImageButton SFButton = (ImageButton) findViewById(R.id.filterButton);
+        ImageButton SearchButton = (ImageButton) findViewById(R.id.searchButton);
+        ImageButton ClearButton = (ImageButton) findViewById(R.id.clearButton);
+
+        SFButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fabMenu.close(true);
-                Intent intent = new Intent(MainActivity.this, ViewNotificationsActivity.class);
-                startActivity(intent);
+                PopupMenu popup = new PopupMenu(activityContext, SFButton);
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    //Listener for Sort/Filter Menu
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        PopupMenu popup = new PopupMenu(activityContext, SFButton);
+                        MenuInflater inflater = popup.getMenuInflater();
+                        FilterDecorator foundDecorator;
+                        switch(item.getItemId()){
+                            case R.id.dateOption:
+                                item.setChecked(true);
+                                sortMood("Sort");
+                                break;
+                            case R.id.reverseDateOption:
+                                item.setChecked(true);
+                                sortMood("Reverse Sort");
+                                break;
+                            case R.id.timeOption:
+                                inflater.inflate(R.menu.time_menu, popup.getMenu());
+                                foundDecorator = FilterDecoratorHandler.find(filterDecorator, "Time");
+                                if(foundDecorator != null){
+                                    findItemInMenu(popup.getMenu(), foundDecorator.getFilterParameter()).setChecked(true);
+                                }
+                                //On-click handler for time menu
+                                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item){
+                                        if(!item.isChecked()){ //If turning on filter, add/replace filter in decorator
+                                            filterDecorator = FilterDecoratorHandler.findAndReplace(filterDecorator, new FilterTimeDecorator(item.getTitle().toString()));
+                                        }else{ //If turning off filter, delete filter in decorator
+                                            filterDecorator = FilterDecoratorHandler.findAndDelete(filterDecorator, "Time");
+                                        }
+                                        filterMood();
+                                        item.setChecked(item.isChecked());
+                                        return false;
+                                    }
+                                });
+                                popup.show();
+                                break;
+                            case R.id.emotionOption:
+                                inflater.inflate(R.menu.mood_menu, popup.getMenu());
+                                foundDecorator = FilterDecoratorHandler.find(filterDecorator, "Emotion");
+                                if(foundDecorator != null){
+                                    findItemInMenu(popup.getMenu(), foundDecorator.getFilterParameter()).setChecked(true);
+                                }
+                                //On-click handler for emotion menu
+                                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item){
+                                        if(!item.isChecked()){ //If turning on filter, add/replace filter in decorator
+                                            filterDecorator = FilterDecoratorHandler.findAndReplace(filterDecorator, new FilterEmotionDecorator(item.getTitle().toString()));
+                                        }else{ //If turning off filter, delete filter in decorator
+                                            filterDecorator = FilterDecoratorHandler.findAndDelete(filterDecorator, "Emotion");
+                                        }
+                                        filterMood();
+                                        item.setChecked(item.isChecked());
+                                        return false;
+                                    }
+                                });
+                                popup.show();
+                                break;
+                            case R.id.allOption:
+                                //Delete all filters and refresh data
+                                filterDecorator = null;
+                                findViewById(R.id.clearButton).setVisibility(View.INVISIBLE);
+                                userController.loadFromFile();
+                                refreshMoodList();
+                                moodAdapter.notifyDataSetChanged();
+                                break;
+                        }
+                        return false;
+                    }
+                });//Code End of Listener for Sort/Filter Menu
+
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.sort_filter_menu, popup.getMenu());
+                //Set up checkables
+                Menu popupMenu = popup.getMenu();
+                if(sortingDate.equals("Sort")){
+                    popupMenu.findItem(R.id.dateOption).setChecked(true);
+                }else if (sortingDate.equals("Reverse Sort")){
+                    popupMenu.findItem(R.id.reverseDateOption).setChecked(true);
+                }
+                if(FilterDecoratorHandler.find(filterDecorator, "Time") != null){
+                    //If currently filtering for time, check the time menu box
+                    popupMenu.findItem(R.id.timeOption).setChecked(true);
+                }
+                if(FilterDecoratorHandler.find(filterDecorator, "Emotion") != null){
+                    //If currently filtering for emotion, check the emotion menu box
+                    popupMenu.findItem(R.id.emotionOption).setChecked(true);
+                }
+                popup.show();
             }
         });
-    }
 
-    //-------POPUP MENU FUNCTIONS-------
-    /**
-     * OpenSFMenu - Open Sort/Filter Menu
-     * Is used when the sort/filter button is pressed to display a menu
-     * @param view - the sort/filter button
-     * @see #openSortMenu(MenuItem)
-     * @see #openFilterMenu(MenuItem)
-     */
-    public void openSFMenu(View view){
-        //TODO: Test all this popupmenu crap
-        PopupMenu popup = new PopupMenu(this, view);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.sort_filter_menu, popup.getMenu());
-        popup.show();
-    }
+        SearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Enter new trigger filter into decorator head
+                filterDecorator = FilterDecoratorHandler.findAndReplace(filterDecorator,
+                        new FilterTriggerDecorator(((EditText)findViewById(R.id.searchBar)).getText().toString()));
+                filterMood();
+                findViewById(R.id.clearButton).setVisibility(View.VISIBLE); //Make clear button visible
+            }
+        });
 
-    /**
-     * openSortMenu
-     * Is used when the sort option in sort/filter menu is pressed to display a menu
-     * @param item - the sort option in sort_filter_menu
-     * @see #sortMood(MenuItem)
-     */
-    public void openSortMenu(MenuItem item){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.sort_menu, popup.getMenu());
-        popup.show();
-    }
+        ClearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterDecorator = FilterDecoratorHandler.findAndDelete(filterDecorator, "Trigger");
+                filterMood();
+                findViewById(R.id.clearButton).setVisibility(View.INVISIBLE); //Make clear button visible
+            }
+        });
 
-    /**
-     * openFilterMenu
-     * Is used when the filter option in sort/filter menu is pressed to display a menu
-     * @param item - the filter option in sort_filter_menu
-     * @see #filterMood(MenuItem)
-     */
-    public void openFilterMenu(MenuItem item){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.filter_menu, popup.getMenu());
-        popup.show();
     }
 
     /**
@@ -285,6 +380,7 @@ public class MainActivity extends AppCompatActivity {
         moodAdapter.notifyDataSetChanged();
 
         Log.d("editing", userController.getActiveUser().getMoodList().get(itemPosition).toString());
+
 
         //updating db
         ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
@@ -329,134 +425,49 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Handles sorting the list, called when an item in the sortMenu is pressed
-     * @param item - one of the sort options from the sort menu
+     * @param dateSort - specifies the type of sort to sort.
+     *                 Three options: "null", "Sort", "Reverse Sort"
      */
-    public void sortMood(MenuItem item){
-        if(item == null){
-            controller.sortList(moodList, "Sort"); //True = sorting by date
-            return;
+    public void sortMood(String dateSort){
+        if(dateSort == null){
+            controller.sortList(moodList, sortingDate); //True = sorting by date
         }
-        switch (item.getItemId()) {
-            case R.id.dateOption:
-                controller.sortList(moodList, "Sort"); //True = sorting by date
-                break;
-            case R.id.reverseDateOption:
-                controller.sortList(moodList, "Reverse Sort"); //False = sorting by reverse date
-                break;
+        else{
+            sortingDate = dateSort;
+            controller.sortList(moodList, sortingDate);
+            moodAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+    /**
+     * Handles filtering the list (multi-filtering included)
+     */
+    public void filterMood(){
+        refreshMoodList();
+        if(filterDecorator != null){
+            filterDecorator.filter(moodList); //Go through filter decorator
         }
         moodAdapter.notifyDataSetChanged();
     }
 
     /**
-     * Handles filtering the list
-     * @param item - one of the options from the filter menu
-     * @see #filterMoodsByEmotion(MenuItem)
-     * @see #filterMoodsByTime(MenuItem)
+     * findItemInMenu
+     * Given a menu and a menuitem, attempts to find the menuitem in menu
+     * If no menu item found, returns null
      */
-    public void filterMood(MenuItem item){
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.filterButton));
-        MenuInflater inflater = popup.getMenuInflater();
-        switch (item.getItemId()) {
-            case R.id.timeOption:
-                inflater.inflate(R.menu.time_menu, popup.getMenu());
-                popup.show();
+    public MenuItem findItemInMenu(Menu menu, String stringToCheck){
+        MenuItem checkedItem = null;
+        int menuSize = menu.size();
+        //Loop through filter by time menu looking for checked option
+        for(int i = 0; i < menuSize; i++){
+            checkedItem = menu.getItem(i);
+            if(stringToCheck.equals(checkedItem.getTitle().toString())){
+                //Break loop when checked item is found
                 break;
-
-            case R.id.followingOption:
-                //TODO: Following
-                viewingMyList = !viewingMyList;
-                break;
-
-            case R.id.emotionOption:
-                inflater.inflate(R.menu.mood_menu, popup.getMenu());
-                popup.show();
-                break;
-
-            case R.id.allOption:
-                //TODO: Add following to allOption
-                userController.loadFromFile();
-                refreshMoodList();
-                 moodAdapter.notifyDataSetChanged();
-                break;
+            }
         }
-    }
-
-    /**
-     * This is the method that handles finding moods with a given keyword
-     * Called by pressing the searchButton on main_layout
-     */
-    public void filterMoodByTrigger(View view){
-        //Get text from search bar and then call controller function
-        controller.filterListByTrigger(moodList, ((EditText)findViewById(R.id.searchBar)).getText().toString());
-        moodAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * Handles filtering the list, but specifically for the time menu
-     * @param item
-     */
-    public void filterMoodsByTime(MenuItem item){
-        //TODO: Make sure moods are up to date?
-        switch (item.getItemId()) {
-            case R.id.dayOption:
-                controller.filterListByTime(moodList, (long)8.64e+7); //1 day's worth of milliseconds
-                break;
-
-            case R.id.weekOption:
-                controller.filterListByTime(moodList, (long)6.048e+8); //1 week's worth of milliseconds
-                break;
-
-            case R.id.monthOption:
-                controller.filterListByTime(moodList, (long)2.628e+9); //1 month's worth of milliseconds approximately
-                break;
-
-            case R.id.yearOption:
-                controller.filterListByTime(moodList, (long)3.154e+10); //1 year's worth of milliseconds approximately
-                break;
-        }
-        moodAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * Handles filtering the list, but specifically for the mood menu
-     * @param item - option from the filter emotion menu
-     */
-    public void filterMoodsByEmotion(MenuItem item){
-        Long milliseconds = new Date().getTime();
-        switch (item.getItemId()) {
-            case R.id.angerOption:
-                controller.filterListByEmotion(moodList, "Anger"); //1 day's worth of milliseconds
-                break;
-
-            case R.id.confusionOption:
-                controller.filterListByEmotion(moodList, "Confusion"); //1 day's worth of milliseconds
-                break;
-
-            case R.id.disgustOption:
-                controller.filterListByEmotion(moodList, "Disgust"); //1 day's worth of milliseconds
-                break;
-
-            case R.id.fearOption:
-                controller.filterListByEmotion(moodList, "Fear"); //1 day's worth of milliseconds
-                break;
-
-            case R.id.happinessOption:
-                controller.filterListByEmotion(moodList, "Happiness"); //1 day's worth of milliseconds
-                break;
-
-            case R.id.sadnessOption:
-                controller.filterListByEmotion(moodList, "Sadness"); //1 day's worth of milliseconds
-                break;
-
-            case R.id.shameOption:
-                controller.filterListByEmotion(moodList, "Shame"); //1 day's worth of milliseconds
-                break;
-
-            case R.id.surpriseOption:
-                controller.filterListByEmotion(moodList, "Surprise"); //1 day's worth of milliseconds
-                break;
-        }
-        moodAdapter.notifyDataSetChanged();
+        return checkedItem;
     }
 
     /**

@@ -93,7 +93,6 @@ public class MainController {
      * @param timeParameter - time in milliseconds to filter by
      */
     public void filterListByTime(ArrayList<Mood> moodList, long timeParameter){
-        ArrayList<Mood> newList = new ArrayList<Mood>();
         long currentTime = new Date().getTime();
         Log.d("Error", "Time Parameter: "+Long.toString(timeParameter));
         Log.d("Error", "MoodList Size: "+Integer.toString(moodList.size()));
