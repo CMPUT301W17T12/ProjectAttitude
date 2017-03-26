@@ -29,4 +29,13 @@ public class FollowRequest {
     public void setID(String ID) {
         this.ID = ID;
     }
+
+    /**
+     * This is what the list view shows
+     * @return a string currently containing the emotionState
+     */
+    @Override
+    public String toString(){
+        return(requester);
+    }
 }

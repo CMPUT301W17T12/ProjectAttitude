@@ -224,14 +224,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-//         fabNotifications.setOnClickListener(new View.OnClickListener() {
-//             @Override
-//             public void onClick(View v) {
-//                 fabMenu.close(true);
-//                 Intent intent = new Intent(MainActivity.this, ViewNotificationsActivity.class);
-//                 startActivity(intent);
-//             }
-//         });
+         fabNotifications.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 fabMenu.close(true);
+                 Intent intent = new Intent(MainActivity.this, ViewNotificationsActivity.class);
+                 intent.putExtra("user", user);
+                 startActivity(intent);
+             }
+         });
 //     }
 
         //Sorting and filtering menu
