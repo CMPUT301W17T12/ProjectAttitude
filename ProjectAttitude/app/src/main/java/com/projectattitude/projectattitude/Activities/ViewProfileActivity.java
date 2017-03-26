@@ -26,12 +26,14 @@
 package com.projectattitude.projectattitude.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -148,7 +150,39 @@ public class ViewProfileActivity extends AppCompatActivity {
                 }
             }
         });
+
+        /**
+         * This handles when a user clicks on their most recent mood, taking them to the view mood screen
+         */
+        recentMoodView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intentView = new Intent(ViewProfileActivity.this, ViewMoodActivity.class);
+                intentView.putExtra("mood", recentMoodList.get(position));
+                startActivityForResult(intentView, 1);
+            }
+        });
+
+        /**
+         * This handles when a user clicks on a followed mood, taking them to the view mood screen
+         */
+        followingMoodView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intentView = new Intent(ViewProfileActivity.this, ViewMoodActivity.class);
+                intentView.putExtra("mood", followingMoodList.get(position));
+                startActivityForResult(intentView, 1);
+            }
+        });
+
+
+
     }
+
+
+
+
+
 
     @Override
     protected void onStart(){

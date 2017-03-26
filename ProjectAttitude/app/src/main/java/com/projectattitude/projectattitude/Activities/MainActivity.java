@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fabMap = (FloatingActionButton) findViewById(R.id.fabMap);
         FloatingActionButton fabProfile = (FloatingActionButton) findViewById(R.id.fabProfile);
         FloatingActionButton fabLogout = (FloatingActionButton) findViewById(R.id.fabLogout);
+        FloatingActionButton fabNotifications = (FloatingActionButton) findViewById(R.id.fabNotification);
 
         // on click listener for adding moods
         fabAddMood.setOnClickListener(new View.OnClickListener() {
@@ -209,6 +210,14 @@ public class MainActivity extends AppCompatActivity {
                 fabMenu.close(true);
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 finish();
+                startActivity(intent);
+            }
+        });
+        fabNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fabMenu.close(true);
+                Intent intent = new Intent(MainActivity.this, ViewNotificationsActivity.class);
                 startActivity(intent);
             }
         });
