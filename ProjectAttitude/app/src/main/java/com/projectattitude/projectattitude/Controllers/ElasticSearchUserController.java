@@ -30,6 +30,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.projectattitude.projectattitude.Objects.FollowRequest;
 import com.projectattitude.projectattitude.Objects.User;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;

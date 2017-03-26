@@ -98,14 +98,9 @@ public class ViewProfileActivity extends AppCompatActivity {
 
                 User followedUser = new User();
                 followedUser.setUserName(followingName);
-                Boolean cancel = false;
 
-                if(followingName.equals("")){   // no username entered to search for
-                    cancel = true;
-                }
-
-                if (cancel) {   // search has been canceled
-                    searchBar.requestFocus();
+                if (followingName.equals("")) {   // no username entered to search for
+                    searchBar.requestFocus(); // search has been canceled
                 }
 
                 else {
