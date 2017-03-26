@@ -64,6 +64,7 @@ public class EditMoodActivity extends MoodActivity {
     EditText etTrigger;
     Spinner socialSituationSpinner;
     CheckBox saveLocation;
+    TextView currentLocation;
     private Mood newMood;
 
     private ImageView imageView;
@@ -84,6 +85,8 @@ public class EditMoodActivity extends MoodActivity {
         socialSituationSpinner = (Spinner) findViewById(R.id.spinner);
         saveLocation = (CheckBox) findViewById(R.id.saveLocation);
 
+        currentLocation = (TextView) findViewById(R.id.currentLocation);
+
         Button addPhoto = (Button) findViewById(R.id.addPhoto);
         imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setVisibility(View.GONE);
@@ -103,6 +106,9 @@ public class EditMoodActivity extends MoodActivity {
         etTrigger.setText(mood.getTrigger());
         Date tempDate = (Date) mood.getMoodDate();
 
+//        currentLocation.setText(getString(R.string.display_location, mood.getLatitude(), mood.getLongitude()));
+        currentLocation.setText("Lat: " + mood.getLatitude() + " Long: " + mood.getLongitude());
+
         date.setDate(tempDate.getYear() + 1900, tempDate.getMonth(), tempDate.getDate());
         //disgusting single line way to set the spinners
         //Taken from http://stackoverflow.com/questions/2390102/how-to-set-selected-item-of-spinner-by-value-not-by-position
@@ -110,6 +116,8 @@ public class EditMoodActivity extends MoodActivity {
                 .getPosition(mood.getEmotionState()));
         socialSituationSpinner.setSelection(((ArrayAdapter<String>) socialSituationSpinner
                 .getAdapter()).getPosition(mood.getSocialSituation()));
+
+
 
         final byte[] imageBytes = Base64.decode(mood.getPhoto(), Base64.DEFAULT);
         final Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);

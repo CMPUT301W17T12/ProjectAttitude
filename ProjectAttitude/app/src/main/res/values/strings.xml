@@ -103,7 +103,8 @@
     <string name="cancel_button">Cancel</string>
     <string name="emotion_state_error">Emotional state is a mandatory field</string>
     <string name="social_situation_label">Social Situation:</string>
-    <string name="save_location">Save Location</string>
+    <string name="save_location">Location</string>
+    <string name="display_location">Lat: %1$d Long %2$d:</string>
 
     <string-array name="emotional_state">
         <item>Select an emotional state</item>
