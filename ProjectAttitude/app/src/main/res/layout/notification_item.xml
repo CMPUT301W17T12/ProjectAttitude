@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/notificationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="16dp"
+        android:text="TextView"
+        android:textSize="16dp"
+        app:layout_constraintHorizontal_bias="0.442"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/acceptButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/acceptButton"
+        android:layout_width="64dp"
+        android:layout_height="34dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="16dp"
+        android:text="Accept"
+        android:textSize="10dp"
+        app:layout_constraintRight_toLeftOf="@+id/denyButton"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="204dp" />
+
+    <Button
+        android:id="@+id/denyButton"
+        android:layout_width="64dp"
+        android:layout_height="34dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Deny"
+        android:textSize="10dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="304dp" />
+</android.support.constraint.ConstraintLayout>
