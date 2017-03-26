@@ -64,7 +64,6 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import io.fabric.sdk.android.Fabric;
 
