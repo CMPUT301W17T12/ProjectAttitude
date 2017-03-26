@@ -229,13 +229,17 @@
 
         <TextView
             android:id="@+id/currentLocation"
-            android:layout_width="249dp"
+            android:layout_width="239dp"
             android:layout_height="31dp"
             android:text=""
-            tools:layout_editor_absoluteY="269dp"
             android:layout_marginEnd="8dp"
             app:layout_constraintLeft_toRightOf="@+id/saveLocation"
-            android:layout_marginLeft="0dp" />
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/spinner"
+            app:layout_constraintHorizontal_bias="0.272" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

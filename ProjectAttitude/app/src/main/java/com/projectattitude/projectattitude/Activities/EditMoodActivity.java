@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -67,6 +68,9 @@ public class EditMoodActivity extends MoodActivity {
     TextView currentLocation;
     private Mood newMood;
 
+    private Double latitude;
+    private Double longitude;
+
     private ImageView imageView;
     private byte[] byteArray;
     private String s;
@@ -92,7 +96,6 @@ public class EditMoodActivity extends MoodActivity {
         imageView.setVisibility(View.GONE);
         s = "";
 
-
 //        if(saveLocation.isChecked()){ //TODO check location
 //            createLocation();
 //        }
@@ -105,7 +108,10 @@ public class EditMoodActivity extends MoodActivity {
         //Changes the fields to the selected mood
         etTrigger.setText(mood.getTrigger());
         Date tempDate = (Date) mood.getMoodDate();
+        latitude = mood.getLatitude();
+        longitude = mood.getLongitude();
 
+        //not sure how to properly display location stuff using string resource
 //        currentLocation.setText(getString(R.string.display_location, mood.getLatitude(), mood.getLongitude()));
         currentLocation.setText("Lat: " + mood.getLatitude() + " Long: " + mood.getLongitude());
 
@@ -116,8 +122,6 @@ public class EditMoodActivity extends MoodActivity {
                 .getPosition(mood.getEmotionState()));
         socialSituationSpinner.setSelection(((ArrayAdapter<String>) socialSituationSpinner
                 .getAdapter()).getPosition(mood.getSocialSituation()));
-
-
 
         final byte[] imageBytes = Base64.decode(mood.getPhoto(), Base64.DEFAULT);
         final Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
@@ -136,7 +140,8 @@ public class EditMoodActivity extends MoodActivity {
                     newMood.setEmotionState(emotionSpinner.getSelectedItem().toString());
                     newMood.setMoodDate(date.getDate());
                     newMood.setTrigger(etTrigger.getText().toString().trim());
-
+                    newMood.setLatitude(latitude);
+                    newMood.setLongitude(longitude);
 
                     if(socialSituationSpinner.getSelectedItem().toString().equals("Select a social situation")){
                         newMood.setSocialSituation("");
@@ -156,6 +161,41 @@ public class EditMoodActivity extends MoodActivity {
                     returnCreateMoodIntent.putExtra("mood", newMood);
                     setResult(RESULT_OK, returnCreateMoodIntent);
                     finish();
+                }
+            }
+        });
+
+        saveLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                GPSTracker gps = new GPSTracker(EditMoodActivity.this);
+
+                // check if GPS location can get Location
+                if(saveLocation.isChecked()) {
+                    //GPSTracker gps = new GPSTracker(CreateMoodActivity.this);
+                    if (gps.canGetLocation()) {
+
+                        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+                        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                            Log.d("UserLocation", "latitude:" + gps.getLatitude()
+                                    + ", longitude: " + gps.getLongitude());
+
+                            //sometimes only round to 3 decimals, I think it has to do with the
+                            //how the round function calculates
+                            latitude = Math.round(gps.getLatitude() * 10000d)/10000d;
+                            longitude = Math.round(gps.getLongitude() * 10000d)/10000d;
+                        }
+                    }
+                }
+                else{
+                    //NaN breaks the app when you undo location selection and complete mood creation
+//                    latitude = NaN;
+//                    longitude = NaN;
+                    latitude = 0.0;
+                    longitude = 0.0;
+
                 }
             }
         });

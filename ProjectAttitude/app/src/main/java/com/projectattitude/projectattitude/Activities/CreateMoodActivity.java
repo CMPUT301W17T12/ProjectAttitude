@@ -39,6 +39,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.projectattitude.projectattitude.Abstracts.MoodActivity;
 import com.projectattitude.projectattitude.Objects.DatePickerEditText;
@@ -159,13 +160,17 @@ public class CreateMoodActivity extends MoodActivity{
                             longitude = Math.round(gps.getLongitude() * 10000d)/10000d;
                         }
                     }
+                    else{
+                        Toast.makeText(CreateMoodActivity.this, "Please turn on GPS for locations!",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
                 else{
                     //NaN breaks the app when you undo location selection and complete mood creation
 //                    latitude = NaN;
 //                    longitude = NaN;
-                    latitude = 0;
-                    longitude = 0;
+                    latitude = 0.0;
+                    longitude = 0.0;
 
                 }
             }
