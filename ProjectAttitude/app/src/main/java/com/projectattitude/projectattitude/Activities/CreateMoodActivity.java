@@ -25,11 +25,9 @@
 
 package com.projectattitude.projectattitude.Activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.location.Criteria;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Base64;
@@ -56,12 +54,14 @@ import java.io.ByteArrayOutputStream;
  * will remain stored on the application where they will be pushed to the database as soon as a
  * connection is reestablished.
  */
-public class CreateMoodActivity extends MoodActivity {
+public class CreateMoodActivity extends MoodActivity{
 
     private Mood newMood;   // initializing the mood object
     private ImageView imageView;
     private byte[] byteArray;
     private String s;
+    private double latitude;
+    private double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +77,8 @@ public class CreateMoodActivity extends MoodActivity {
         final Spinner socialSituationSpinner = (Spinner) findViewById(R.id.spinner);
         final CheckBox saveLocation = (CheckBox) findViewById(R.id.saveLocation); // geoPoint location saving
         s = "";
+        longitude = 0;
+        latitude = 0;
 
 
         imageView.setVisibility(View.GONE);
@@ -97,6 +99,9 @@ public class CreateMoodActivity extends MoodActivity {
                     newMood.setEmotionState(emotionSpinner.getSelectedItem().toString());
                     newMood.setMoodDate(date.getDate());
                     newMood.setTrigger(etTrigger.getText().toString().trim());
+                    newMood.setLongitude(longitude);
+                    newMood.setLatitude(latitude);
+
 
                     if(socialSituationSpinner.getSelectedItem().toString().equals("Select a social situation")){
                         newMood.setSocialSituation("");
@@ -106,20 +111,20 @@ public class CreateMoodActivity extends MoodActivity {
                     }
                     newMood.setPhoto(s);
 
-                    if(saveLocation.isChecked()){ //TODO check location
-
-                        LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-
-                        // Creating an empty criteria object
-                        Criteria criteria = new Criteria();
-
-                        // Getting the name of the provider that meets the criteria
-                        String provider = locationManager.getBestProvider(criteria, false);
-
-                        //Location location = locationManager.getLastKnownLocation(provider);
-                        //LocationServices location = LocationServices.FusedLocationApi.getLastLocation()
-                        //newMood.setGeoLocation(location);
-                    }
+//                    if(saveLocation.isChecked()){ //TODO check location
+//
+//                        LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+//
+//                        // Creating an empty criteria object
+//                        Criteria criteria = new Criteria();
+//
+//                        // Getting the name of the provider that meets the criteria
+//                        String provider = locationManager.getBestProvider(criteria, false);
+//
+//                        //Location location = locationManager.getLastKnownLocation(provider);
+//                        //LocationServices location = LocationServices.FusedLocationApi.getLastLocation()
+//                        //newMood.setGeoLocation(location);
+//                    }
 
 
                     Intent returnCreateMoodIntent = new Intent();
@@ -127,6 +132,41 @@ public class CreateMoodActivity extends MoodActivity {
                     //returnCreateMoodIntent.putExtra("addPhotoIntent", newPhoto);
                     setResult(RESULT_OK, returnCreateMoodIntent);
                     finish();
+                }
+            }
+        });
+
+        saveLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                GPSTracker gps = new GPSTracker(CreateMoodActivity.this);
+
+                // check if GPS location can get Location
+                if(saveLocation.isChecked()) {
+                    //GPSTracker gps = new GPSTracker(CreateMoodActivity.this);
+                    if (gps.canGetLocation()) {
+
+                        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+                        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                            Log.d("UserLocation", "latitude:" + gps.getLatitude()
+                                    + ", longitude: " + gps.getLongitude());
+
+                            //sometimes only round to 3 decimals, I think it has to do with the
+                            //how the round function calculates
+                            latitude = Math.round(gps.getLatitude() * 10000d)/10000d;
+                            longitude = Math.round(gps.getLongitude() * 10000d)/10000d;
+                        }
+                    }
+                }
+                else{
+                    //NaN breaks the app when you undo location selection and complete mood creation
+//                    latitude = NaN;
+//                    longitude = NaN;
+                    latitude = 0;
+                    longitude = 0;
+
                 }
             }
         });
@@ -258,4 +298,25 @@ public class CreateMoodActivity extends MoodActivity {
     private void createPicture(){
         return;
     }
+
+//    @Override
+//    public void onLocationChanged(Location location) {
+//        currentLattitude = location.getLatitude();
+//        currentLongitude = location.getLongitude();
+//    }
+//
+//    @Override
+//    public void onProviderDisabled(String provider) {
+//        Log.d("Latitude","disable");
+//    }
+//
+//    @Override
+//    public void onProviderEnabled(String provider) {
+//        Log.d("Latitude","enable");
+//    }
+//
+//    @Override
+//    public void onStatusChanged(String provider, int status, Bundle extras) {
+//        Log.d("Latitude","status");
+//    }
 }

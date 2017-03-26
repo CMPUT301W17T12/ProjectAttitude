@@ -128,6 +128,8 @@ public class EditMoodActivity extends MoodActivity {
                     newMood.setEmotionState(emotionSpinner.getSelectedItem().toString());
                     newMood.setMoodDate(date.getDate());
                     newMood.setTrigger(etTrigger.getText().toString().trim());
+
+
                     if(socialSituationSpinner.getSelectedItem().toString().equals("Select a social situation")){
                         newMood.setSocialSituation("");
                     }
