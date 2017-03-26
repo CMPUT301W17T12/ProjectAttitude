@@ -50,6 +50,9 @@ public class Mood implements Serializable {
     private Image image;
     private String socialSituation;
 
+    private Double latitude;
+    private Double longitude;
+
     @JestId
     private String id;
     private String photo;
@@ -215,4 +218,30 @@ public class Mood implements Serializable {
     public String getPhoto(){
         return photo;
     }
+
+    /**
+     * Sets the latitude of a mood
+     * @return latitude
+     */
+    public void setLatitude(Double latitude){
+        this.latitude = latitude;
+    }
+
+    public Double getLatitude(){
+        return latitude;
+    }
+
+    /**
+     * Sets the longitude of a mood
+     * @return
+     */
+    public void setLongitude(Double longitude){
+        this.longitude = longitude;
+    }
+
+    public Double getLongitude(){
+        return longitude;
+    }
 }
+
+
