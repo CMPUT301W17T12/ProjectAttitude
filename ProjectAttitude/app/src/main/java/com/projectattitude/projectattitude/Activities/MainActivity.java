@@ -64,7 +64,6 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -127,6 +126,9 @@ public class MainActivity extends AppCompatActivity {
         userController.setActiveUser(user);
 
         moodListView = (ListView) findViewById(R.id.moodListView);
+
+        //This function allows for the infinite scrollings and loading of "pages" for the moodView
+        //moodListView.setOnScrollListener(new EndlessScrollListener());    //TODO renable when ElasticSearch is modifed to allow pagination
 
         //adapter is fed from moodList inside user
         moodAdapter = new MoodMainAdapter(this, moodList);
