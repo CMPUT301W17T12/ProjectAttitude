@@ -46,7 +46,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.PermissionUtils;
-import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
 import java.util.ArrayList;
@@ -116,8 +115,10 @@ public class MapActivity extends AppCompatActivity
                 .position(new LatLng(53.5444, -113.4909))   // Edmonton location
                 .title("Edmonton"));
 
-        User user = (User) getIntent().getSerializableExtra("user");
-        ArrayList<Mood> userMoodList = user.getMoodList();
+        //User user = (User) getIntent().getSerializableExtra("user");
+        //ArrayList<Mood> userMoodList = user.getMoodList();
+        ArrayList<Mood> userMoodList =  (ArrayList<Mood>) getIntent().getSerializableExtra("user");
+
         for(int i = 0;i < userMoodList.size();i++){ //TODO this will get EVERY mood from the user, which could be too many
 
             Mood mood = userMoodList.get(i);

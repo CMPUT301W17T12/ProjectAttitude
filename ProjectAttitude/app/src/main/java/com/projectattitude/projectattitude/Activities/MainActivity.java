@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 fabMenu.close(true);
                 Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
-                viewMapIntent.putExtra("user", user);
+                viewMapIntent.putExtra("user", moodList);
                 startActivityForResult(viewMapIntent, 0);
             }
         });
