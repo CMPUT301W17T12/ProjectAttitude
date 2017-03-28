@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.projectattitude.projectattitude.Adapters.RequestAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchRequestController;
 import com.projectattitude.projectattitude.Objects.FollowRequest;
 import com.projectattitude.projectattitude.Objects.User;
@@ -24,7 +26,7 @@ public class ViewNotificationsActivity extends AppCompatActivity {
     //On second thought we could use toast pop ups to handle instead of buttons
 
     ArrayAdapter<FollowRequest> adapter;
-    ElasticSearchRequestController requestController = ElasticSearchRequestController.getInstance();
+    ArrayList<FollowRequest> requests;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +38,7 @@ public class ViewNotificationsActivity extends AppCompatActivity {
         ListView requestList = (ListView)findViewById(R.id.notification_list);
         //Obtain follow requests that pertain to current user
         ElasticSearchRequestController.GetRequestsTask getRequestsTask = new ElasticSearchRequestController.GetRequestsTask();
-        ArrayList<FollowRequest> requests = null;
+        requests = null;
         try{
             requests = getRequestsTask.execute(user.getUserName()).get(); //Input user's ID as filter
         }
@@ -45,10 +47,15 @@ public class ViewNotificationsActivity extends AppCompatActivity {
         }
 
         if(requests != null){ //If requests are found, display them using adapter
-            adapter = new ArrayAdapter<FollowRequest>(this, R.layout.notification_item, requests);
+            adapter = new RequestAdapter(this, requests);
             requestList.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        }else{
+            Toast.makeText(ViewNotificationsActivity.this, "No pending requests.",
+                    Toast.LENGTH_LONG).show();
         }
 
         //TODO: On-click listeners for accept/deny
     }
+
 }
