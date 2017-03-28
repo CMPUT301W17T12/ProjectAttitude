@@ -127,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
 
         moodListView = (ListView) findViewById(R.id.moodListView);
 
+        //This function allows for the infinite scrollings and loading of "pages" for the moodView
+        //moodListView.setOnScrollListener(new EndlessScrollListener());    //TODO renable when ElasticSearch is modifed to allow pagination
+
         //adapter is fed from moodList inside user
         moodAdapter = new MoodMainAdapter(this, moodList);
         //moodAdapter = new MoodMainAdapter(this, userController.getActiveUser().getMoodList());
