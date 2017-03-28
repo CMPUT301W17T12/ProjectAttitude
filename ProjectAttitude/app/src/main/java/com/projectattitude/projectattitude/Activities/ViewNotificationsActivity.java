@@ -54,8 +54,8 @@ public class ViewNotificationsActivity extends AppCompatActivity {
             Toast.makeText(ViewNotificationsActivity.this, "No pending requests.",
                     Toast.LENGTH_LONG).show();
         }
+        ElasticSearchRequestController.AddRequestTask addRequestTask = new ElasticSearchRequestController.AddRequestTask();
 
-        //TODO: On-click listeners for accept/deny
     }
 
 }
