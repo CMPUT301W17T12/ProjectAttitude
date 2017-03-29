@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-s        fabProfile.setOnClickListener(new View.OnClickListener() {
+        fabProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fabMenu.close(true);
