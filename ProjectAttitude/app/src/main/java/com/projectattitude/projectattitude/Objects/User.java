@@ -39,8 +39,8 @@ import java.util.ArrayList;
 public class User implements Serializable {
 
     private String userName;    //name of user
-    private ArrayList<String> followList;    //arrayList of people that are following this user
-    private ArrayList<String> followedList;    //arrayList of people that this user is following
+    private ArrayList<String> followList = new ArrayList<String>();    //arrayList of people that are following this user
+    private ArrayList<String> followedList = new ArrayList<String>();    //arrayList of people that this user is following
     private ArrayList<Mood> moods;
 
     private String id;
@@ -88,7 +88,8 @@ public class User implements Serializable {
      * Adds a follow to the user.
      * @param followName followName
      */
-    public void addFollow(String followName) {//TODO implement followers/following
+    public void addFollow(String followName) {
+        followList.add(followName);
     }
 
     /**
@@ -96,6 +97,7 @@ public class User implements Serializable {
      * @param followedName followedName
      */
     public void addFollowed(String followedName) {
+        followedList.add(followedName);
     }
 
     /**
@@ -119,7 +121,12 @@ public class User implements Serializable {
      * @return mood
      */
     public Mood getFirstMood(){
-        return moods.get(0);    //TODO What if the list is empty?
+        if(moods.size() != 0){
+            return moods.get(0);    //TODO What if the list is empty?
+        }
+        else{
+            return null;
+        }
     }
     /**
      * Returns the user ID

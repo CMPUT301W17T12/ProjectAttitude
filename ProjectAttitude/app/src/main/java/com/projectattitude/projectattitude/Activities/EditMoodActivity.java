@@ -29,9 +29,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v7.view.menu.MenuBuilder;
-import android.support.v7.view.menu.MenuPopupHelper;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -66,7 +65,11 @@ public class EditMoodActivity extends MoodActivity {
     EditText etTrigger;
     Spinner socialSituationSpinner;
     CheckBox saveLocation;
+    TextView currentLocation;
     private Mood newMood;
+
+    private Double latitude;
+    private Double longitude;
 
     private ImageView imageView;
     private byte[] byteArray;
@@ -86,11 +89,12 @@ public class EditMoodActivity extends MoodActivity {
         socialSituationSpinner = (Spinner) findViewById(R.id.spinner);
         saveLocation = (CheckBox) findViewById(R.id.saveLocation);
 
+        currentLocation = (TextView) findViewById(R.id.currentLocation);
+
         Button addPhoto = (Button) findViewById(R.id.addPhoto);
         imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setVisibility(View.GONE);
         s = "";
-
 
 //        if(saveLocation.isChecked()){ //TODO check location
 //            createLocation();
@@ -104,8 +108,15 @@ public class EditMoodActivity extends MoodActivity {
         //Changes the fields to the selected mood
         etTrigger.setText(mood.getTrigger());
         Date tempDate = (Date) mood.getMoodDate();
+        latitude = mood.getLatitude();
+        longitude = mood.getLongitude();
 
-        date.setDate(tempDate.getYear() + 1900, tempDate.getMonth(), tempDate.getDate());
+        //not sure how to properly display location stuff using string resource
+//        currentLocation.setText(getString(R.string.display_location, mood.getLatitude(), mood.getLongitude()));
+        currentLocation.setText("Lat: " + mood.getLatitude() + " Long: " + mood.getLongitude());
+
+        tempDate.setYear(tempDate.getYear() + 1900);
+        date.setDate(tempDate);
         //disgusting single line way to set the spinners
         //Taken from http://stackoverflow.com/questions/2390102/how-to-set-selected-item-of-spinner-by-value-not-by-position
         emotionSpinner.setSelection(((ArrayAdapter<String>) emotionSpinner.getAdapter())
@@ -124,12 +135,13 @@ public class EditMoodActivity extends MoodActivity {
                 TextView errorText = (TextView) emotionSpinner.getSelectedView();
 
                 if (errorCheck(errorText, etTrigger)) {
-                    Date temp = date.getDate();
-                    Log.d("date", temp.toString());
                     newMood = new Mood();
                     newMood.setEmotionState(emotionSpinner.getSelectedItem().toString());
                     newMood.setMoodDate(date.getDate());
                     newMood.setTrigger(etTrigger.getText().toString().trim());
+                    newMood.setLatitude(latitude);
+                    newMood.setLongitude(longitude);
+
                     if(socialSituationSpinner.getSelectedItem().toString().equals("Select a social situation")){
                         newMood.setSocialSituation("");
                     }
@@ -148,6 +160,41 @@ public class EditMoodActivity extends MoodActivity {
                     returnCreateMoodIntent.putExtra("mood", newMood);
                     setResult(RESULT_OK, returnCreateMoodIntent);
                     finish();
+                }
+            }
+        });
+
+        saveLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                GPSTracker gps = new GPSTracker(EditMoodActivity.this);
+
+                // check if GPS location can get Location
+                if(saveLocation.isChecked()) {
+                    //GPSTracker gps = new GPSTracker(CreateMoodActivity.this);
+                    if (gps.canGetLocation()) {
+
+                        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+                        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                            Log.d("UserLocation", "latitude:" + gps.getLatitude()
+                                    + ", longitude: " + gps.getLongitude());
+
+                            //sometimes only round to 3 decimals, I think it has to do with the
+                            //how the round function calculates
+                            latitude = Math.round(gps.getLatitude() * 10000d)/10000d;
+                            longitude = Math.round(gps.getLongitude() * 10000d)/10000d;
+                        }
+                    }
+                }
+                else{
+                    //NaN breaks the app when you undo location selection and complete mood creation
+//                    latitude = NaN;
+//                    longitude = NaN;
+                    latitude = 0.0;
+                    longitude = 0.0;
+
                 }
             }
         });
@@ -241,7 +288,6 @@ also error checks trigger input field for character length*/
     }
 
     /**
-     * I don't know what this does either
      * @see CreateMoodActivity
      * @return an Image most likely
      */

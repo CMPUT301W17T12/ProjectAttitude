@@ -36,6 +36,8 @@ import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Activities.ViewMoodActivity;
 import com.robotium.solo.Solo;
 
+import java.util.Date;
+
 /**
  * Created by Boris on 12/03/2017.
  *
@@ -128,59 +130,53 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         assertFalse(solo.searchText("Happiness"));
     }
 
-//    public void testFilterByDay(){
-//        logIn(solo);
-//        createHappy(solo);
-//
-//        solo.clickLongInList(0);
-//        assertTrue(solo.searchText("Edit"));
-//        solo.clickOnText("Edit");
-//        solo.assertCurrentActivity("Wrong activity", EditMoodActivity.class);
-//        assertTrue(solo.searchText("Happiness"));
-//        solo.clickOnText("2017");
-//
-//        Date date = new Date();
-//        solo.setDatePicker(0, 2017, 2, date.getDay());
-//
-//        solo.clickOnText("OK"); // TODO check if this now works
-//
-//        assertTrue(solo.searchText("Save"));
-//        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
-//
-//        createHappy(solo);  //creating second mood
-//
-//        solo.clickLongInList(1);
-//        assertTrue(solo.searchText("Edit"));
-//        solo.clickOnText("Edit");
-//        solo.assertCurrentActivity("Wrong activity", EditMoodActivity.class);
-//        assertTrue(solo.searchText("Happiness"));
-//
-//        assertTrue(solo.searchText("Anger"));
-//        solo.clickOnText("Anger");  //changing to anger emotion to distinguish
-//
-//        solo.setDatePicker(0, 2017, 3, 17);
-//
-//        solo.clickOnText("OK");
-//
-//        assertTrue(solo.searchText("Save"));
-//        solo.clickOnText("Save"); //Probably clicks on the save location
-//        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
-//
-//        solo.clickOnButton(R.id.filterButton);
-//        solo.clickOnText("Filter");
-//        solo.clickOnText("Time");
-//        solo.clickOnText("Day");
-//
-//        assertTrue(solo.searchText("Happiness"));
-//        assertFalse(solo.searchText("Anger"));
-//
-//        // clean up
-//        deleteFirstMood();
-//        solo.clickOnButton(R.id.filterButton);
-//        solo.clickOnText("Filter");
-//        solo.clickOnText("All Moods");
-//        deleteFirstMood();
-//    }
+    public void testFilterByDay(){
+        logIn(solo);
+        createHappy(solo);
+
+        solo.clickLongInList(0);
+        assertTrue(solo.searchText("Edit"));
+        solo.clickOnText("Edit");
+        solo.assertCurrentActivity("Wrong activity", EditMoodActivity.class);
+        assertTrue(solo.searchText("Happiness"));
+
+        assertTrue(solo.searchText("Save"));
+        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
+
+        createHappy(solo);  //creating second mood
+
+        solo.clickLongInList(1);
+        assertTrue(solo.searchText("Edit"));
+        solo.clickOnText("Edit");
+        solo.assertCurrentActivity("Wrong activity", EditMoodActivity.class);
+        assertTrue(solo.searchText("Happiness"));
+        solo.clickOnText("Happiness");
+
+        assertTrue(solo.searchText("Anger"));
+        solo.clickOnText("Anger");  //changing to anger emotion to distinguish
+
+        solo.clickOnText("2017");
+        solo.setDatePicker(0, 2017, 3, 17);
+
+        solo.clickOnText("OK");
+
+        assertTrue(solo.searchText("Save"));
+        solo.clickOnText("Save"); //Probably clicks on the save location
+        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
+
+        solo.clickOnImageButton(0);
+        solo.clickOnText("Filter By Time");
+        solo.clickOnText("Day");
+
+        assertTrue(solo.searchText("Happiness"));
+        assertFalse(solo.searchText("Anger"));
+
+        // clean up
+        deleteFirstMood();
+        solo.clickOnImageButton(0);
+        solo.clickOnText("Clear Filters");
+        deleteFirstMood();
+    }
 
     public void testFilterMood(){
         logIn(solo);
@@ -194,25 +190,17 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
 
         solo.clickOnImageButton(0);
-        solo.clickOnText("Filter");
-        solo.clickOnText("Emotions");
-        solo.clickOnText("Anger");
+        solo.clickOnText("Filter By Emotions");
+        solo.clickOnScreen(721,396);
 
         assertTrue(solo.searchText("Anger"));   // only anger should be present
         assertFalse(solo.searchText("Happiness"));
 
-//        solo.clickOnText("Anger");
-//        assertTrue(solo.searchText("Anger"));
-//        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
-//        solo.clickLongInList(0);
-//        solo.clickOnText("View");
-//        assertTrue(solo.searchText("Anger"));
 
         // clean up
         deleteFirstMood();
         solo.clickOnImageButton(0);
-        solo.clickOnText("Filter");
-        solo.clickOnText("All Moods");
+        solo.clickOnText("Clear Filters");
         deleteFirstMood();
     }
 
@@ -261,6 +249,27 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
         deleteFirstMood();
 
+    }
+
+    /**
+     * This test checks if a users name pops up in the profile screen
+     * Also checks that the latest mood is there and correct
+     */
+    public void testProfile(){
+        logIn(solo);
+        createHappy(solo);
+        solo.clickLongInList(0);
+        solo.clickOnText("Edit");
+        solo.clickOnText("Happiness");
+        solo.clickOnText("Disgust");
+        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnScreen(890, 1664); //The location of the fab button
+        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.fabProfile));
+        assertTrue(solo.searchText("tester")); //Checks for the user name
+        assertTrue(solo.searchText("Disgust")); //Checks most recent mood
+        solo.goBack();
+        deleteFirstMood();//Clean up
     }
 
     public void createHappy(Solo solo){ //Creates a happy mood and returns to main

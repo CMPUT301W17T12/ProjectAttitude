@@ -25,13 +25,20 @@
 
 package com.projectattitude.projectattitude.Activities;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
@@ -61,7 +68,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     private ListView recentMoodView;    // refers to user's most recent mood
     private ListView followingMoodView; // refers to moods user is following
     private ArrayList<String> usersFollowed;
-    private ArrayList<Mood> usersFollowedMoods;
+    private ArrayList<Mood> usersFollowedMoods = new ArrayList<Mood>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +87,102 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         followingMoodAdapter = new MoodMainAdapter(this, followingMoodList);
         followingMoodView.setAdapter(followingMoodAdapter);
+
+        final User user = userController.getActiveUser();
+
+        searchButton.setOnClickListener(new View.OnClickListener() {    // adding a new user to following list
+            @Override
+            public void onClick(View v) {
+
+                String followingName = searchBar.getText().toString();
+
+                User followedUser = new User();
+                followedUser.setUserName(followingName);
+                Boolean cancel = false;
+
+                if(followingName.equals("")){   // no username entered to search for
+                    cancel = true;
+                }
+
+                if (cancel) {   // search has been canceled
+                    searchBar.requestFocus();
+                }
+
+                else {
+                    if(isNetworkAvailable()){
+                        if (ElasticSearchUserController.getInstance().verifyUser(followedUser)){
+                            Log.d("Error", "User did not exist");
+
+                        } else {
+                            Log.d("Error", "User did exist");
+                            //grab user from db and add to following list
+                            ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+                            try {
+                                followedUser = getUserTask.execute(followingName).get();
+                                if(followedUser != null){   // user exists
+                                    if(followedUser.getUserName().equals(user.getUserName())){
+                                        Toast.makeText(ViewProfileActivity.this, "You cannot be friends with yourself. Ever", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else{
+                                        if(user.getFollowedList().contains(followedUser.getUserName())){
+                                            Toast.makeText(ViewProfileActivity.this, "You're already following that user.", Toast.LENGTH_SHORT).show();
+                                        }
+                                        else{// user not already in list
+                                            user.addFollowed(followedUser.getUserName());    // followed people stored as string
+                                            if(followedUser.getFirstMood() != null){
+                                                followingMoodList.add(followedUser.getFirstMood());
+
+                                                followingMoodAdapter.notifyDataSetChanged();
+                                            }
+
+                                            Log.d("Error", "Followed list = " + user.getFollowedList().toString());
+                                            userController.saveInFile();
+
+                                            ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+                                            updateUserTask.execute(UserController.getInstance().getActiveUser());
+                                            Toast.makeText(ViewProfileActivity.this, "Request sent!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    else{
+                        Toast.makeText(ViewProfileActivity.this, "Must be connected to internet to search for users!",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+
+        /**
+         * This handles when a user clicks on their most recent mood, taking them to the view mood screen
+         */
+        recentMoodView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intentView = new Intent(ViewProfileActivity.this, ViewMoodActivity.class);
+                intentView.putExtra("mood", recentMoodList.get(position));
+                startActivityForResult(intentView, 1);
+            }
+        });
+
+        /**
+         * This handles when a user clicks on a followed mood, taking them to the view mood screen
+         */
+        followingMoodView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intentView = new Intent(ViewProfileActivity.this, ViewMoodActivity.class);
+                intentView.putExtra("mood", followingMoodList.get(position));
+                startActivityForResult(intentView, 1);
+            }
+        });
+
     }
 
     @Override
@@ -90,37 +193,46 @@ public class ViewProfileActivity extends AppCompatActivity {
         nameView.setText(userController.getActiveUser().getUserName()); //getting the name of the user
 
         int moodCount = (int) getIntent().getSerializableExtra("moodCount");
+        User user = (User) getIntent().getSerializableExtra("user");
 
-        Mood userMood;
-        if (moodCount > 0) {
-            //Adding the mood to the user's most recent mood
-            userMood = (Mood) getIntent().getSerializableExtra("mood");
+        Mood userMood = (Mood) getIntent().getSerializableExtra("mood");    // getting user mood
+        if(userMood != null){
             recentMoodList.add(userMood);
             recentMoodAdapter.notifyDataSetChanged();
+        }
 
-            //adding recent moods for each follower
-            User user = (User) getIntent().getSerializableExtra("user");
-            usersFollowed = user.getFollowList();
-            if(usersFollowed != null){
-                for(int i = 0; i < usersFollowed.size(); i++){
-                    String stringFollowedUser = usersFollowed.get(i);
-                    ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
-                    try {
-                        User followedUser = getUserTask.execute(stringFollowedUser).get();
-                        Mood userFollowedMood = followedUser.getFirstMood();
-                        usersFollowedMoods.add(userFollowedMood);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
+        //adding recent moods for each followed person
+
+        usersFollowed = userController.getActiveUser().getFollowedList();
+        if(usersFollowed != null){
+            for(int i = 0; i < usersFollowed.size(); i++){
+                String stringFollowedUser = usersFollowed.get(i);
+                ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+                try {
+                    User followedUser = getUserTask.execute(stringFollowedUser).get();
+                    if(followedUser != null){
+                        if(followedUser.getFirstMood() != null){
+                            followingMoodList.add(followedUser.getFirstMood());
+                        }
                     }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
                 }
             }
-            followingMoodList.add(userMood);    //TODO Temporary place holder, remove
-
-            followingMoodAdapter.notifyDataSetChanged();
-
         }
+
+        followingMoodAdapter.notifyDataSetChanged();
+
+    }
+
+    private boolean isNetworkAvailable() {  // checks if network available for searching database
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+
     }
 
 }

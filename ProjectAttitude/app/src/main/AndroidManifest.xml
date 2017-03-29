@@ -7,23 +7,24 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
-    <!--
-         Map permissions/Location permissions
-    -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!--          Map permissions/Location permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-feature android:name="android.hardware.camera" android:required="false"></uses-feature>
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name="android.support.multidex.MultiDexApplication">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".Activities.LoginActivity"
             android:label="@string/app_name">
@@ -47,7 +48,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyByROXGhd46Yw_Qk7uBgdMngtmGMKp7oYs" />
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -58,11 +58,11 @@
         <activity android:name=".Activities.ViewMoodActivity" />
         <activity android:name=".Activities.CreateMoodActivity" />
         <activity android:name=".Activities.EditMoodActivity" />
-        <activity android:name=".Activities.ViewProfileActivity"></activity>
+        <activity android:name=".Activities.ViewProfileActivity" />
 
         <receiver
-            android:name="com.projectattitude.projectattitude.Objects.NetWorkChangeReceiver"
-            android:label="NetWorkChangeReceiver" >
+            android:name=".Objects.NetWorkChangeReceiver"
+            android:label="NetWorkChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
@@ -72,6 +72,8 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="c5dab69eb444ff6106675da3acf4617eac1333cd" />
+
+        <activity android:name=".Activities.ViewNotificationsActivity"></activity>
     </application>
 
 </manifest>
