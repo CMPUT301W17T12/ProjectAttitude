@@ -76,7 +76,48 @@ public class ElasticSearchRequestController {
         }
     }
 
-    //search for requests in DB, and return list of followrequests or null
+    //Checks if request between users already exists in database
+    public static class CheckRequestTask extends AsyncTask<String, Void, ArrayList<FollowRequest>> {
+
+        @Override
+        protected ArrayList<FollowRequest> doInBackground(String... search_parameters) { //enter requestee's username
+            verifySettings();
+
+            ArrayList<FollowRequest> requests = null;
+
+            String query = "{\n" +
+                    "    \"query\" : {\n"+
+                    "        \"term\" : { \"requestee\" : \""+search_parameters[0]+"\" }\n" + //Requestee's user name
+                    "        \"term\" : { \"requester\" : \""+search_parameters[1]+"\" }\n" + //Requester's user name
+                    "    }\n" +
+                    "}";
+
+            Search search = new Search.Builder(query)
+                    .addIndex(INDEX)
+                    .addType(TYPE)
+                    .build();
+
+            try {
+                SearchResult result = client.execute(search);
+                if(result.isSucceeded()){
+                    requests = new ArrayList<FollowRequest>();
+                    Log.d("Error", "Success getting request");
+                    List<FollowRequest> foundRequests = result.getSourceAsObjectList(FollowRequest.class);
+                    requests.addAll(foundRequests);
+                    Log.d("Error", requests.toString());
+                }
+                else{
+                    Log.d("Error", "Elasticsearch was not able to get requests.");
+                }
+            }
+            catch (IOException e) {
+                Log.i("Error", "The application failed to connect to DB");
+            }
+            return requests;
+        }
+    }
+
+    //search for requests in DB, and return list of follow requests or null depending on how many follow requests for user
     public static class GetRequestsTask extends AsyncTask<String, Void, ArrayList<FollowRequest>> {
 
         @Override
