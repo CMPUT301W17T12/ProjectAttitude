@@ -25,36 +25,48 @@ public class ViewNotificationsActivity extends AppCompatActivity {
     //I created a notification_item.xml to handle notifications
     //On second thought we could use toast pop ups to handle instead of buttons
 
-    ArrayAdapter<FollowRequest> adapter;
-    ArrayList<FollowRequest> requests;
+
+    private ArrayList<FollowRequest> requests = new ArrayList<FollowRequest>();
+    private ListView requestList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_notifications);
 
-        User user = (User)getIntent().getSerializableExtra("user");
+        //requests = new ArrayList<FollowRequest>();
+        requestList = (ListView)findViewById(R.id.notification_list);
+        requests = new ArrayList<FollowRequest>();
+        ArrayAdapter<FollowRequest> adapter = new ArrayAdapter<FollowRequest>(this, R.layout.notification_item, requests);
+        requests.add(new FollowRequest("vusdfk", "henrsdfy"));
+        requests.add(new FollowRequest("vasuk", "henrsasay"));
+        requestList.setAdapter(adapter);
 
-        ListView requestList = (ListView)findViewById(R.id.notification_list);
-        //Obtain follow requests that pertain to current user
-        ElasticSearchRequestController.GetRequestsTask getRequestsTask = new ElasticSearchRequestController.GetRequestsTask();
-        requests = null;
-        try{
-            requests = getRequestsTask.execute(user.getUserName()).get(); //Input user's ID as filter
-        }
-        catch(Exception e){
-            Log.d("Error", "Failed to obtain request list");
-        }
+        //RequestAdapter adapter = new RequestAdapter(this, requests);
+        //adapter.add(new FollowRequest("vuk", "henry"));
+        //ArrayAdapter<FollowRequest> adapter = new ArrayAdapter<FollowRequest>(this, R.layout.notification_item, requests);
+        //requests.add(new FollowRequest("vuk", "henry"));
+        //requestList.setAdapter(adapter);
 
-        if(requests != null){ //If requests are found, display them using adapter
-            adapter = new RequestAdapter(this, requests);
-            requestList.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-        }else{
-            Toast.makeText(ViewNotificationsActivity.this, "No pending requests.",
-                    Toast.LENGTH_LONG).show();
-        }
-        ElasticSearchRequestController.AddRequestTask addRequestTask = new ElasticSearchRequestController.AddRequestTask();
+//        User user = (User)getIntent().getSerializableExtra("user");
+//
+//        //Obtain follow requests that pertain to current user
+//        try{
+//            ElasticSearchRequestController.GetRequestsTask getRequestsTask = new ElasticSearchRequestController.GetRequestsTask();
+//            getRequestsTask.execute(user.getUserName());//Input user's ID as filter
+//            //requests.add(new FollowRequest("vuk", "henry"));
+//            requests.addAll(getRequestsTask.get());
+//        }
+//        catch(Exception e){
+//            Log.d("Error", "Failed to obtain request list");
+//        }
+//
+//        if(requests.size() == 0){
+//            Toast.makeText(ViewNotificationsActivity.this, "No pending requests.",
+//                    Toast.LENGTH_LONG).show();
+//        }
+
+        //adapter.notifyDataSetChanged();
 
     }
 

@@ -18,23 +18,28 @@ import com.projectattitude.projectattitude.R;
 
 import java.util.ArrayList;
 
+import static java.util.logging.Logger.global;
+
 /**
  * Created by henrywei on 3/28/17.
  */
 
 public class RequestAdapter extends ArrayAdapter<FollowRequest> {
 
-    RequestAdapter adapter = this;
+    private FollowRequest request;
+    final private RequestAdapter adapter = this;
 
     public RequestAdapter(Context context, ArrayList<FollowRequest> requests){
-        super(context, 0, requests);
+        super(context, R.layout.notification_item, requests);
     }
 
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        final FollowRequest request = getItem(position);
+        request = getItem(position);
+
+        Log.d("Error", "Following Request"+request.toString());
 
         if (convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.notification_item, parent, false);
