@@ -42,7 +42,7 @@
 
     <!-- Strings related to mainActivity and menus-->
     <string name="main_title">Moods</string>
-    <string name="search_bar">Search (in trigger)</string>
+    <string name="search_bar">Search</string>
 
     <!-- Strings related to top right menu-->
     <string name="map_option">Map</string>

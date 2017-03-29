@@ -40,9 +40,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ToggleButton;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     private MainController controller;
     private Integer itemPosition;
     private String sortingDate;
+    private ToggleButton toggle;
 
     private UserController userController = UserController.getInstance();
     private FilterDecorator filterDecorator = null;
@@ -126,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         userController.setActiveUser(user);
 
         moodListView = (ListView) findViewById(R.id.moodListView);
+        toggle = (ToggleButton) findViewById(R.id.moodToggle);
 
         //This function allows for the infinite scrollings and loading of "pages" for the moodView
         //moodListView.setOnScrollListener(new EndlessScrollListener());    //TODO renable when ElasticSearch is modifed to allow pagination
@@ -235,6 +239,18 @@ public class MainActivity extends AppCompatActivity {
 //             }
 //         });
 //     }
+
+        //This handles the toggle button
+        //TODO // FIXME: 3/28/2017
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // The toggle is enabled, or its set to my moods
+                } else {
+                    // The toggle is disabled, or it is set to followed moods
+                }
+            }
+        });
 
         //Sorting and filtering menu
         final Context activityContext = this;
