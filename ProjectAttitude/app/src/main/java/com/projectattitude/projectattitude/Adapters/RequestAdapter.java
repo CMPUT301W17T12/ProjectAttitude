@@ -27,10 +27,10 @@ import static java.util.logging.Logger.global;
 public class RequestAdapter extends ArrayAdapter<FollowRequest> {
 
     private FollowRequest request;
-    final private RequestAdapter adapter = this;
+    private RequestAdapter adapter = this;
 
     public RequestAdapter(Context context, ArrayList<FollowRequest> requests){
-        super(context, R.layout.notification_item, requests);
+        super(context, 0, requests);
     }
 
     @NonNull

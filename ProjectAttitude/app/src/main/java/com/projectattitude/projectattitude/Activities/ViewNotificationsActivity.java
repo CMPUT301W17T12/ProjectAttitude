@@ -37,36 +37,29 @@ public class ViewNotificationsActivity extends AppCompatActivity {
         //requests = new ArrayList<FollowRequest>();
         requestList = (ListView)findViewById(R.id.notification_list);
         requests = new ArrayList<FollowRequest>();
-        ArrayAdapter<FollowRequest> adapter = new ArrayAdapter<FollowRequest>(this, R.layout.notification_item, requests);
-        requests.add(new FollowRequest("vusdfk", "henrsdfy"));
-        requests.add(new FollowRequest("vasuk", "henrsasay"));
+        RequestAdapter adapter = new RequestAdapter(this, requests);
         requestList.setAdapter(adapter);
+//        requests.add(new FollowRequest("vusdfk", "henrsdfy"));
+//        requests.add(new FollowRequest("vasuk", "henrsasay"));
 
-        //RequestAdapter adapter = new RequestAdapter(this, requests);
-        //adapter.add(new FollowRequest("vuk", "henry"));
-        //ArrayAdapter<FollowRequest> adapter = new ArrayAdapter<FollowRequest>(this, R.layout.notification_item, requests);
-        //requests.add(new FollowRequest("vuk", "henry"));
-        //requestList.setAdapter(adapter);
+        User user = (User)getIntent().getSerializableExtra("user");
 
-//        User user = (User)getIntent().getSerializableExtra("user");
-//
-//        //Obtain follow requests that pertain to current user
-//        try{
-//            ElasticSearchRequestController.GetRequestsTask getRequestsTask = new ElasticSearchRequestController.GetRequestsTask();
-//            getRequestsTask.execute(user.getUserName());//Input user's ID as filter
-//            //requests.add(new FollowRequest("vuk", "henry"));
-//            requests.addAll(getRequestsTask.get());
-//        }
-//        catch(Exception e){
-//            Log.d("Error", "Failed to obtain request list");
-//        }
-//
-//        if(requests.size() == 0){
-//            Toast.makeText(ViewNotificationsActivity.this, "No pending requests.",
-//                    Toast.LENGTH_LONG).show();
-//        }
+        //Obtain follow requests that pertain to current user
+        try{
+            ElasticSearchRequestController.GetRequestsTask getRequestsTask = new ElasticSearchRequestController.GetRequestsTask();
+            getRequestsTask.execute(user.getUserName());//Input user's ID as filter
+            requests.addAll(getRequestsTask.get());
+        }
+        catch(Exception e){
+            Log.d("Error", "Failed to obtain request list");
+        }
 
-        //adapter.notifyDataSetChanged();
+        if(requests.size() == 0){ //If no requests, show toast message
+            Toast.makeText(ViewNotificationsActivity.this, "No pending requests.",
+                    Toast.LENGTH_LONG).show();
+        }
+
+        adapter.notifyDataSetChanged();
 
     }
 
