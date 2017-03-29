@@ -230,14 +230,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-//         fabNotifications.setOnClickListener(new View.OnClickListener() {
-//             @Override
-//             public void onClick(View v) {
-//                 fabMenu.close(true);
-//                 Intent intent = new Intent(MainActivity.this, ViewNotificationsActivity.class);
-//                 startActivity(intent);
-//             }
-//         });
+         fabNotifications.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 fabMenu.close(true);
+                 Intent intent = new Intent(MainActivity.this, ViewNotificationsActivity.class);
+                 intent.putExtra("user", user);
+                 startActivity(intent);
+             }
+         });
 //     }
 
         //This handles the toggle button
@@ -394,7 +395,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("moodCheckEdit", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
         userController.getActiveUser().getMoodList().set(itemPosition, returnedMood);
         userController.saveInFile();
-        refreshMoodList();
+        filterMood(); //Calls refreshMoodList
         moodAdapter.notifyDataSetChanged();
 
         Log.d("editing", userController.getActiveUser().getMoodList().get(itemPosition).toString());
@@ -431,7 +432,7 @@ public class MainActivity extends AppCompatActivity {
                 userController.saveInFile();
                 Log.d("userController deleted", userController.getActiveUser().getMoodList().toString());
 
-                refreshMoodList();
+                filterMood(); //Calls refreshMoodList
                 moodAdapter.notifyDataSetChanged();
                 break;
             }
@@ -519,7 +520,7 @@ public class MainActivity extends AppCompatActivity {
 
                 userController.saveInFile();
 
-                refreshMoodList();
+                filterMood(); //Calls refreshMoodList
                 moodAdapter.notifyDataSetChanged();
 
                 //TODO: Only update moodList if displaying myMoodList, not following list, otherwise moodList = followingList

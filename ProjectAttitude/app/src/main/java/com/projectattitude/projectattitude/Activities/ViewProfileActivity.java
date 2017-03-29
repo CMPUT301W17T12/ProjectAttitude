@@ -41,8 +41,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
+import com.projectattitude.projectattitude.Controllers.ElasticSearchRequestController;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Controllers.UserController;
+import com.projectattitude.projectattitude.Objects.FollowRequest;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
@@ -98,14 +100,9 @@ public class ViewProfileActivity extends AppCompatActivity {
 
                 User followedUser = new User();
                 followedUser.setUserName(followingName);
-                Boolean cancel = false;
 
-                if(followingName.equals("")){   // no username entered to search for
-                    cancel = true;
-                }
-
-                if (cancel) {   // search has been canceled
-                    searchBar.requestFocus();
+                if (followingName.equals("")) {   // no username entered to search for
+                    searchBar.requestFocus(); // search has been canceled
                 }
 
                 else {
@@ -128,19 +125,17 @@ public class ViewProfileActivity extends AppCompatActivity {
                                             Toast.makeText(ViewProfileActivity.this, "You're already following that user.", Toast.LENGTH_SHORT).show();
                                         }
                                         else{// user not already in list
-                                            user.addFollowed(followedUser.getUserName());    // followed people stored as string
-                                            if(followedUser.getFirstMood() != null){
-                                                followingMoodList.add(followedUser.getFirstMood());
+                                            //check if request between users already exists in database
+                                            ElasticSearchRequestController.CheckRequestTask checkRequestTask = new ElasticSearchRequestController.CheckRequestTask();
+                                            checkRequestTask.execute(user.getUserName(),followedUser.getUserName());
+                                            if(checkRequestTask.get() == null){// request does not already exist
+                                                ElasticSearchRequestController.AddRequestTask addRequestTask = new ElasticSearchRequestController.AddRequestTask();
+                                                addRequestTask.execute(new FollowRequest(user.getUserName(),followedUser.getUserName()));
 
-                                                followingMoodAdapter.notifyDataSetChanged();
+                                                Toast.makeText(ViewProfileActivity.this, "Request sent!", Toast.LENGTH_SHORT).show();
+                                            }else{ // request exists
+                                                Toast.makeText(ViewProfileActivity.this, "Request already exists.", Toast.LENGTH_SHORT).show();
                                             }
-
-                                            Log.d("Error", "Followed list = " + user.getFollowedList().toString());
-                                            userController.saveInFile();
-
-                                            ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
-                                            updateUserTask.execute(UserController.getInstance().getActiveUser());
-                                            Toast.makeText(ViewProfileActivity.this, "Request sent!", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 }
