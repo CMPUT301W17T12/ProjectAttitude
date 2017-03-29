@@ -47,6 +47,7 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -87,19 +88,12 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
 
-        User tmp = new User();
-        tmp.setUserName("vuk");
-        try {
-            tmp = getUserTask.execute("vuk").get();
-            Log.d("Error", "Success" + tmp.getUserName() + " " + tmp.getMoodList());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+        if (checkCache()){
+            User tmp = loadCachedUser();
+            intent.putExtra("PassUserToMain", tmp);
+            startActivity(intent);
+            finish();
         }
-        intent.putExtra("PassUserToMain", tmp);
-        startActivity(intent);
-        finish();
 
         usernameView = (EditText) findViewById(R.id.usernameField);
 
@@ -132,6 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d("Error", "User did not exist");
                             //creates user using ElasticSearchUserController and switch to MainActivity
                             cacheUser(user); // cache the current user for login persistence
+                            Log.d("FILE create", checkCache() ? " YES " : "NO");
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.putExtra("PassUserToMain", user);
                             startActivity(intent);
@@ -152,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
 
                             cacheUser(user1); // cache current user for login persistence
+                            Log.d("FILE create", checkCache() ? " YES " : "NO");
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.putExtra("PassUserToMain", user1);
                             startActivity(intent);
@@ -209,6 +205,27 @@ public class LoginActivity extends AppCompatActivity {
 
         } catch (FileNotFoundException e) {
         } catch (IOException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    private boolean checkCache() {
+        try {
+            FileInputStream fileInputStream = openFileInput(FILENAME);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+
+            Gson gson = new Gson();
+
+            User user = gson.fromJson(bufferedReader, User.class);
+
+            if (user.getUserName().equals("____NULL_USER____")) {
+                return false;
+            }
+            else {
+                return true;
+            }
+
+        }catch (FileNotFoundException e) {
             throw new RuntimeException();
         }
     }

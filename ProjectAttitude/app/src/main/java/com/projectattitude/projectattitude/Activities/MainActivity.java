@@ -48,6 +48,7 @@ import android.widget.ToggleButton;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.gson.Gson;
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Controllers.MainController;
@@ -65,6 +66,14 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import io.fabric.sdk.android.Fabric;
@@ -79,6 +88,8 @@ import io.fabric.sdk.android.Fabric;
  * Searching only works for searching through reasons (triggers) of moods
  */
 public class MainActivity extends AppCompatActivity {
+
+    private static final String FILENAME = "user_cache.sav";
 
     protected ArrayList<Mood> moodList = new ArrayList<Mood>();
     private MoodMainAdapter moodAdapter;
@@ -225,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 fabMenu.close(true);
+                deleteCache();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 finish();
                 startActivity(intent);
@@ -635,6 +647,27 @@ public class MainActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+
+    }
+
+    private void deleteCache() {
+        try {
+            FileOutputStream fileOutputStream = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
+
+            User tmp = new User();
+            tmp.setUserName("____NULL_USER____");
+            Gson gson = new Gson();
+
+            gson.toJson(tmp, bufferedWriter);
+            bufferedWriter.flush();
+            fileOutputStream.close();
+
+        }catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
 
     }
 }
