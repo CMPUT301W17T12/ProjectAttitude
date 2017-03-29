@@ -30,6 +30,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.projectattitude.projectattitude.Objects.FollowRequest;
 import com.projectattitude.projectattitude.Objects.User;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
@@ -219,7 +220,6 @@ public class ElasticSearchUserController {
     }
 
 //    /**
-//     * doesnt work for some reason
 //     */
     public static class UpdateUserTask extends  AsyncTask<User, Void, Void> {
         @Override
@@ -234,6 +234,7 @@ public class ElasticSearchUserController {
             Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
 
             String json = gson.toJson(search_parameters[0].getMoodList());
+            json += "meme";
 
 //            json = json.replace("\\\"", "\"");
 //            json = json.replace("}\"", "}");
@@ -265,6 +266,43 @@ public class ElasticSearchUserController {
                     Log.i("Error", "The application failed to build and send the user");
                 }
             //}
+            return null;
+        }
+    }
+
+    //    /**
+//     */
+    public static class UpdateUserRequestTask extends  AsyncTask<User, Void, Void> {
+        @Override
+        protected Void doInBackground(User... search_parameters) {
+            verifySettings();
+
+            String query = "";
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.create();
+
+            String json = gson.toJson(search_parameters[0].getFollowList());
+
+            query = "{\"doc\" : { \"followList\" : " + json + "}}";
+            Update update = new Update.Builder(query).index(INDEX).type(TYPE).id(search_parameters[0].getUserName()).build();
+            Log.d("error", "UserName of update: " + search_parameters[0].getUserName());
+            Log.d("error", "list of update: " +  search_parameters[0].getFollowList().toString());
+
+            try {
+                // where is the client
+                JestResult result = client.execute(update);
+                if (result.isSucceeded()) {
+                    //If the request succeeds, we see a response similar to that of the index request: Similar to the jest
+                    //partial update to doc guide, this part looks good, response to post request
+                    //if you check db, you can see the update happened.
+                    Log.d("error", "Check update Json String " + result.getJsonString());
+                } else {
+                    Log.i("Error", "Elasticsearch was not able to update the user.");
+                }
+            } catch (Exception e) {
+                Log.i("Error", "The application failed to build and send the user");
+            }
+
             return null;
         }
     }

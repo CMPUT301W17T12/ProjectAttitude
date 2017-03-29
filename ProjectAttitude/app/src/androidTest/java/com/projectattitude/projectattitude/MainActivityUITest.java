@@ -255,6 +255,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
      * This test checks if a users name pops up in the profile screen
      * Also checks that the latest mood is there and correct
      */
+    //TODO: Add following moods
     public void testProfile(){
         logIn(solo);
         createHappy(solo);
