@@ -48,7 +48,6 @@ import android.widget.ToggleButton;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.gson.Gson;
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Controllers.MainController;
@@ -66,14 +65,6 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import io.fabric.sdk.android.Fabric;
@@ -88,8 +79,6 @@ import io.fabric.sdk.android.Fabric;
  * Searching only works for searching through reasons (triggers) of moods
  */
 public class MainActivity extends AppCompatActivity {
-
-    private static final String FILENAME = "user_cache.sav";
 
     protected ArrayList<Mood> moodList = new ArrayList<Mood>();
     private MoodMainAdapter moodAdapter;
@@ -151,7 +140,8 @@ public class MainActivity extends AppCompatActivity {
         moodListView.setAdapter(moodAdapter);
 
         //Load user and mood, and update current displayed list
-        loadCachedUser();
+        userController.loadFromFile();
+        Log.d("userController load", userController.getActiveUser().getMoodList().toString());
         sortingDate = "Sort";
         refreshMoodList();
 
@@ -235,7 +225,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 fabMenu.close(true);
-                deleteCache();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 finish();
                 startActivity(intent);
@@ -338,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
                                 //Delete all filters and refresh data
                                 filterDecorator = null;
                                 findViewById(R.id.clearButton).setVisibility(View.INVISIBLE);
-                                loadCachedUser();
+                                userController.loadFromFile();
                                 refreshMoodList();
                                 moodAdapter.notifyDataSetChanged();
                                 break;
@@ -405,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
         Mood moodCheck = userController.getActiveUser().getMoodList().get(itemPosition);
         Log.d("moodCheckEdit", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
         userController.getActiveUser().getMoodList().set(itemPosition, returnedMood);
-        cacheUser(userController.getActiveUser());
+        userController.saveInFile();
         filterMood(); //Calls refreshMoodList
         moodAdapter.notifyDataSetChanged();
 
@@ -440,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
                 userController.getActiveUser().getMoodList().remove(delMood);
                 //controller.setMyMoodList(new MoodList(moodList));
                 //Log.d("deleting", moodList.get(i).toString());
-                cacheUser(userController.getActiveUser());
+                userController.saveInFile();
                 Log.d("userController deleted", userController.getActiveUser().getMoodList().toString());
 
                 filterMood(); //Calls refreshMoodList
@@ -529,7 +518,7 @@ public class MainActivity extends AppCompatActivity {
                 Mood moodCheck = returnedMood;
                 Log.d("moodCheckAdd", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
 
-                cacheUser(userController.getActiveUser());
+                userController.saveInFile();
 
                 filterMood(); //Calls refreshMoodList
                 moodAdapter.notifyDataSetChanged();
@@ -648,59 +637,6 @@ public class MainActivity extends AppCompatActivity {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 
-    }
-
-    private void deleteCache() {
-        try {
-            FileOutputStream fileOutputStream = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
-
-            User tmp = new User();
-            tmp.setUserName("____NULL_USER____");
-            Gson gson = new Gson();
-
-            gson.toJson(tmp, bufferedWriter);
-            bufferedWriter.flush();
-            fileOutputStream.close();
-
-        }catch (FileNotFoundException e) {
-            throw new RuntimeException();
-        } catch (IOException e) {
-            throw new RuntimeException();
-        }
-
-    }
-
-    private User loadCachedUser() {
-        try {
-            FileInputStream fileInputStream = openFileInput(FILENAME);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
-
-            Gson gson = new Gson();
-
-            User user = gson.fromJson(bufferedReader, User.class);
-            return user;
-
-        }catch (FileNotFoundException e) {
-            throw new RuntimeException();
-        }
-    }
-
-    private void cacheUser(User user) {
-        try {
-            FileOutputStream fileOutputStream = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
-
-            Gson gson = new Gson();
-            gson.toJson(user, bufferedWriter);
-            bufferedWriter.flush();
-
-            fileOutputStream.close();
-
-        } catch (FileNotFoundException e) {
-        } catch (IOException e) {
-            throw new RuntimeException();
-        }
     }
 }
 
