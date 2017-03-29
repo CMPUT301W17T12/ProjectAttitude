@@ -27,25 +27,31 @@ package com.projectattitude.projectattitude.Activities;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.PermissionUtils;
-import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
+import org.osmdroid.util.GeoPoint;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This class is used for managing the Map activity. The user is able to interact with the map
@@ -91,27 +97,67 @@ public class MapActivity extends AppCompatActivity
         mMap.setOnMyLocationButtonClickListener(this);
         enableMyLocation();
 
+        //ColorMap<String, Integer> cMap = new ColorMap<>();
+        //couldn't get ColorMap to work, so made one for the meantime
+        HashMap<String, String> hm = new HashMap<String, String>();
+        hm.put("Anger", "#e3333e");
+        hm.put("Confusion", "#ed8b5f");
+        hm.put("Disgust", "#c0ca55");
+        hm.put("Fear", "#684f15");
+        hm.put("Happiness", "#7fc7af");
+        hm.put("Sadness", "#919185");
+        hm.put("Shame", "#005885");
+        hm.put("Surprise", "#e36820");
+
+//        Integer val = (Integer) cMap.get(mood.getEmotionState());
+
         //Taken from https://developers.google.com/maps/documentation/android-api/marker
         //On March 21st at 17:53
         map.addMarker(new MarkerOptions()   // adding a marker
                 .position(new LatLng(53.5444, -113.4909))   // Edmonton location
                 .title("Edmonton"));
 
-        User user = (User) getIntent().getSerializableExtra("user");
-        ArrayList<Mood> userMoodList = user.getMoodList();
+        //User user = (User) getIntent().getSerializableExtra("user");
+        //ArrayList<Mood> userMoodList = user.getMoodList();
+        ArrayList<Mood> userMoodList =  (ArrayList<Mood>) getIntent().getSerializableExtra("user");
+
         for(int i = 0;i < userMoodList.size();i++){ //TODO this will get EVERY mood from the user, which could be too many
+
             Mood mood = userMoodList.get(i);
+            String color = hm.get(mood.getEmotionState());
+            Log.d("MapMoodsColor", color);
 
-            if(mood.getGeoLocation() != null){
-                double latitude = mood.getGeoLocation().getLatitude();  //get lat
-                double longitude = mood.getGeoLocation().getLongitude();    //get long
-
-                map.addMarker(new MarkerOptions()   // adding a marker for mood
-                        .position(new LatLng(latitude, longitude))   // Mood location
-                        .title(userMoodList.get(i).getTrigger()));  // named after the trigger
+            if(mood.getLongitude() == 0 && mood.getLatitude() == 0){
+                Log.d("MapMoods", "Mood: " + mood.getEmotionState() + "not mapped");
             }
-        }
 
+            else{
+                //Integer val = (Integer) cMap.get(mood.getEmotionState());
+                //Log.d("MapMoodsColor", val.toString());
+                map.addMarker(new MarkerOptions()
+                        .position(new LatLng(mood.getLatitude(), mood.getLongitude()))
+                        .icon(getMarkerColor(color)));
+            }
+//            if(mood.getGeoLocation() != null){
+//                double latitude = mood.getGeoLocation().getLatitude();  //get lat
+//                double longitude = mood.getGeoLocation().getLongitude();    //get long
+//
+//                map.addMarker(new MarkerOptions()   // adding a marker for mood
+//                        .position(new LatLng(latitude, longitude))   // Mood location
+//                        .title(userMoodList.get(i).getTrigger()));  // named after the trigger
+//            }
+        }
+    }
+
+    /**
+     * taken from http://stackoverflow.com/questions/19076124/android-map-marker-color
+     * @param color
+     * @return
+     */
+    public BitmapDescriptor getMarkerColor(String color){
+        float[] hsv = new float[3];
+        Color.colorToHSV(Color.parseColor(color), hsv);
+        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
     /**
@@ -171,6 +217,24 @@ public class MapActivity extends AppCompatActivity
     private void showMissingPermissionError() {
         PermissionUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
+    }
+
+    public double calculateDistance(GeoPoint myLocation, GeoPoint moodLocation){  // calculates the difference between two points on the earth
+        //algorithm taken from https://en.wikipedia.org/wiki/Haversine_formula March 28th, 2017
+
+        double myLatitude = myLocation.getLatitude();
+        double myLongitude = myLocation.getLongitude();
+        double moodLatitude = moodLocation.getLatitude();
+        double moodLongitude = moodLocation.getLongitude();
+        double earthRadius = 6371e3;
+
+        double dlong = (moodLongitude - myLongitude);
+        double dlat = (moodLatitude - myLatitude);
+
+        double a =(Math.sin(dlat/2)*Math.sin(dlat/2)) + Math.cos(myLatitude) * Math.cos(moodLatitude) * (Math.sin(dlong/2) * Math.sin(dlong/2));
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        return earthRadius * c;
     }
 
 }
