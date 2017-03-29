@@ -151,8 +151,7 @@ public class MainActivity extends AppCompatActivity {
         moodListView.setAdapter(moodAdapter);
 
         //Load user and mood, and update current displayed list
-        userController.loadFromFile();
-        Log.d("userController load", userController.getActiveUser().getMoodList().toString());
+        loadCachedUser();
         sortingDate = "Sort";
         refreshMoodList();
 
@@ -338,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
                                 //Delete all filters and refresh data
                                 filterDecorator = null;
                                 findViewById(R.id.clearButton).setVisibility(View.INVISIBLE);
-                                userController.loadFromFile();
+                                loadCachedUser();
                                 refreshMoodList();
                                 moodAdapter.notifyDataSetChanged();
                                 break;
@@ -405,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
         Mood moodCheck = userController.getActiveUser().getMoodList().get(itemPosition);
         Log.d("moodCheckEdit", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
         userController.getActiveUser().getMoodList().set(itemPosition, returnedMood);
-        userController.saveInFile();
+        cacheUser(userController.getActiveUser());
         refreshMoodList();
         moodAdapter.notifyDataSetChanged();
 
@@ -440,7 +439,7 @@ public class MainActivity extends AppCompatActivity {
                 userController.getActiveUser().getMoodList().remove(delMood);
                 //controller.setMyMoodList(new MoodList(moodList));
                 //Log.d("deleting", moodList.get(i).toString());
-                userController.saveInFile();
+                cacheUser(userController.getActiveUser());
                 Log.d("userController deleted", userController.getActiveUser().getMoodList().toString());
 
                 refreshMoodList();
@@ -529,7 +528,7 @@ public class MainActivity extends AppCompatActivity {
                 Mood moodCheck = returnedMood;
                 Log.d("moodCheckAdd", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
 
-                userController.saveInFile();
+                cacheUser(userController.getActiveUser());
 
                 refreshMoodList();
                 moodAdapter.notifyDataSetChanged();
@@ -669,6 +668,38 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException();
         }
 
+    }
+
+    private User loadCachedUser() {
+        try {
+            FileInputStream fileInputStream = openFileInput(FILENAME);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+
+            Gson gson = new Gson();
+
+            User user = gson.fromJson(bufferedReader, User.class);
+            return user;
+
+        }catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    private void cacheUser(User user) {
+        try {
+            FileOutputStream fileOutputStream = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
+
+            Gson gson = new Gson();
+            gson.toJson(user, bufferedWriter);
+            bufferedWriter.flush();
+
+            fileOutputStream.close();
+
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 }
 
