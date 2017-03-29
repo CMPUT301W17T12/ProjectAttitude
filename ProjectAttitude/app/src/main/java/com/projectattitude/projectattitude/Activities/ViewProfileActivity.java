@@ -88,7 +88,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         followingMoodAdapter = new MoodMainAdapter(this, followingMoodList);
         followingMoodView.setAdapter(followingMoodAdapter);
 
-        final User user = (User) getIntent().getSerializableExtra("user");
+        final User user = userController.getActiveUser();
 
         searchButton.setOnClickListener(new View.OnClickListener() {    // adding a new user to following list
             @Override
@@ -120,21 +120,29 @@ public class ViewProfileActivity extends AppCompatActivity {
                             try {
                                 followedUser = getUserTask.execute(followingName).get();
                                 if(followedUser != null){   // user exists
-                                    //if(user.getFollowedList().contains(followedUser.getUserName()) == false){   // user not already in list
-                                    user.addFollowed(followedUser.getUserName());    // followed people stored as string
-                                    if(followedUser.getFirstMood() != null){
-                                        followingMoodList.add(followedUser.getFirstMood());
-
-                                        followingMoodAdapter.notifyDataSetChanged();
+                                    if(followedUser.getUserName().equals(user.getUserName())){
+                                        Toast.makeText(ViewProfileActivity.this, "You cannot be friends with yourself. Ever", Toast.LENGTH_SHORT).show();
                                     }
+                                    else{
+                                        if(user.getFollowedList().contains(followedUser.getUserName())){
+                                            Toast.makeText(ViewProfileActivity.this, "You're already following that user.", Toast.LENGTH_SHORT).show();
+                                        }
+                                        else{// user not already in list
+                                            user.addFollowed(followedUser.getUserName());    // followed people stored as string
+                                            if(followedUser.getFirstMood() != null){
+                                                followingMoodList.add(followedUser.getFirstMood());
 
-                                    userController.getActiveUser().addFollowed(followedUser.getUserName());
-                                    Log.d("Error", "Followed list = " + userController.getActiveUser().getFollowedList().toString());
-                                    userController.saveInFile();
+                                                followingMoodAdapter.notifyDataSetChanged();
+                                            }
 
-                                    ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
-                                    updateUserTask.execute(UserController.getInstance().getActiveUser());
-                                    //}
+                                            Log.d("Error", "Followed list = " + user.getFollowedList().toString());
+                                            userController.saveInFile();
+
+                                            ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+                                            updateUserTask.execute(UserController.getInstance().getActiveUser());
+                                            Toast.makeText(ViewProfileActivity.this, "Request sent!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
                                 }
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
@@ -175,14 +183,7 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         });
 
-
-
     }
-
-
-
-
-
 
     @Override
     protected void onStart(){
@@ -209,8 +210,10 @@ public class ViewProfileActivity extends AppCompatActivity {
                 ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
                 try {
                     User followedUser = getUserTask.execute(stringFollowedUser).get();
-                    if(followedUser.getFirstMood() != null){
-                        followingMoodList.add(followedUser.getFirstMood());
+                    if(followedUser != null){
+                        if(followedUser.getFirstMood() != null){
+                            followingMoodList.add(followedUser.getFirstMood());
+                        }
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

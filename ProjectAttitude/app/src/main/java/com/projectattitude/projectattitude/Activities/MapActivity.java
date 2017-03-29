@@ -45,6 +45,8 @@ import com.projectattitude.projectattitude.Objects.PermissionUtils;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
+import org.osmdroid.util.GeoPoint;
+
 import java.util.ArrayList;
 
 /**
@@ -171,6 +173,24 @@ public class MapActivity extends AppCompatActivity
     private void showMissingPermissionError() {
         PermissionUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
+    }
+
+    public double calculateDistance(GeoPoint myLocation, GeoPoint moodLocation){  // calculates the difference between two points on the earth
+        //algorithm taken from https://en.wikipedia.org/wiki/Haversine_formula March 28th, 2017
+
+        double myLatitude = myLocation.getLatitude();
+        double myLongitude = myLocation.getLongitude();
+        double moodLatitude = moodLocation.getLatitude();
+        double moodLongitude = moodLocation.getLongitude();
+        double earthRadius = 6371e3;
+
+        double dlong = (moodLongitude - myLongitude);
+        double dlat = (moodLatitude - myLatitude);
+
+        double a =(Math.sin(dlat/2)*Math.sin(dlat/2)) + Math.cos(myLatitude) * Math.cos(moodLatitude) * (Math.sin(dlong/2) * Math.sin(dlong/2));
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        return earthRadius * c;
     }
 
 }
