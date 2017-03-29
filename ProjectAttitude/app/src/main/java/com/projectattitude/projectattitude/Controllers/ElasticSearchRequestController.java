@@ -86,13 +86,12 @@ public class ElasticSearchRequestController {
             ArrayList<FollowRequest> requests = null;
 
             String query = "{\n" +
-                    "    \"id\": \"myTemplateId\"," +
-                    "    \"params\": {\n" +
-                    "        \"requestee\" : \""+search_parameters[0]+"\"" + //requestee's username
+                    "    \"query\" : {\n"+
+                    "        \"term\" : { \"requestee\" : \""+search_parameters[0]+"\" }\n" + //Requestee's user name
                     "    }\n" +
                     "}";
 
-            Search search = new Search.TemplateBuilder(query)
+            Search search = new Search.Builder(query)
                     .addIndex(INDEX)
                     .addType(TYPE)
                     .build();
@@ -100,9 +99,11 @@ public class ElasticSearchRequestController {
             try {
                 SearchResult result = client.execute(search);
                 if(result.isSucceeded()){
+                    requests = new ArrayList<FollowRequest>();
                     Log.d("Error", "Success getting request");
                     List<FollowRequest> foundRequests = result.getSourceAsObjectList(FollowRequest.class);
                     requests.addAll(foundRequests);
+                    Log.d("Error", requests.toString());
                 }
                 else{
                     Log.d("Error", "Elasticsearch was not able to get requests.");
