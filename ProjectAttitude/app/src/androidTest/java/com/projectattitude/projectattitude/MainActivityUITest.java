@@ -190,7 +190,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
 
         solo.clickOnImageButton(0);
-        solo.clickOnText("Filter By Emotions");
+        solo.clickOnText("Emotions");
         solo.clickOnScreen(721,396);
 
         assertTrue(solo.searchText("Anger"));   // only anger should be present

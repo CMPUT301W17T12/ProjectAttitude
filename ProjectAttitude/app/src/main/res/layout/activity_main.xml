@@ -38,37 +38,39 @@
     <ImageButton
         android:id="@+id/filterButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="38dp"
         android:src="@drawable/filter_button"
         tools:layout_constraintTop_creator="1"
         android:layout_marginTop="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="16dp"
         fab:layout_constraintRight_toRightOf="parent"
         fab:layout_constraintTop_toTopOf="parent"
         android:layout_marginBottom="8dp"
         fab:layout_constraintBottom_toTopOf="@+id/moodListView"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="8dp"
+        fab:layout_constraintVertical_bias="1.0" />
 
     <ImageButton
         android:id="@+id/searchButton"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:src="@drawable/search_button"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        fab:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        fab:layout_constraintRight_toLeftOf="@+id/filterButton"
-        android:layout_marginRight="8dp"
+        android:layout_height="38dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/search_button"
         fab:layout_constraintBottom_toTopOf="@+id/moodListView"
-        android:layout_marginEnd="8dp" />
+        fab:layout_constraintRight_toLeftOf="@+id/moodToggle"
+        fab:layout_constraintTop_toTopOf="parent"
+        fab:layout_constraintVertical_bias="1.0"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
     <EditText
         android:id="@+id/searchBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="0dp"
         android:layout_marginTop="8dp"
         android:hint="@string/search_bar"
         fab:layout_constraintLeft_toLeftOf="parent"
@@ -76,9 +78,10 @@
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         fab:layout_constraintRight_toLeftOf="@+id/searchButton"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="8dp"
+        fab:layout_constraintHorizontal_bias="0.0" />
 
     <ImageButton
         android:id="@+id/clearButton"
@@ -167,6 +170,21 @@
             android:src="@android:drawable/ic_dialog_alert"
             />
     </com.github.clans.fab.FloatingActionMenu>
+
+    <ToggleButton
+        android:id="@+id/moodToggle"
+        android:layout_width="0dp"
+        android:layout_height="38dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="8dp"
+        android:text="Mood Toggle"
+        android:textOff="Followed Moods"
+        android:textOn="My Moods"
+        fab:layout_constraintBottom_toTopOf="@+id/moodListView"
+        fab:layout_constraintRight_toLeftOf="@+id/filterButton"
+        fab:layout_constraintTop_toTopOf="parent"
+        fab:layout_constraintVertical_bias="1.0" />
 
 </android.support.constraint.ConstraintLayout>
 
