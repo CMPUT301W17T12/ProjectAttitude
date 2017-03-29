@@ -16,7 +16,6 @@ import java.util.List;
 
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
-import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
@@ -77,23 +76,19 @@ public class ElasticSearchRequestController {
         }
     }
 
-    //check if requests for requester exists
+    //Checks if request between users already exists in database
     public static class CheckRequestTask extends AsyncTask<String, Void, ArrayList<FollowRequest>> {
 
         @Override
-        protected ArrayList<FollowRequest> doInBackground(String... search_parameters) { //enter requester's username
+        protected ArrayList<FollowRequest> doInBackground(String... search_parameters) { //enter requestee's username
             verifySettings();
 
             ArrayList<FollowRequest> requests = null;
 
             String query = "{\n" +
                     "    \"query\" : {\n"+
-                    "        \"bool\" : {\n" +
-                    "            \"must\" : [\n" +
-                    "                { \"term\" : { \"requester\" : \""+search_parameters[0]+"\" } },\n" + //Requester's user name
-                    "                { \"term\" : { \"requestee\" : \""+search_parameters[1]+"\" } }\n" + //Requestee's user name
-                    "            ]\n" +
-                    "        }\n" +
+                    "        \"term\" : { \"requestee\" : \""+search_parameters[0]+"\" }\n" + //Requestee's user name
+                    "        \"term\" : { \"requester\" : \""+search_parameters[1]+"\" }\n" + //Requester's user name
                     "    }\n" +
                     "}";
 
@@ -168,21 +163,10 @@ public class ElasticSearchRequestController {
         protected Boolean doInBackground(FollowRequest... search_parameters){
             verifySettings();
 
-            String query = "{\n" +
-                    "    \"query\" : {\n"+
-                    "        \"bool\" : {\n" +
-                    "            \"must\" : [\n" +
-                    "                { \"term\" : { \"requester\" : \""+search_parameters[0].getRequester()+"\" } },\n" + //Requester's user name
-                    "                { \"term\" : { \"requestee\" : \""+search_parameters[0].getRequestee()+"\" } }\n" + //Requestee's user name
-                    "            ]\n" +
-                    "        }\n" +
-                    "    }\n" +
-                    "}";
-
-            DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(query).addIndex(INDEX).addType(TYPE).build();
+            Delete delete = new Delete.Builder(search_parameters[0].getID()).index(INDEX).type(TYPE).id(search_parameters[0].getID()).build();
 
             try{
-                client.execute(deleteByQuery);
+                client.execute(delete);
                 Log.d("Error", "Request deleted.");
             }
             catch(IOException e) {
