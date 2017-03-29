@@ -36,6 +36,7 @@ package com.projectattitude.projectattitude.Objects;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -75,6 +76,13 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
         updateDisplay();
     }
 
+    public void setDate(Date date) {
+        this.year = date.getYear();
+        this.month = date.getMonth();
+        this.day = date.getDay();
+        updateDisplay();
+    }
+
     public void setDate(int year, int month, int day){
         this.year = year;
         this.month = month;
@@ -96,9 +104,11 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
 
     public Date getDate(){
         String date_str = editText.getText().toString();
+        Log.d("DATE:_getdate - str", date_str);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA);
         try {
             Date date = sdf.parse(date_str);
+            Log.d("DATE:_getdate - date", date.toString());
             Date currTime = new Date(System.currentTimeMillis());
             return new Date(date.getYear(), date.getMonth(), date.getDate(),
                     currTime.getHours(), currTime.getMinutes(), currTime.getSeconds());
