@@ -37,12 +37,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.RuntimeExecutionException;
+import com.google.gson.Gson;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import io.fabric.sdk.android.Fabric;
@@ -60,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TWITTER_KEY = "HzITcd99DosfymtjdZzjGviFU";
     private static final String TWITTER_SECRET = "k4P5AadHdAbhqSVjIbF1kzc2TppZ7kQOwJm23JPXhBRTrIVgt7";
 
+    private static final String FILENAME = "user_cache.sav";
 
     private EditText usernameView;
 
@@ -70,6 +82,24 @@ public class LoginActivity extends AppCompatActivity {
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new Twitter(authConfig));
         setContentView(R.layout.activity_login);
+
+
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+
+        User tmp = new User();
+        tmp.setUserName("vuk");
+        try {
+            tmp = getUserTask.execute("vuk").get();
+            Log.d("Error", "Success" + tmp.getUserName() + " " + tmp.getMoodList());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        intent.putExtra("PassUserToMain", tmp);
+        startActivity(intent);
+        finish();
 
         usernameView = (EditText) findViewById(R.id.usernameField);
 
@@ -101,6 +131,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (ElasticSearchUserController.getInstance().verifyUser(user)) {
                             Log.d("Error", "User did not exist");
                             //creates user using ElasticSearchUserController and switch to MainActivity
+                            cacheUser(user); // cache the current user for login persistence
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.putExtra("PassUserToMain", user);
                             startActivity(intent);
@@ -120,6 +151,7 @@ public class LoginActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
 
+                            cacheUser(user1); // cache current user for login persistence
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.putExtra("PassUserToMain", user1);
                             startActivity(intent);
@@ -147,5 +179,37 @@ public class LoginActivity extends AppCompatActivity {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 
+    }
+
+    private User loadCachedUser() {
+        try {
+            FileInputStream fileInputStream = openFileInput(FILENAME);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+
+            Gson gson = new Gson();
+
+            User user = gson.fromJson(bufferedReader, User.class);
+            return user;
+
+        }catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    private void cacheUser(User user) {
+        try {
+            FileOutputStream fileOutputStream = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
+
+            Gson gson = new Gson();
+            gson.toJson(user, bufferedWriter);
+            bufferedWriter.flush();
+
+            fileOutputStream.close();
+
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 }
