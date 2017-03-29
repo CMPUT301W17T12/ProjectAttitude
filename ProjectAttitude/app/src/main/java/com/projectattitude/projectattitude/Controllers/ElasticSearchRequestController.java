@@ -16,6 +16,7 @@ import java.util.List;
 
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
+import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
@@ -167,10 +168,21 @@ public class ElasticSearchRequestController {
         protected Boolean doInBackground(FollowRequest... search_parameters){
             verifySettings();
 
-            Delete delete = new Delete.Builder(search_parameters[0].getID()).index(INDEX).type(TYPE).id(search_parameters[0].getID()).build();
+            String query = "{\n" +
+                    "    \"query\" : {\n"+
+                    "        \"bool\" : {\n" +
+                    "            \"must\" : [\n" +
+                    "                { \"term\" : { \"requester\" : \""+search_parameters[0].getRequester()+"\" } },\n" + //Requester's user name
+                    "                { \"term\" : { \"requestee\" : \""+search_parameters[0].getRequestee()+"\" } }\n" + //Requestee's user name
+                    "            ]\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}";
+
+            DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(query).addIndex(INDEX).addType(TYPE).build();
 
             try{
-                client.execute(delete);
+                client.execute(deleteByQuery);
                 Log.d("Error", "Request deleted.");
             }
             catch(IOException e) {

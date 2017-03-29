@@ -121,7 +121,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                                         Toast.makeText(ViewProfileActivity.this, "You cannot be friends with yourself. Ever", Toast.LENGTH_SHORT).show();
                                     }
                                     else{
-                                        if(user.getFollowedList().contains(followedUser.getUserName())){
+                                        if(user.getFollowList().contains(followedUser.getUserName())){
                                             Toast.makeText(ViewProfileActivity.this, "You're already following that user.", Toast.LENGTH_SHORT).show();
                                         }
                                         else{// user not already in list
