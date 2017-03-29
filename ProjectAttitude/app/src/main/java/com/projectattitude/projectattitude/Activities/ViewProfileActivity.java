@@ -127,11 +127,10 @@ public class ViewProfileActivity extends AppCompatActivity {
                                         else{// user not already in list
                                             //check if request between users already exists in database
                                             ElasticSearchRequestController.CheckRequestTask checkRequestTask = new ElasticSearchRequestController.CheckRequestTask();
-                                            checkRequestTask.execute(user.getUserName(),followedUser.getUserName());
-                                            if(checkRequestTask.get() == null){// request does not already exist
+                                            checkRequestTask.execute(user.getUserName(), followedUser.getUserName());
+                                             if(checkRequestTask.get().size() == 0){ //request doesn't exists - not sure why .get always returns an filled array or empty array
                                                 ElasticSearchRequestController.AddRequestTask addRequestTask = new ElasticSearchRequestController.AddRequestTask();
                                                 addRequestTask.execute(new FollowRequest(user.getUserName(),followedUser.getUserName()));
-
                                                 Toast.makeText(ViewProfileActivity.this, "Request sent!", Toast.LENGTH_SHORT).show();
                                             }else{ // request exists
                                                 Toast.makeText(ViewProfileActivity.this, "Request already exists.", Toast.LENGTH_SHORT).show();

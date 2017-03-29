@@ -76,19 +76,23 @@ public class ElasticSearchRequestController {
         }
     }
 
-    //Checks if request between users already exists in database
+    //check if requests for requester exists
     public static class CheckRequestTask extends AsyncTask<String, Void, ArrayList<FollowRequest>> {
 
         @Override
-        protected ArrayList<FollowRequest> doInBackground(String... search_parameters) { //enter requestee's username
+        protected ArrayList<FollowRequest> doInBackground(String... search_parameters) { //enter requester's username
             verifySettings();
 
             ArrayList<FollowRequest> requests = null;
 
             String query = "{\n" +
                     "    \"query\" : {\n"+
-                    "        \"term\" : { \"requestee\" : \""+search_parameters[0]+"\" }\n" + //Requestee's user name
-                    "        \"term\" : { \"requester\" : \""+search_parameters[1]+"\" }\n" + //Requester's user name
+                    "        \"bool\" : {\n" +
+                    "            \"must\" : [\n" +
+                    "                { \"term\" : { \"requester\" : \""+search_parameters[0]+"\" } },\n" + //Requester's user name
+                    "                { \"term\" : { \"requestee\" : \""+search_parameters[1]+"\" } }\n" + //Requestee's user name
+                    "            ]\n" +
+                    "        }\n" +
                     "    }\n" +
                     "}";
 
