@@ -190,7 +190,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
 
         solo.clickOnImageButton(0);
-        solo.clickOnText("Filter By Emotions");
+        solo.clickOnText("Emotions");
         solo.clickOnScreen(721,396);
 
         assertTrue(solo.searchText("Anger"));   // only anger should be present
@@ -255,6 +255,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
      * This test checks if a users name pops up in the profile screen
      * Also checks that the latest mood is there and correct
      */
+    //TODO: Add following moods
     public void testProfile(){
         logIn(solo);
         createHappy(solo);

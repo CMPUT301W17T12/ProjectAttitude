@@ -103,11 +103,20 @@ public class GPSTracker extends MoodActivity implements LocationListener {
                         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
                         Log.d("GPS", "GPS Enabled");
                         if (locationManager != null) {
+                            Log.d("UserLocationManager", "locationManager works");
                             location = locationManager
                                     .getLastKnownLocation(LocationManager.GPS_PROVIDER);
                             if (location != null) {
+                                Log.d("UserLocationLocation", "Location works");
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
+
+                                Log.d("UserLocationGPS", "latitude:" + latitude
+                                        + ", longitude: " + longitude);
+                            }
+
+                            else{
+                                Log.d("UserLocationNull", "location is null");
                             }
                         }
                     }

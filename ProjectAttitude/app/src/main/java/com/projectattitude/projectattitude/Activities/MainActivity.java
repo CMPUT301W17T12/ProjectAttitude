@@ -40,12 +40,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ToggleButton;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.gson.Gson;
 import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Controllers.MainController;
@@ -63,6 +66,14 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import io.fabric.sdk.android.Fabric;
@@ -78,12 +89,15 @@ import io.fabric.sdk.android.Fabric;
  */
 public class MainActivity extends AppCompatActivity {
 
+    private static final String FILENAME = "user_cache.sav";
+
     protected ArrayList<Mood> moodList = new ArrayList<Mood>();
     private MoodMainAdapter moodAdapter;
     private ListView moodListView;
     private MainController controller;
     private Integer itemPosition;
     private String sortingDate;
+    private ToggleButton toggle;
 
     private UserController userController = UserController.getInstance();
     private FilterDecorator filterDecorator = null;
@@ -126,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
         userController.setActiveUser(user);
 
         moodListView = (ListView) findViewById(R.id.moodListView);
+        toggle = (ToggleButton) findViewById(R.id.moodToggle);
 
         //This function allows for the infinite scrollings and loading of "pages" for the moodView
         //moodListView.setOnScrollListener(new EndlessScrollListener());    //TODO renable when ElasticSearch is modifed to allow pagination
@@ -136,8 +151,7 @@ public class MainActivity extends AppCompatActivity {
         moodListView.setAdapter(moodAdapter);
 
         //Load user and mood, and update current displayed list
-        userController.loadFromFile();
-        Log.d("userController load", userController.getActiveUser().getMoodList().toString());
+        loadCachedUser();
         sortingDate = "Sort";
         refreshMoodList();
 
@@ -197,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 fabMenu.close(true);
                 Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
-                viewMapIntent.putExtra("user", user);
+                viewMapIntent.putExtra("user", moodList);
                 startActivityForResult(viewMapIntent, 0);
             }
         });
@@ -221,20 +235,34 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 fabMenu.close(true);
+                deleteCache();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 finish();
                 startActivity(intent);
             }
         });
-//         fabNotifications.setOnClickListener(new View.OnClickListener() {
-//             @Override
-//             public void onClick(View v) {
-//                 fabMenu.close(true);
-//                 Intent intent = new Intent(MainActivity.this, ViewNotificationsActivity.class);
-//                 startActivity(intent);
-//             }
-//         });
+         fabNotifications.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 fabMenu.close(true);
+                 Intent intent = new Intent(MainActivity.this, ViewNotificationsActivity.class);
+                 intent.putExtra("user", user);
+                 startActivity(intent);
+             }
+         });
 //     }
+
+        //This handles the toggle button
+        //TODO // FIXME: 3/28/2017
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // The toggle is enabled, or its set to my moods
+                } else {
+                    // The toggle is disabled, or it is set to followed moods
+                }
+            }
+        });
 
         //Sorting and filtering menu
         final Context activityContext = this;
@@ -310,7 +338,7 @@ public class MainActivity extends AppCompatActivity {
                                 //Delete all filters and refresh data
                                 filterDecorator = null;
                                 findViewById(R.id.clearButton).setVisibility(View.INVISIBLE);
-                                userController.loadFromFile();
+                                loadCachedUser();
                                 refreshMoodList();
                                 moodAdapter.notifyDataSetChanged();
                                 break;
@@ -377,8 +405,8 @@ public class MainActivity extends AppCompatActivity {
         Mood moodCheck = userController.getActiveUser().getMoodList().get(itemPosition);
         Log.d("moodCheckEdit", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
         userController.getActiveUser().getMoodList().set(itemPosition, returnedMood);
-        userController.saveInFile();
-        refreshMoodList();
+        cacheUser(userController.getActiveUser());
+        filterMood(); //Calls refreshMoodList
         moodAdapter.notifyDataSetChanged();
 
         Log.d("editing", userController.getActiveUser().getMoodList().get(itemPosition).toString());
@@ -412,10 +440,10 @@ public class MainActivity extends AppCompatActivity {
                 userController.getActiveUser().getMoodList().remove(delMood);
                 //controller.setMyMoodList(new MoodList(moodList));
                 //Log.d("deleting", moodList.get(i).toString());
-                userController.saveInFile();
+                cacheUser(userController.getActiveUser());
                 Log.d("userController deleted", userController.getActiveUser().getMoodList().toString());
 
-                refreshMoodList();
+                filterMood(); //Calls refreshMoodList
                 moodAdapter.notifyDataSetChanged();
                 break;
             }
@@ -501,9 +529,9 @@ public class MainActivity extends AppCompatActivity {
                 Mood moodCheck = returnedMood;
                 Log.d("moodCheckAdd", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
 
-                userController.saveInFile();
+                cacheUser(userController.getActiveUser());
 
-                refreshMoodList();
+                filterMood(); //Calls refreshMoodList
                 moodAdapter.notifyDataSetChanged();
 
                 //TODO: Only update moodList if displaying myMoodList, not following list, otherwise moodList = followingList
@@ -620,6 +648,59 @@ public class MainActivity extends AppCompatActivity {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 
+    }
+
+    private void deleteCache() {
+        try {
+            FileOutputStream fileOutputStream = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
+
+            User tmp = new User();
+            tmp.setUserName("____NULL_USER____");
+            Gson gson = new Gson();
+
+            gson.toJson(tmp, bufferedWriter);
+            bufferedWriter.flush();
+            fileOutputStream.close();
+
+        }catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+
+    }
+
+    private User loadCachedUser() {
+        try {
+            FileInputStream fileInputStream = openFileInput(FILENAME);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+
+            Gson gson = new Gson();
+
+            User user = gson.fromJson(bufferedReader, User.class);
+            return user;
+
+        }catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    private void cacheUser(User user) {
+        try {
+            FileOutputStream fileOutputStream = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
+
+            Gson gson = new Gson();
+            gson.toJson(user, bufferedWriter);
+            bufferedWriter.flush();
+
+            fileOutputStream.close();
+
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 }
 
