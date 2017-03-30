@@ -134,14 +134,14 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         logIn(solo);
         createHappy(solo);
 
-        solo.clickLongInList(0);
-        assertTrue(solo.searchText("Edit"));
-        solo.clickOnText("Edit");
-        solo.assertCurrentActivity("Wrong activity", EditMoodActivity.class);
-        assertTrue(solo.searchText("Happiness"));
-
-        assertTrue(solo.searchText("Save"));
-        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
+//        solo.clickLongInList(0);
+//        assertTrue(solo.searchText("Edit"));
+//        solo.clickOnText("Edit");
+//        solo.assertCurrentActivity("Wrong activity", EditMoodActivity.class);
+//        assertTrue(solo.searchText("Happiness"));
+//
+//        assertTrue(solo.searchText("Save"));
+//        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
 
         createHappy(solo);  //creating second mood
 
