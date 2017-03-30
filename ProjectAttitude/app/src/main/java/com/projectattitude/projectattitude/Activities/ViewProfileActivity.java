@@ -25,14 +25,18 @@
 
 package com.projectattitude.projectattitude.Activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -48,6 +52,7 @@ import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchRequestController;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Controllers.UserController;
+import com.projectattitude.projectattitude.Manifest;
 import com.projectattitude.projectattitude.Objects.FollowRequest;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.User;
@@ -77,6 +82,9 @@ public class ViewProfileActivity extends AppCompatActivity {
     private ArrayList<String> usersFollowed;
     private ArrayList<Mood> usersFollowedMoods = new ArrayList<Mood>();
     private ImageView image;
+    private Activity thisActivity = this;
+
+    final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,17 +136,16 @@ public class ViewProfileActivity extends AppCompatActivity {
                                         Toast.makeText(ViewProfileActivity.this, "You cannot be friends with yourself. Ever", Toast.LENGTH_SHORT).show();
                                     }
                                     else{
-                                        if(user.getFollowedList().contains(followedUser.getUserName())){
+                                        if(user.getFollowList().contains(followedUser.getUserName())){
                                             Toast.makeText(ViewProfileActivity.this, "You're already following that user.", Toast.LENGTH_SHORT).show();
                                         }
                                         else{// user not already in list
                                             //check if request between users already exists in database
                                             ElasticSearchRequestController.CheckRequestTask checkRequestTask = new ElasticSearchRequestController.CheckRequestTask();
-                                            checkRequestTask.execute(user.getUserName(),followedUser.getUserName());
-                                            if(checkRequestTask.get() == null){// request does not already exist
+                                            checkRequestTask.execute(user.getUserName(), followedUser.getUserName());
+                                            if(checkRequestTask.get().size() == 0){ //request doesn't exists - not sure why .get always returns an filled array or empty array
                                                 ElasticSearchRequestController.AddRequestTask addRequestTask = new ElasticSearchRequestController.AddRequestTask();
                                                 addRequestTask.execute(new FollowRequest(user.getUserName(),followedUser.getUserName()));
-
                                                 Toast.makeText(ViewProfileActivity.this, "Request sent!", Toast.LENGTH_SHORT).show();
                                             }else{ // request exists
                                                 Toast.makeText(ViewProfileActivity.this, "Request already exists.", Toast.LENGTH_SHORT).show();
@@ -193,12 +200,18 @@ public class ViewProfileActivity extends AppCompatActivity {
        image.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               Intent intent = new Intent();
+               //Check if user has permission to get picture from gallery
+               if(ContextCompat.checkSelfPermission(thisActivity, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(thisActivity, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+               }else{ //user already has permission
+                   Intent intent = new Intent();
 // Show only images, no videos or anything else
-               intent.setType("image/*");
-               intent.setAction(Intent.ACTION_GET_CONTENT);
+                   intent.setType("image/*");
+                   intent.setAction(Intent.ACTION_GET_CONTENT);
 // Always show the chooser (if there are multiple options available)
-               startActivityForResult(Intent.createChooser(intent, "Select Picture"),1);
+                   startActivityForResult(Intent.createChooser(intent, "Select Picture"),1);
+               }
+
 
            }
         });
@@ -277,4 +290,17 @@ public class ViewProfileActivity extends AppCompatActivity {
         }
     }
 
-}
+    //When return from requesting read external storage permissions
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch(requestCode){
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: //If requesting gallery permissions
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){ //If result cancelled, grantResults is empty
+                    //If permissions granted, activate image button again
+                    image.performClick();
+                }
+        }
+    }
+
+
+    }
