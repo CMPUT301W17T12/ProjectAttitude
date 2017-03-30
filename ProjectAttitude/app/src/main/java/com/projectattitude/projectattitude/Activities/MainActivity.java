@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         refreshMoodList();
 
         //This function populates the list of moods from people being followed
-        usersFollowed = userController.getActiveUser().getFollowedList();
+        usersFollowed = userController.getActiveUser().getFollowList();
         if(usersFollowed != null){
             for(int i = 0; i < usersFollowed.size(); i++){
                 String stringFollowedUser = usersFollowed.get(i);
