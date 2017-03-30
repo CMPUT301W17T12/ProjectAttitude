@@ -81,8 +81,9 @@ import io.fabric.sdk.android.Fabric;
  */
 public class MainActivity extends AppCompatActivity {
 
-    protected ArrayList<Mood> moodList = new ArrayList<Mood>();
-    protected ArrayList<Mood> followingMoodList = new ArrayList<Mood>();
+    protected ArrayList<Mood> moodList = new ArrayList<Mood>(); //Holds user's own moods, may be filtered
+    protected ArrayList<Mood> followingOriginalMoodList = new ArrayList<Mood>(); //Holds original followed moods without filter
+    protected ArrayList<Mood> followingMoodList = new ArrayList<Mood>(); //Holds followed moods, may be filtered
     private ArrayList<String> usersFollowed;
     private MoodMainAdapter moodAdapter;
     private MoodMainAdapter followingMoodAdapater;
@@ -164,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
                     User followedUser = getUserTask.execute(stringFollowedUser).get();
                     if(followedUser != null){
                         if(followedUser.getFirstMood() != null){
+                            followingOriginalMoodList.add(followedUser.getFirstMood()); //Populate both an unfiltered mood list and filtered moodlist
                             followingMoodList.add(followedUser.getFirstMood());
                         }
                     }
@@ -277,7 +279,6 @@ public class MainActivity extends AppCompatActivity {
 //     }
 
         //This handles the toggle button
-        //TODO // FIXME: 3/28/2017
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -288,6 +289,8 @@ public class MainActivity extends AppCompatActivity {
                     //followingMoodList.add(userController.getActiveUser().getFirstMood()); // This was a test function to see if moods were showing up.
                     moodListView.setAdapter(followingMoodAdapater);
                 }
+                //Have to re-filter mood when changing mood lists
+                filterMood();
             }
         });
 
@@ -486,15 +489,16 @@ public class MainActivity extends AppCompatActivity {
      *                 Three options: "null", "Sort", "Reverse Sort"
      */
     public void sortMood(String dateSort){
-        if(dateSort == null){
-            controller.sortList(moodList, sortingDate); //True = sorting by date
-        }
-        else{
+        //TODO: Make sort work for following
+        if(dateSort != null){
             sortingDate = dateSort;
-            controller.sortList(moodList, sortingDate);
-            moodAdapter.notifyDataSetChanged();
         }
-
+        if(toggle.isChecked()){ //sort my moods
+            controller.sortList(moodList, sortingDate);
+        }else{ //sort following moods
+            controller.sortList(followingMoodList, sortingDate);
+        }
+        moodAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -503,10 +507,10 @@ public class MainActivity extends AppCompatActivity {
     public void filterMood(){
         refreshMoodList();
         if(filterDecorator != null){
-            if(toggle.isChecked()){
+            if(toggle.isChecked()){//filter my moods
                 filterDecorator.filter(moodList); //Go through filter decorator
             }
-            else{
+            else{ //filter following moods
                 filterDecorator.filter(followingMoodList); //Go through filter decorator
             }
         }
@@ -537,10 +541,13 @@ public class MainActivity extends AppCompatActivity {
      * Currently works by using the global variable moodList
      */
     public void refreshMoodList(){
-        //TODO: Add following and perhaps make algorithm more elegant
-        ArrayList<Mood> newList = userController.getActiveUser().getMoodList();
-        moodList.clear();
-        moodList.addAll(newList);
+        if(toggle.isChecked()){ //viewing my moods
+            moodList.clear();
+            moodList.addAll(userController.getActiveUser().getMoodList());
+        }else{ //viewing following moods
+            followingMoodList.clear();
+            followingMoodList.addAll(followingOriginalMoodList);
+        }
         sortMood(null);
     }
 
@@ -566,7 +573,6 @@ public class MainActivity extends AppCompatActivity {
                 filterMood(); //Calls refreshMoodList
                 moodAdapter.notifyDataSetChanged();
 
-                //TODO: Only update moodList if displaying myMoodList, not following list, otherwise moodList = followingList
                 //This to-do applies to the viewMoodActivity and EditMoodActivity result too
 
                 Log.d("userController Added", userController.getActiveUser().getMoodList().toString());
