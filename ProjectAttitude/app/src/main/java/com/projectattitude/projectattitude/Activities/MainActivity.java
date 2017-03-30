@@ -495,10 +495,12 @@ public class MainActivity extends AppCompatActivity {
         }
         if(toggle.isChecked()){ //sort my moods
             controller.sortList(moodList, sortingDate);
+            moodAdapter.notifyDataSetChanged();
         }else{ //sort following moods
             controller.sortList(followingMoodList, sortingDate);
+            followingMoodAdapater.notifyDataSetChanged();
         }
-        moodAdapter.notifyDataSetChanged();
+
     }
 
     /**
@@ -508,13 +510,16 @@ public class MainActivity extends AppCompatActivity {
         refreshMoodList();
         if(filterDecorator != null){
             if(toggle.isChecked()){//filter my moods
+                Log.d("Error", "Filtering MyMoodList");
                 filterDecorator.filter(moodList); //Go through filter decorator
+                moodAdapter.notifyDataSetChanged();
             }
             else{ //filter following moods
+                Log.d("Error", "Filtering FollowingMoodList");
                 filterDecorator.filter(followingMoodList); //Go through filter decorator
+                followingMoodAdapater.notifyDataSetChanged();
             }
         }
-        moodAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -544,9 +549,11 @@ public class MainActivity extends AppCompatActivity {
         if(toggle.isChecked()){ //viewing my moods
             moodList.clear();
             moodList.addAll(userController.getActiveUser().getMoodList());
+            moodAdapter.notifyDataSetChanged();
         }else{ //viewing following moods
             followingMoodList.clear();
             followingMoodList.addAll(followingOriginalMoodList);
+            followingMoodAdapater.notifyDataSetChanged();
         }
         sortMood(null);
     }
