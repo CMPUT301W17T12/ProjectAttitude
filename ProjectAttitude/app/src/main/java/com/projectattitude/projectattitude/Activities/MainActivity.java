@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
                     moodListView.setAdapter(moodAdapter);
                 } else {
                     // The toggle is disabled, or it is set to followed moods
-                    followingMoodList.add(userController.getActiveUser().getFirstMood()); // This was a test function to see if moods were showing up.
+                    //followingMoodList.add(userController.getActiveUser().getFirstMood()); // This was a test function to see if moods were showing up.
                     moodListView.setAdapter(followingMoodAdapater);
                 }
             }
