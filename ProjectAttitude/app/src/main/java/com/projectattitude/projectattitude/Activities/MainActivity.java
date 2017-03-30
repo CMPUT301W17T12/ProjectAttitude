@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         toggle = (ToggleButton) findViewById(R.id.moodToggle);
 
         //This function allows for the infinite scrollings and loading of "pages" for the moodView
-        //moodListView.setOnScrollListener(new EndlessScrollListener());    //TODO renable when ElasticSearch is modifed to allow pagination
+        //moodListView.setOnScrollListener(new EndlessScrollListener());    // renable when ElasticSearch is modifed to allow pagination
 
         //adapter is fed from moodList inside user
         moodAdapter = new MoodMainAdapter(this, moodList);
@@ -150,8 +150,9 @@ public class MainActivity extends AppCompatActivity {
             moodListView.setAdapter(followingMoodAdapater);
         }
         //Load user and mood, and update current displayed list
-        userController.loadFromFile();
-        Log.d("userController load", userController.getActiveUser().getMoodList().toString());
+        //Fred's code - ONLY UNCOMMENT IF CACHEING WORKS!
+        //userController.loadFromFile();
+        //Log.d("userController load", userController.getActiveUser().getMoodList().toString());
         sortingDate = "Sort";
         refreshMoodList();
 
@@ -250,8 +251,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, ViewProfileActivity.class);
                 intent.putExtra("moodCount", moodList.size());
                 if (moodList.size() > 0) {
-                    //TODO This returns the first item in the list, but if its been sorted, that would be wrong
-                    intent.putExtra("mood", moodList.get(0));
+                    intent.putExtra("mood", userController.getActiveUser().getMoodList().get(0));
                 }
                 intent.putExtra("user", user);
                 startActivity(intent);
@@ -489,7 +489,6 @@ public class MainActivity extends AppCompatActivity {
      *                 Three options: "null", "Sort", "Reverse Sort"
      */
     public void sortMood(String dateSort){
-        //TODO: Make sort work for following
         if(dateSort != null){
             sortingDate = dateSort;
         }

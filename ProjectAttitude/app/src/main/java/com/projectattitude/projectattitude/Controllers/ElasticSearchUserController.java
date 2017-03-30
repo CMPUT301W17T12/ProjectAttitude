@@ -207,7 +207,7 @@ public class ElasticSearchUserController {
         protected Boolean doInBackground(User... search_parameters){
             verifySettings();
 
-            Delete delete = new Delete.Builder(search_parameters[0].getUserName()).index(INDEX).type(TYPE).id(search_parameters[0].getUserName()).build();
+            Delete delete = new Delete.Builder(search_parameters[0].getUserName()).index(INDEX).type(TYPE).build();
 
             try{
                 client.execute(delete);
