@@ -66,6 +66,7 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -81,7 +82,10 @@ import io.fabric.sdk.android.Fabric;
 public class MainActivity extends AppCompatActivity {
 
     protected ArrayList<Mood> moodList = new ArrayList<Mood>();
+    protected ArrayList<Mood> followingMoodList = new ArrayList<Mood>();
+    private ArrayList<String> usersFollowed;
     private MoodMainAdapter moodAdapter;
+    private MoodMainAdapter followingMoodAdapater;
     private ListView moodListView;
     private MainController controller;
     private Integer itemPosition;
@@ -136,14 +140,40 @@ public class MainActivity extends AppCompatActivity {
 
         //adapter is fed from moodList inside user
         moodAdapter = new MoodMainAdapter(this, moodList);
+        followingMoodAdapater = new MoodMainAdapter(this, followingMoodList);
         //moodAdapter = new MoodMainAdapter(this, userController.getActiveUser().getMoodList());
-        moodListView.setAdapter(moodAdapter);
-
+        if(toggle.isChecked()){
+            moodListView.setAdapter(moodAdapter);
+        }
+        else{
+            moodListView.setAdapter(followingMoodAdapater);
+        }
         //Load user and mood, and update current displayed list
         userController.loadFromFile();
         Log.d("userController load", userController.getActiveUser().getMoodList().toString());
         sortingDate = "Sort";
         refreshMoodList();
+
+        //This function populates the list of moods from people being followed
+        usersFollowed = userController.getActiveUser().getFollowedList();
+        if(usersFollowed != null){
+            for(int i = 0; i < usersFollowed.size(); i++){
+                String stringFollowedUser = usersFollowed.get(i);
+                ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+                try {
+                    User followedUser = getUserTask.execute(stringFollowedUser).get();
+                    if(followedUser != null){
+                        if(followedUser.getFirstMood() != null){
+                            followingMoodList.add(followedUser.getFirstMood());
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         registerForContextMenu(moodListView);
 
@@ -151,7 +181,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intentView = new Intent(MainActivity.this, ViewMoodActivity.class);
-                intentView.putExtra("mood", moodList.get(position));
+                if(toggle.isChecked()){
+                    intentView.putExtra("mood", moodList.get(position));
+                }
+                else{
+                    intentView.putExtra("mood", followingMoodList.get(position));
+                }
                 startActivityForResult(intentView, 1);
             }
         });
@@ -247,8 +282,11 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     // The toggle is enabled, or its set to my moods
+                    moodListView.setAdapter(moodAdapter);
                 } else {
                     // The toggle is disabled, or it is set to followed moods
+                    followingMoodList.add(userController.getActiveUser().getFirstMood()); // This was a test function to see if moods were showing up.
+                    moodListView.setAdapter(followingMoodAdapater);
                 }
             }
         });
@@ -465,7 +503,12 @@ public class MainActivity extends AppCompatActivity {
     public void filterMood(){
         refreshMoodList();
         if(filterDecorator != null){
-            filterDecorator.filter(moodList); //Go through filter decorator
+            if(toggle.isChecked()){
+                filterDecorator.filter(moodList); //Go through filter decorator
+            }
+            else{
+                filterDecorator.filter(followingMoodList); //Go through filter decorator
+            }
         }
         moodAdapter.notifyDataSetChanged();
     }
@@ -597,10 +640,15 @@ public class MainActivity extends AppCompatActivity {
         //This bool fixes that
         switch(item.getItemId()) {
             case R.id.edit: //When edit is pressed
-                if (edit) {
+                if (edit & toggle.isChecked()) {
                     Intent intentEdit = new Intent(MainActivity.this, EditMoodActivity.class);
 //                    intentEdit.putExtra("mood", moodList.get(itemPosition));
-                    intentEdit.putExtra("mood", moodList.get(itemPosition));
+                    if(toggle.isChecked()){
+                        intentEdit.putExtra("mood", moodList.get(itemPosition));
+                    }
+                    else{
+                        intentEdit.putExtra("mood", followingMoodList.get(itemPosition));
+                    }
                     startActivityForResult(intentEdit, 2); //Handled in the results section
                     //calculate itemPosition in user list
                     ArrayList<Mood> tmpList = userController.getActiveUser().getMoodList();
@@ -615,13 +663,17 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.delete: //When delete is pressed the item is removed, and everything is updated
-                deleteMood(itemPosition);
-                return true;
+                if(toggle.isChecked()){
+                    deleteMood(itemPosition);
+                    return true;
+                }
             // When tweet is pressed TODO build a proper string
             case R.id.tweet:
-                TweetComposer.Builder builder = new TweetComposer.Builder(this)
-                        .text("Today I'm feeling " + moodList.get(itemPosition).toString());
-                builder.show();
+                if(toggle.isChecked()){
+                    TweetComposer.Builder builder = new TweetComposer.Builder(this)
+                            .text("Today I'm feeling " + moodList.get(itemPosition).toString());
+                    builder.show();
+                }
             default:
                 return super.onContextItemSelected(item);
         }
