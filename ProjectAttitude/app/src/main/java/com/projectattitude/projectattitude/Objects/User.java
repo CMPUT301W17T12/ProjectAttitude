@@ -44,6 +44,7 @@ public class User implements Serializable {
     private ArrayList<Mood> moods;
 
     private String id;
+    private String photo;
 
     /**
      * Creates the user object as well as initiating an arrayList of mood objects.
@@ -144,4 +145,11 @@ public class User implements Serializable {
         this.id = id;
     }
 
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
 }

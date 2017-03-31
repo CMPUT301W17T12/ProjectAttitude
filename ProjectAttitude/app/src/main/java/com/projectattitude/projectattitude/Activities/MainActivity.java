@@ -44,6 +44,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -287,10 +288,12 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     // The toggle is enabled, or its set to my moods
+                    registerForContextMenu(moodListView);
                     moodListView.setAdapter(moodAdapter);
                 } else {
                     // The toggle is disabled, or it is set to followed moods
                     //followingMoodList.add(userController.getActiveUser().getFirstMood()); // This was a test function to see if moods were showing up.
+                    unregisterForContextMenu(moodListView);
                     moodListView.setAdapter(followingMoodAdapater);
                 }
                 //Have to re-filter mood when changing mood lists
@@ -458,7 +461,7 @@ public class MainActivity extends AppCompatActivity {
         moodAdapter.notifyDataSetChanged();
 
         Log.d("editing", userController.getActiveUser().getMoodList().get(itemPosition).toString());
-        
+
         //updating db
         ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
         updateUserTask.execute(UserController.getInstance().getActiveUser());
@@ -668,40 +671,35 @@ public class MainActivity extends AppCompatActivity {
         //This bool fixes that
         switch(item.getItemId()) {
             case R.id.edit: //When edit is pressed
-                if (edit & toggle.isChecked()) {
-                    Intent intentEdit = new Intent(MainActivity.this, EditMoodActivity.class);
-//                    intentEdit.putExtra("mood", moodList.get(itemPosition));
-                    if(toggle.isChecked()){
-                        intentEdit.putExtra("mood", moodList.get(itemPosition));
-                    }
-                    else{
-                        intentEdit.putExtra("mood", followingMoodList.get(itemPosition));
-                    }
-                    startActivityForResult(intentEdit, 2); //Handled in the results section
-                    //calculate itemPosition in user list
-                    ArrayList<Mood> tmpList = userController.getActiveUser().getMoodList();
-                    for (int i = 0; i < tmpList.size(); i++) {
-                        if (tmpList.get(i).equals(moodList.get(itemPosition))) {
-                            itemPosition = i;
-                            break;
-                        }
-                    }
-                    listItem = itemPosition;
+                Intent intentEdit = new Intent(MainActivity.this, EditMoodActivity.class);
+//              intentEdit.putExtra("mood", moodList.get(itemPosition));
+                if(toggle.isChecked()){
+                    intentEdit.putExtra("mood", moodList.get(itemPosition));
                 }
+                else{
+                    intentEdit.putExtra("mood", followingMoodList.get(itemPosition));
+                }
+                startActivityForResult(intentEdit, 2); //Handled in the results section
+                //calculate itemPosition in user list
+                ArrayList<Mood> tmpList = userController.getActiveUser().getMoodList();
+                for (int i = 0; i < tmpList.size(); i++) {
+                    if (tmpList.get(i).equals(moodList.get(itemPosition))) {
+                        itemPosition = i;
+                        break;
+                    }
+                }
+                listItem = itemPosition;
                 return true;
 
             case R.id.delete: //When delete is pressed the item is removed, and everything is updated
-                if(toggle.isChecked()){
-                    deleteMood(itemPosition);
-                    return true;
-                }
+                deleteMood(itemPosition);
+                return true;
             // When tweet is pressed TODO build a proper string
             case R.id.tweet:
-                if(toggle.isChecked()){
-                    TweetComposer.Builder builder = new TweetComposer.Builder(this)
-                            .text("Today I'm feeling " + moodList.get(itemPosition).toString());
-                    builder.show();
-                }
+                TweetComposer.Builder builder = new TweetComposer.Builder(this)
+                        .text("Today I'm feeling " + moodList.get(itemPosition).toString());
+                builder.show();
+
             default:
                 return super.onContextItemSelected(item);
         }
