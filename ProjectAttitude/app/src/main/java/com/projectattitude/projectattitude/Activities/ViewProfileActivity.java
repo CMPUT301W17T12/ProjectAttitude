@@ -124,7 +124,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     if(isNetworkAvailable()){
                         ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
                         try{
-                            if (getUserTask.execute(user.getUserName()).get() == null){
+                            if (getUserTask.execute(followedUser.getUserName()).get() == null){
                                 Log.d("Error", "User did not exist");
                                 Toast.makeText(ViewProfileActivity.this, "User not found.", Toast.LENGTH_SHORT).show();
                             } else {

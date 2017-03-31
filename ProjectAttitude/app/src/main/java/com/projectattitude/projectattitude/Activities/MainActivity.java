@@ -422,6 +422,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy(){
+        super.onDestroy();
         unregisterReceiver(netWorkChangeReceiver); //Make sure to unregister receiver to avoid android complaining
     }
 
