@@ -447,7 +447,7 @@ public class MainActivity extends AppCompatActivity {
         moodAdapter.notifyDataSetChanged();
 
         Log.d("editing", userController.getActiveUser().getMoodList().get(itemPosition).toString());
-        
+
         //updating db
         ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
         updateUserTask.execute(UserController.getInstance().getActiveUser());
