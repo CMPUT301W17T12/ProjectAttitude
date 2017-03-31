@@ -34,6 +34,7 @@ import com.projectattitude.projectattitude.Activities.EditMoodActivity;
 import com.projectattitude.projectattitude.Activities.LoginActivity;
 import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Activities.ViewMoodActivity;
+import com.projectattitude.projectattitude.Activities.ViewNotificationsActivity;
 import com.projectattitude.projectattitude.Activities.ViewProfileActivity;
 import com.robotium.solo.Solo;
 
@@ -304,9 +305,18 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.clickOnText("Disgust");
         solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnScreen(FAB_X,FAB_Y);
+        solo.clickOnView(solo.getView(R.id.fabNotification));
+        solo.assertCurrentActivity("Wrong Activity", ViewNotificationsActivity.class);
+        solo.clickOnText("Accept");
+        solo.goBack();
         logOut();
         //tester2 is logged out
         //tester now logs in back in
+        logIn(solo);
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnScreen(FAB_X,FAB_Y);
+        solo.clickOnView(solo.getView(R.id.fabProfile));
         assertTrue(solo.searchText("Disgust")); // Checks to see if the mood appears after following
         solo.goBack();
         solo.assertCurrentActivity("Wrong activity", MainActivity.class);
