@@ -53,36 +53,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ListView
-                android:id="@+id/followListView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:scrollbars="vertical"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/followLabel" />
-
-            <TextView
-                android:id="@+id/followLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="Following: "
-                android:textSize="20dp"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/latestMood" />
-
             <EditText
                 android:id="@+id/searchBar"
                 android:layout_width="0dp"
@@ -91,12 +61,14 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:hint=""
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/searchButton"
-                app:layout_constraintTop_toBottomOf="@+id/followListView" />
+                android:layout_marginTop="3dp"
+                app:layout_constraintTop_toBottomOf="@+id/latestMood"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="8dp" />
 
             <Button
                 android:id="@+id/searchButton"
@@ -104,11 +76,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="7dp"
                 android:text="Add User"
-                android:layout_marginTop="0dp"
-                app:layout_constraintTop_toBottomOf="@+id/followListView"
                 android:layout_marginRight="8dp"
                 app:layout_constraintRight_toRightOf="parent"
-                android:clickable="true"/>
+                android:clickable="true"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/latestMood"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="8dp" />
 
             <ImageView
                 android:id="@+id/profileImage"

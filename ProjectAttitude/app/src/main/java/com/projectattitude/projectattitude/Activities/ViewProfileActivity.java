@@ -78,6 +78,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     private ArrayList<Mood> usersFollowedMoods = new ArrayList<Mood>();
     private ImageView image;
 
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,15 +90,11 @@ public class ViewProfileActivity extends AppCompatActivity {
         nameView = (TextView) findViewById(R.id.profileUname);
 
         recentMoodView = (ListView) findViewById(R.id.latestMood);
-        followingMoodView = (ListView) findViewById(R.id.followListView);
 
         recentMoodAdapter = new MoodMainAdapter(this, recentMoodList);
         recentMoodView.setAdapter(recentMoodAdapter);
 
-        followingMoodAdapter = new MoodMainAdapter(this, followingMoodList);
-        followingMoodView.setAdapter(followingMoodAdapter);
-
-        final User user = userController.getActiveUser();
+        user = userController.getActiveUser();
 
         searchButton.setOnClickListener(new View.OnClickListener() {    // adding a new user to following list
             @Override
@@ -173,18 +170,6 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         });
 
-        /**
-         * This handles when a user clicks on a followed mood, taking them to the view mood screen
-         */
-        followingMoodView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intentView = new Intent(ViewProfileActivity.this, ViewMoodActivity.class);
-                intentView.putExtra("mood", followingMoodList.get(position));
-                startActivityForResult(intentView, 1);
-            }
-        });
-
         //Adjusted from http://codetheory.in/android-pick-select-image-from-gallery-with-intents/
         //on 3/29/17
         /**
@@ -227,27 +212,9 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         //adding recent moods for each followed person
 
-        usersFollowed = userController.getActiveUser().getFollowedList();
-        if(usersFollowed != null){
-            for(int i = 0; i < usersFollowed.size(); i++){
-                String stringFollowedUser = usersFollowed.get(i);
-                ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
-                try {
-                    User followedUser = getUserTask.execute(stringFollowedUser).get();
-                    if(followedUser != null){
-                        if(followedUser.getFirstMood() != null){
-                            followingMoodList.add(followedUser.getFirstMood());
-                        }
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
 
-        followingMoodAdapter.notifyDataSetChanged();
+        //TODO Check if the user has a profile pic, if so set image
+
 
     }
 
@@ -271,6 +238,9 @@ public class ViewProfileActivity extends AppCompatActivity {
                 // Log.d(TAG, String.valueOf(bitmap));
 
                 image.setImageBitmap(bitmap);
+                user.setImage(bitmap);
+
+                //TODO Update the database
             } catch (IOException e) {
                 e.printStackTrace();
             }
