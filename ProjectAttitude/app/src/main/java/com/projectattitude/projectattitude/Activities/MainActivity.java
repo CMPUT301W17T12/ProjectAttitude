@@ -420,6 +420,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy(){
+        unregisterReceiver(netWorkChangeReceiver); //Make sure to unregister receiver to avoid android complaining
+    }
+
     /**
      * This method will take the user to the Create Mood view
      */
