@@ -278,7 +278,11 @@ public class MainActivity extends AppCompatActivity {
          });
 //     }
 
-        //This handles the toggle button
+
+        /**
+         * This handles the toggle button to alternate between your mood list and the mood list of
+         * people you are following.
+         */
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -300,6 +304,9 @@ public class MainActivity extends AppCompatActivity {
         ImageButton SearchButton = (ImageButton) findViewById(R.id.searchButton);
         ImageButton ClearButton = (ImageButton) findViewById(R.id.clearButton);
 
+        /**
+         * This menu button handles interactions with sorting and filtering.
+         */
         SFButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -420,6 +427,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Clean up when the activity finishes.
+     */
     @Override
     protected void onDestroy(){
         super.onDestroy();
@@ -431,6 +441,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void createMood(){
         Intent createMoodIntent = new Intent(MainActivity.this, CreateMoodActivity.class);
+        createMoodIntent.putExtra("username", userController.getActiveUser().getUserName());
         startActivityForResult(createMoodIntent, 0);
     }
 
@@ -505,7 +516,6 @@ public class MainActivity extends AppCompatActivity {
             controller.sortList(followingMoodList, sortingDate);
             followingMoodAdapater.notifyDataSetChanged();
         }
-
     }
 
     /**
@@ -578,7 +588,7 @@ public class MainActivity extends AppCompatActivity {
                 userController.getActiveUser().getMoodList().add(returnedMood);
                 MainController.sortList(userController.getActiveUser().getMoodList(),"Sort"); //Sort inside moods incase anything changed
 
-                Log.d("moodCheckAdd", returnedMood.getEmotionState() + " " + returnedMood.getMoodDate() + " " + returnedMood.getTrigger() + " " + returnedMood.getSocialSituation());
+                Log.d("moodCheckAdd", returnedMood.getMaker() + " " + returnedMood.getEmotionState() + " " + returnedMood.getMoodDate() + " " + returnedMood.getTrigger() + " " + returnedMood.getSocialSituation());
 
                 userController.saveInFile();
 

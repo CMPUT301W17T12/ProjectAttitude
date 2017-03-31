@@ -97,6 +97,8 @@ public class CreateMoodActivity extends MoodActivity{
 
                 if(errorCheck(errorText, etTrigger)){   //checking the trigger and emotional state selection
                     newMood = new Mood();
+                    String username = getIntent().getStringExtra("username");
+                    newMood.setMaker(username);
                     newMood.setEmotionState(emotionSpinner.getSelectedItem().toString());
                     newMood.setMoodDate(date.getDate());
                     newMood.setTrigger(etTrigger.getText().toString().trim());
@@ -122,6 +124,9 @@ public class CreateMoodActivity extends MoodActivity{
             }
         });
 
+        /**
+         * This toggle saves your location when checked.
+         */
         saveLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

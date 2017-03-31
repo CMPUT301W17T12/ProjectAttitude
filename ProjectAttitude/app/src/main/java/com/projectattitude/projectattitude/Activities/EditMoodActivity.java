@@ -77,7 +77,7 @@ public class EditMoodActivity extends MoodActivity {
 
 
     //https://www.mkyong.com/android/android-spinner-drop-down-list-example/
-    //Resourse for the spinner I made
+    //Resourse for the spinner that was made
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +120,9 @@ public class EditMoodActivity extends MoodActivity {
         final Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
         imageView.setImageBitmap(decodedImage);
 
+        /**
+         * Saves all information stored in the activity and binds it to a mood.
+         */
         completeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -156,6 +159,9 @@ public class EditMoodActivity extends MoodActivity {
             }
         });
 
+        /**
+         * This toggle when clicked saves the current location.
+         */
         saveLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,6 +208,12 @@ public class EditMoodActivity extends MoodActivity {
         });
     }
 
+    /**
+     * Returns the activity and the results.
+     * @param requestCode   Request Code.
+     * @param resultCode    Result code.
+     * @param data  Data to pass back.
+     */
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -237,8 +249,10 @@ public class EditMoodActivity extends MoodActivity {
 
     }
 
-    /*error checks Emotional State spinner to make sure an emotional state was chosen
-also error checks trigger input field for character length*/
+    /**
+     * error checks Emotional State spinner to make sure an emotional state was chosen and
+     * also error checks trigger input field for character length
+     */
     public boolean errorCheck(TextView emotionStateText, EditText etTriggerText) {
 
         String etTriggerString = etTriggerText.getText().toString().trim();
@@ -265,25 +279,5 @@ also error checks trigger input field for character length*/
             return false;
         }
         return true;
-    }
-
-
-    /**
-     * @see CreateMoodActivity
-     * @return A GeoPoint
-     * This function creates a GeoPoint of the current user's last known location
-     */
-    private void createLocation(){
-        //GeoPoint myLocation = LocationServices.FusedLocationApi.getLastLocation()
-        //newMood.setGeoLocation(myLocation);
-        return;
-    }
-
-    /**
-     * @see CreateMoodActivity
-     * @return an Image most likely
-     */
-    private void createPicture(){
-        return;
     }
 }

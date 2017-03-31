@@ -52,7 +52,6 @@ import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchRequestController;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Controllers.UserController;
-import com.projectattitude.projectattitude.Manifest;
 import com.projectattitude.projectattitude.Objects.FollowRequest;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.User;
@@ -64,7 +63,8 @@ import java.util.concurrent.ExecutionException;
 
 
 /**
- * This is a temporary profile, just shows name and number of moods
+ * This is the profile page of the user. It shows the name of the user, as well as the portrait,
+ * followed by the user's most recent mood. From here, the user can add moods to follow
  */
 public class ViewProfileActivity extends AppCompatActivity {
     protected ArrayList<Mood> recentMoodList = new ArrayList<Mood>();
@@ -86,6 +86,11 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
+    /**
+     * Initial set up on creation including setting up references, adapters, and readying the search
+     * button.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -214,23 +219,19 @@ public class ViewProfileActivity extends AppCompatActivity {
                     ActivityCompat.requestPermissions(thisActivity, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
                }else{ //user already has permission
                    Intent intent = new Intent();
-// Show only images, no videos or anything else
+                // Show only images, no videos or anything else
                    intent.setType("image/*");
                    intent.setAction(Intent.ACTION_GET_CONTENT);
-// Always show the chooser (if there are multiple options available)
+                // Always show the chooser (if there are multiple options available)
                    startActivityForResult(Intent.createChooser(intent, "Select Picture"),1);
                }
-
-
            }
         });
-
-
-
-
-
     }
 
+    /**
+     * This method is called as soon as the activity starts,
+     */
     @Override
     protected void onStart(){
         super.onStart();
@@ -242,7 +243,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         User user = (User) getIntent().getSerializableExtra("user");
 
         Mood userMood = (Mood) getIntent().getSerializableExtra("mood");    // getting user mood
-        if(userMood != null){
+        if(userMood != null && recentMoodList.size() == 0){
             recentMoodList.add(userMood);
             recentMoodAdapter.notifyDataSetChanged();
         }
