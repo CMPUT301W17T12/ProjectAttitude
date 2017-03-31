@@ -284,6 +284,17 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         deleteFirstMood();//Clean up
     }
     public void testFollow(){
+        //This makes a notification
+        logIn(solo);
+        solo.clickOnScreen(FAB_X,FAB_Y);
+        solo.clickOnView(solo.getView(R.id.fabProfile));
+        solo.assertCurrentActivity("Wrong activity", ViewProfileActivity.class);
+        solo.enterText(0, "tester2"); //Enters it into the first edit text
+        solo.typeText(0, "tester2"); //For some reason we need both of these
+        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.searchButton));
+        solo.goBack();
+        solo.assertCurrentActivity("Wrong activity", MainActivity.class);
+        logOut();
         //This chunk creates a disgust mood in the person we intend to follow
         logInTest2();
         createHappy(solo);
@@ -295,13 +306,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
         logOut();
         //tester2 is logged out
-        //tester now logs in
-        logIn(solo);
-        solo.clickOnScreen(FAB_X,FAB_Y);
-        solo.clickOnView(solo.getView(R.id.fabProfile));
-        solo.assertCurrentActivity("Wrong activity", ViewProfileActivity.class);
-        solo.enterText((EditText)solo.getView(R.id.searchBar), "tester2");
-        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.searchButton));
+        //tester now logs in back in
         assertTrue(solo.searchText("Disgust")); // Checks to see if the mood appears after following
         solo.goBack();
         solo.assertCurrentActivity("Wrong activity", MainActivity.class);
