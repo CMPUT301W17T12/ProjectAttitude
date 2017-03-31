@@ -44,6 +44,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -677,6 +678,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     listItem = itemPosition;
+                }else{
+                    Toast.makeText(MainActivity.this, "Can't edit other user's moods.",
+                            Toast.LENGTH_LONG).show();
                 }
                 return true;
 
@@ -684,6 +688,9 @@ public class MainActivity extends AppCompatActivity {
                 if(toggle.isChecked()){
                     deleteMood(itemPosition);
                     return true;
+                }else{
+                    Toast.makeText(MainActivity.this, "Can't delete other user's moods.",
+                            Toast.LENGTH_LONG).show();
                 }
             // When tweet is pressed TODO build a proper string
             case R.id.tweet:
