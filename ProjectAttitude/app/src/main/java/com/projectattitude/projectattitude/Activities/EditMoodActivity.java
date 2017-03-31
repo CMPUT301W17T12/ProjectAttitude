@@ -96,14 +96,6 @@ public class EditMoodActivity extends MoodActivity {
         imageView.setVisibility(View.GONE);
         s = "";
 
-//        if(saveLocation.isChecked()){ //TODO check location
-//            createLocation();
-//        }
-//        else{
-//            //GeoPoint myLocation = null;   //TODO set location to null
-//        }
-
-
         Mood mood = (Mood) getIntent().getSerializableExtra("mood");
         //Changes the fields to the selected mood
         etTrigger.setText(mood.getTrigger());

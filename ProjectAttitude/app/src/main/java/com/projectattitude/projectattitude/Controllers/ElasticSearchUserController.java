@@ -207,7 +207,7 @@ public class ElasticSearchUserController {
         protected Boolean doInBackground(User... search_parameters){
             verifySettings();
 
-            Delete delete = new Delete.Builder(search_parameters[0].getUserName()).index(INDEX).type(TYPE).id(search_parameters[0].getUserName()).build();
+            Delete delete = new Delete.Builder(search_parameters[0].getUserName()).index(INDEX).type(TYPE).build();
 
             try{
                 client.execute(delete);
@@ -234,7 +234,7 @@ public class ElasticSearchUserController {
             Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
 
             String json = gson.toJson(search_parameters[0].getMoodList());
-            json += "meme";
+            //json += "meme";
 
 //            json = json.replace("\\\"", "\"");
 //            json = json.replace("}\"", "}");

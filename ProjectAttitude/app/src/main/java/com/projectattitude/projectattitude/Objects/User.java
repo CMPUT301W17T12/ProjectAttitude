@@ -122,7 +122,7 @@ public class User implements Serializable {
      */
     public Mood getFirstMood(){
         if(moods.size() != 0){
-            return moods.get(0);    //TODO What if the list is empty?
+            return moods.get(0);
         }
         else{
             return null;

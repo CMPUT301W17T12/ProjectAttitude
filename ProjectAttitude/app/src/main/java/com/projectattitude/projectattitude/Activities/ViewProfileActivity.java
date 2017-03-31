@@ -25,17 +25,25 @@
 
 package com.projectattitude.projectattitude.Activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,11 +52,13 @@ import com.projectattitude.projectattitude.Adapters.MoodMainAdapter;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchRequestController;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Controllers.UserController;
+import com.projectattitude.projectattitude.Manifest;
 import com.projectattitude.projectattitude.Objects.FollowRequest;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -71,6 +81,10 @@ public class ViewProfileActivity extends AppCompatActivity {
     private ListView followingMoodView; // refers to moods user is following
     private ArrayList<String> usersFollowed;
     private ArrayList<Mood> usersFollowedMoods = new ArrayList<Mood>();
+    private ImageView image;
+    private Activity thisActivity = this;
+
+    final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +93,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         searchBar = (EditText) findViewById(R.id.searchBar);
         searchButton = (Button) findViewById(R.id.searchButton);
 
+        image = (ImageView) findViewById(R.id.profileImage);
         nameView = (TextView) findViewById(R.id.profileUname);
 
         recentMoodView = (ListView) findViewById(R.id.latestMood);
@@ -107,44 +122,52 @@ public class ViewProfileActivity extends AppCompatActivity {
 
                 else {
                     if(isNetworkAvailable()){
-                        if (ElasticSearchUserController.getInstance().verifyUser(followedUser)){
-                            Log.d("Error", "User did not exist");
-
-                        } else {
-                            Log.d("Error", "User did exist");
-                            //grab user from db and add to following list
-                            ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
-                            try {
-                                followedUser = getUserTask.execute(followingName).get();
-                                if(followedUser != null){   // user exists
-                                    if(followedUser.getUserName().equals(user.getUserName())){
-                                        Toast.makeText(ViewProfileActivity.this, "You cannot be friends with yourself. Ever", Toast.LENGTH_SHORT).show();
-                                    }
-                                    else{
-                                        if(user.getFollowedList().contains(followedUser.getUserName())){
-                                            Toast.makeText(ViewProfileActivity.this, "You're already following that user.", Toast.LENGTH_SHORT).show();
+                        ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+                        try{
+                            if (getUserTask.execute(followedUser.getUserName()).get() == null){
+                                Log.d("Error", "User did not exist");
+                                Toast.makeText(ViewProfileActivity.this, "User not found.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Log.d("Error", "User did exist");
+                                //grab user from db and add to following list
+                                getUserTask = new ElasticSearchUserController.GetUserTask();
+                                try {
+                                    followedUser = getUserTask.execute(followingName).get();
+                                    if(followedUser != null){   // user exists
+                                        if(followedUser.getUserName().equals(user.getUserName())){
+                                            Toast.makeText(ViewProfileActivity.this, "You cannot be friends with yourself. Ever", Toast.LENGTH_SHORT).show();
                                         }
-                                        else{// user not already in list
-                                            //check if request between users already exists in database
-                                            ElasticSearchRequestController.CheckRequestTask checkRequestTask = new ElasticSearchRequestController.CheckRequestTask();
-                                            checkRequestTask.execute(user.getUserName(),followedUser.getUserName());
-                                            if(checkRequestTask.get() == null){// request does not already exist
-                                                ElasticSearchRequestController.AddRequestTask addRequestTask = new ElasticSearchRequestController.AddRequestTask();
-                                                addRequestTask.execute(new FollowRequest(user.getUserName(),followedUser.getUserName()));
-
-                                                Toast.makeText(ViewProfileActivity.this, "Request sent!", Toast.LENGTH_SHORT).show();
-                                            }else{ // request exists
-                                                Toast.makeText(ViewProfileActivity.this, "Request already exists.", Toast.LENGTH_SHORT).show();
+                                        else{
+                                            if(user.getFollowList().contains(followedUser.getUserName())){
+                                                Toast.makeText(ViewProfileActivity.this, "You're already following that user.", Toast.LENGTH_SHORT).show();
+                                            }
+                                            else{// user not already in list
+                                                //check if request between users already exists in database
+                                                ElasticSearchRequestController.CheckRequestTask checkRequestTask = new ElasticSearchRequestController.CheckRequestTask();
+                                                checkRequestTask.execute(user.getUserName(), followedUser.getUserName());
+                                                if(checkRequestTask.get().size() == 0){ //request doesn't exists - not sure why .get always returns an filled array or empty array
+                                                    ElasticSearchRequestController.AddRequestTask addRequestTask = new ElasticSearchRequestController.AddRequestTask();
+                                                    addRequestTask.execute(new FollowRequest(user.getUserName(),followedUser.getUserName()));
+                                                    Toast.makeText(ViewProfileActivity.this, "Request sent!", Toast.LENGTH_SHORT).show();
+                                                }else{ // request exists
+                                                    Toast.makeText(ViewProfileActivity.this, "Request already exists.", Toast.LENGTH_SHORT).show();
+                                                }
                                             }
                                         }
                                     }
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
                             }
+                        }catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
+                        catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+
                     }
                     else{
                         Toast.makeText(ViewProfileActivity.this, "Must be connected to internet to search for users!",
@@ -177,6 +200,34 @@ public class ViewProfileActivity extends AppCompatActivity {
                 startActivityForResult(intentView, 1);
             }
         });
+
+        //Adjusted from http://codetheory.in/android-pick-select-image-from-gallery-with-intents/
+        //on 3/29/17
+        /**
+         * This handles when the user clicks on their image
+         */
+       image.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               //Check if user has permission to get picture from gallery
+               if(ContextCompat.checkSelfPermission(thisActivity, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(thisActivity, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+               }else{ //user already has permission
+                   Intent intent = new Intent();
+// Show only images, no videos or anything else
+                   intent.setType("image/*");
+                   intent.setAction(Intent.ACTION_GET_CONTENT);
+// Always show the chooser (if there are multiple options available)
+                   startActivityForResult(Intent.createChooser(intent, "Select Picture"),1);
+               }
+
+
+           }
+        });
+
+
+
+
 
     }
 
@@ -229,5 +280,36 @@ public class ViewProfileActivity extends AppCompatActivity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-}
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            Uri uri = data.getData();
+
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                // Log.d(TAG, String.valueOf(bitmap));
+
+                image.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //When return from requesting read external storage permissions
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch(requestCode){
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: //If requesting gallery permissions
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){ //If result cancelled, grantResults is empty
+                    //If permissions granted, activate image button again
+                    image.performClick();
+                }
+        }
+    }
+
+
+    }
