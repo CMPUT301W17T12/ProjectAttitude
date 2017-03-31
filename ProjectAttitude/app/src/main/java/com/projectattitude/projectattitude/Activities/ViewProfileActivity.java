@@ -38,6 +38,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -58,6 +59,7 @@ import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -83,6 +85,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     private ArrayList<Mood> usersFollowedMoods = new ArrayList<Mood>();
     private ImageView image;
     private Activity thisActivity = this;
+    String s = "";
 
     final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
@@ -292,10 +295,33 @@ public class ViewProfileActivity extends AppCompatActivity {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 // Log.d(TAG, String.valueOf(bitmap));
 
+                //if greater then byte threshold, compress
+                if (bitmap.getByteCount() > 65536) {
+                    //4 or less times greater, scale by 2
+                    if (bitmap.getByteCount() / 65536 <= 4) {
+                        bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.getWidth() / 2), (bitmap.getHeight() / 2), false);
+                    }
+                    //9 or less times greater, scale by 3
+                    else if (bitmap.getByteCount() / 65536 <= 9) {
+                        bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.getWidth() / 3), (bitmap.getHeight() / 3), false);
+                    }
+                    else {
+                        //anything greater then 9 times, scale by 4
+                        bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.getWidth() / 4), (bitmap.getHeight() / 4), false);
+                    }
+                }
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                s = Base64.encodeToString(byteArray, Base64.DEFAULT);
                 image.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            //TODO: Update user with profile picture
+
+
         }
     }
 
