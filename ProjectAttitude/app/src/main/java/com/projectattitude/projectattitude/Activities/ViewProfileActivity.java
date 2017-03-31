@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -180,6 +181,14 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         });
 
+        //If image exists in user, set image
+        if(user.getPhoto().length() > 0){
+            //decode base64 image stored in User
+            byte[] imageBytes = Base64.decode(user.getPhoto(), Base64.DEFAULT);
+            Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            image.setImageBitmap(decodedImage);
+        }
+
         /**
          * This handles when a user clicks on their most recent mood, taking them to the view mood screen
          */
@@ -320,7 +329,9 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
 
             //TODO: Update user with profile picture
-
+            userController.getActiveUser().setPhoto(s);
+            ElasticSearchUserController.UpdateUserPictureTask updateUserPictureTask = new ElasticSearchUserController.UpdateUserPictureTask();
+            updateUserPictureTask.execute(UserController.getInstance().getActiveUser());
 
         }
     }
