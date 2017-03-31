@@ -4,6 +4,12 @@ package com.projectattitude.projectattitude.Objects;
  * Created by henry on 3/26/2017.
  */
 
+/**
+ * The class that acts as the instance of a request object made when a user wishes to follow another
+ * user. This object is instantiated in the profile page and is managed by the ElasticSearchRequestController.
+ * @see com.projectattitude.projectattitude.Controllers.ElasticSearchRequestController
+ */
+
 public class FollowRequest {
     private String requester; //User ID that initialized request
     private String requestee; //User ID that receives request

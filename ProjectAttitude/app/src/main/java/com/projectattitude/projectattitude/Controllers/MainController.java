@@ -28,8 +28,6 @@ package com.projectattitude.projectattitude.Controllers;
 import android.util.Log;
 
 import com.projectattitude.projectattitude.Objects.Mood;
-import com.projectattitude.projectattitude.Objects.MoodList;
-import com.projectattitude.projectattitude.Objects.User;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,6 +38,9 @@ import java.util.Date;
  * Created by Chris on 2/24/2017.
  */
 
+/**
+ * The main controller deals with sorting the mood array under the main activity in the primary view.
+ */
 public class MainController {
 
     /**

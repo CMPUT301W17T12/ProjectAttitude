@@ -30,7 +30,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.projectattitude.projectattitude.Objects.FollowRequest;
 import com.projectattitude.projectattitude.Objects.User;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
@@ -47,7 +46,7 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Update;
 
 /**
- * ElasticSearchUserController contains tasks that communicate and update the dtabase with users
+ * ElasticSearchUserController contains tasks that communicate and update the database with users
  */
 
 public class ElasticSearchUserController {
