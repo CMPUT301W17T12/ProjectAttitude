@@ -689,7 +689,7 @@ public class MainActivity extends AppCompatActivity {
                 TweetComposer.Builder builder = new TweetComposer.Builder(this)
                         .text("Today I'm feeling " + moodList.get(itemPosition).toString());
                 builder.show();
-                
+
             default:
                 return super.onContextItemSelected(item);
         }
