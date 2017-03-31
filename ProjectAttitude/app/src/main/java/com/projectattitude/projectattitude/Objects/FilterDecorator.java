@@ -6,6 +6,10 @@ import java.util.ArrayList;
  * Created by henrywei on 3/23/17.
  */
 
+/**
+ * Decorator abstract class used for managing filtering.
+ */
+
 public abstract class FilterDecorator {
     private String filterType;
     private String filterParameter;
@@ -20,14 +24,26 @@ public abstract class FilterDecorator {
         this.enclosedDecorator = enclosedDecorator;
     }
 
+    /**
+     * Returns filter parameter.
+     * @return filter parameter
+     */
     public String getFilterParameter() {
         return filterParameter;
     }
 
+    /**
+     * Sets filter parameter.
+     * @param filterParameter filter parameter
+     */
     public void setFilterParameter(String filterParameter) {
         this.filterParameter = filterParameter;
     }
 
+    /**
+     * Sets filterType settings.
+     * @param filterType filterType setting
+     */
     public void setFilterType(String filterType) {
         //Can only set filterType once
         if(this.filterType == null){
@@ -40,6 +56,10 @@ public abstract class FilterDecorator {
         return filterType;
     }
 
+    /**
+     * Filters the moodList based off the parameters.
+     * @param moodList moodList object to be passed in
+     */
     public void filter(ArrayList<Mood> moodList){
         if(enclosedDecorator != null){
             enclosedDecorator.filter(moodList);
@@ -47,10 +67,18 @@ public abstract class FilterDecorator {
         specificFilter(moodList);
     }
 
+    /**
+     * Gets enclosed decorator.
+     * @return enclosedDecorator
+     */
     public FilterDecorator getEnclosedDecorator() {
         return enclosedDecorator;
     }
 
+    /**
+     * Sets enclosed decorater
+     * @param enclosedDecorator returns enclosedDecorator
+     */
     public void setEnclosedDecorator(FilterDecorator enclosedDecorator) {
         this.enclosedDecorator = enclosedDecorator;
     }

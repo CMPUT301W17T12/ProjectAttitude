@@ -38,13 +38,11 @@ import com.projectattitude.projectattitude.Activities.ViewNotificationsActivity;
 import com.projectattitude.projectattitude.Activities.ViewProfileActivity;
 import com.robotium.solo.Solo;
 
-import java.util.Date;
-
 /**
  * Created by Boris on 12/03/2017.
  *
- * This class starts in the login screen, logs in and attempts to make a mood.
- * Currently testing only works on a nexus 5s due to using fab menus and click on screen
+ * This class starts in the login screen, logs in and attempts to do a series of tests involving
+ * making a mood, editing, deleting and other various functions off of the MainActivity.
  */
 
 public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginActivity> {

@@ -29,6 +29,9 @@ import android.test.ActivityInstrumentationTestCase2;
 
 import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Controllers.MainController;
+import com.projectattitude.projectattitude.Objects.FilterDecorator;
+import com.projectattitude.projectattitude.Objects.FilterTimeDecorator;
+import com.projectattitude.projectattitude.Objects.FollowRequest;
 import com.projectattitude.projectattitude.Objects.Mood;
 
 import java.util.ArrayList;
@@ -77,7 +80,8 @@ public class FilterTest extends ActivityInstrumentationTestCase2 {
         assertEquals(list.get(1), m1);
 
         //Test filter by day
-        controller.filterListByTime(list, (long)8.64e+7);
+        FilterDecorator filterDecorator = new FilterTimeDecorator("Day");
+        filterDecorator.filter(list);
 
         assertEquals(list.get(0),m1);
 
@@ -113,7 +117,8 @@ public class FilterTest extends ActivityInstrumentationTestCase2 {
         assertEquals(list.get(1), m1);
 
         //Test filter by month
-        controller.filterListByTime(list, (long)2.628e+9);
+        FilterDecorator filterDecorator = new FilterTimeDecorator("Month");
+        filterDecorator.filter(list);
 
         assertEquals(list.get(0),m1);
 
@@ -148,7 +153,8 @@ public class FilterTest extends ActivityInstrumentationTestCase2 {
         assertEquals(list.get(1), m1);
 
         //Test filter by year
-        controller.filterListByTime(list, (long)3.154e+10);
+        FilterDecorator filterDecorator = new FilterTimeDecorator("Year");
+        filterDecorator.filter(list);
 
         assertEquals(list.get(0),m1);
     }

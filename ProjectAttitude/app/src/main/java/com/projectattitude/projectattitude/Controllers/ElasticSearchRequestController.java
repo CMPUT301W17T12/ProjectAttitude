@@ -3,8 +3,6 @@ package com.projectattitude.projectattitude.Controllers;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.projectattitude.projectattitude.Objects.FollowRequest;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
@@ -14,11 +12,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.searchbox.client.JestResult;
-import io.searchbox.core.Delete;
 import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
-import io.searchbox.core.Get;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
@@ -27,6 +22,10 @@ import io.searchbox.core.SearchResult;
  * Created by henry on 3/26/2017.
  */
 
+/**
+ * A modification to the ElasticSearchController specifically designed for making requests to follow
+ * other users.
+ */
 public class ElasticSearchRequestController {
 
     private static ElasticSearchRequestController instance = new ElasticSearchRequestController();
@@ -50,7 +49,7 @@ public class ElasticSearchRequestController {
     //index on server
     private static final String INDEX = "cmput301w17t12";
 
-    //add user to ES DB
+    //adds request to ES DB
     public static class AddRequestTask extends AsyncTask<FollowRequest, Void, Boolean> {
 
         @Override
@@ -77,7 +76,9 @@ public class ElasticSearchRequestController {
         }
     }
 
-    //check if requests for requester exists
+    /**
+     * Check if requests for requester exists orn ot
+     */
     public static class CheckRequestTask extends AsyncTask<String, Void, ArrayList<FollowRequest>> {
 
         @Override
@@ -122,7 +123,9 @@ public class ElasticSearchRequestController {
         }
     }
 
-    //search for requests in DB, and return list of follow requests or null depending on how many follow requests for user
+    /**
+     * Search for requests in DB, and return list of follow requests or null depending on how many follow requests for user
+     */
     public static class GetRequestsTask extends AsyncTask<String, Void, ArrayList<FollowRequest>> {
 
         @Override
@@ -162,6 +165,9 @@ public class ElasticSearchRequestController {
         }
     }
 
+    /**
+     * Deletes request if needed.
+     */
     public static class DeleteRequestTask extends AsyncTask<FollowRequest, Void, Boolean>{
 
         @Override
@@ -191,7 +197,7 @@ public class ElasticSearchRequestController {
         }
     }
 
-    //copied from lonelytwitter
+    //copied from lonelytwitter on March 31st, at 16:38
     private static void verifySettings(){
         if(client == null){
             DroidClientConfig.Builder builder = new DroidClientConfig.Builder(DATABASE_URL);

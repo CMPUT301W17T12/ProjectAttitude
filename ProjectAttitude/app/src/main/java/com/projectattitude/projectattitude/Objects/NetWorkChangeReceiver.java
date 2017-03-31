@@ -30,7 +30,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -39,10 +38,7 @@ import android.widget.Toast;
  */
 
 /**
- * android is weird with connecting disconnecting, you can follow the Logs.d, so required if
- * statements to filter out the wierdness
- *
- * This can be removed, just thought it'd be nice
+ * This class checks if the user is connected to the internet and manages connections.
  */
 public class NetWorkChangeReceiver extends BroadcastReceiver{
     private static boolean firstConnect = true;
