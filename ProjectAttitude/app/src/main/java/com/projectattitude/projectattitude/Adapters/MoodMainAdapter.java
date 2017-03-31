@@ -69,6 +69,7 @@ public class MoodMainAdapter extends ArrayAdapter<Mood> {
 
         TextView tvEmotionalState = (TextView) convertView.findViewById(R.id.emotionalStateTextView);
         TextView tvDate = (TextView) convertView.findViewById(R.id.dateTextView);
+        TextView tvMaker = (TextView) convertView.findViewById(R.id.makerTextView);
         TextView tvTrigger = (TextView) convertView.findViewById(R.id.triggerTextView);
         TextView tvSocialSituation = (TextView) convertView.findViewById(R.id.socialSituationTextView);
         ImageView moodEmoticon = (ImageView) convertView.findViewById(R.id.mainImageView);
@@ -84,6 +85,13 @@ public class MoodMainAdapter extends ArrayAdapter<Mood> {
 
         int res = (int) eMap.get(mood.getEmotionState());
         moodEmoticon.setImageResource(res);
+
+        if(mood.getMaker() == null){
+            tvMaker.setText("Created by: None");
+        }
+        else{
+            tvMaker.setText("Created by: " + mood.getMaker());
+        }
 
         if(mood.getTrigger().equals("")){
             tvTrigger.setText("Trigger: None");

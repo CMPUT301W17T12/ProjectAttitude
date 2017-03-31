@@ -42,6 +42,7 @@ import io.searchbox.annotations.JestId;
 
 public class Mood implements Serializable {
 
+    private String maker;
     private Date moodDate;
     private String emotionState;
     private Location geoLocation;
@@ -62,6 +63,22 @@ public class Mood implements Serializable {
      * Initiates the mood object.
      */
     public Mood() {
+    }
+
+    /**
+     * Getting the maker of the mood.
+     * @return returns the maker
+     */
+    public String getMaker() {
+        return maker;
+    }
+
+    /**
+     * Setting the maker of the mood.
+     * @param maker Sets the maker.
+     */
+    public void setMaker(String maker) {
+        this.maker = maker;
     }
 
     /**

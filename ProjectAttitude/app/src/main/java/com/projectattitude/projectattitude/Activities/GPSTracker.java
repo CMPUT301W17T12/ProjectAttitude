@@ -18,9 +18,9 @@ import com.projectattitude.projectattitude.Abstracts.MoodActivity;
  */
 
 /**
- * Taken from http://stackoverflow.com/questions/25496726/getting-location-when-button-is-clicked
+ * This activity manages
  */
-
+//Taken from http://stackoverflow.com/questions/25496726/getting-location-when-button-is-clicked
 public class GPSTracker extends MoodActivity implements LocationListener {
 
 
