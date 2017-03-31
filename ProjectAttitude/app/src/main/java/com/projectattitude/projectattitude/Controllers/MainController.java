@@ -154,7 +154,6 @@ public class MainController {
     }
 
     public MoodList getFollowedMoodList() {
-        //TODO: Get Followed List
         return followedMoodList;
     }
 

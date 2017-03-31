@@ -36,7 +36,7 @@ public class EndlessScrollListener implements AbsListView.OnScrollListener {
         }
         if (!loading & (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
             //Calls elasticsearch function to "load" the next few moods
-            //TODO need ElasticSearch function here
+            //need ElasticSearch function here
             loading = true;
         }
     }

@@ -112,21 +112,6 @@ public class CreateMoodActivity extends MoodActivity{
                     }
                     newMood.setPhoto(s);
 
-//                    if(saveLocation.isChecked()){ //TODO check location
-//
-//                        LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-//
-//                        // Creating an empty criteria object
-//                        Criteria criteria = new Criteria();
-//
-//                        // Getting the name of the provider that meets the criteria
-//                        String provider = locationManager.getBestProvider(criteria, false);
-//
-//                        //Location location = locationManager.getLastKnownLocation(provider);
-//                        //LocationServices location = LocationServices.FusedLocationApi.getLastLocation()
-//                        //newMood.setGeoLocation(location);
-//                    }
-
 
                     Intent returnCreateMoodIntent = new Intent();
                     returnCreateMoodIntent.putExtra("addMoodIntent", newMood);
