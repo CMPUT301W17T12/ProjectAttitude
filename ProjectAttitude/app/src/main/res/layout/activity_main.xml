@@ -174,7 +174,7 @@
 
     <ToggleButton
         android:id="@+id/moodToggle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="38dp"
         android:layout_marginBottom="8dp"
         android:layout_marginRight="0dp"

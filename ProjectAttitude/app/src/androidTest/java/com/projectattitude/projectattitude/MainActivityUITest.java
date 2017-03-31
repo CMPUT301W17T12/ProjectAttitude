@@ -34,6 +34,8 @@ import com.projectattitude.projectattitude.Activities.EditMoodActivity;
 import com.projectattitude.projectattitude.Activities.LoginActivity;
 import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Activities.ViewMoodActivity;
+import com.projectattitude.projectattitude.Activities.ViewNotificationsActivity;
+import com.projectattitude.projectattitude.Activities.ViewProfileActivity;
 import com.robotium.solo.Solo;
 
 /**
@@ -47,6 +49,9 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
 
     private Solo solo;
 
+    //These two handle the location on screen of the fab menu
+    final int FAB_X = 890;
+    final int FAB_Y = 1664;
     public MainActivityUITest() {
         super(com.projectattitude.projectattitude.Activities.LoginActivity.class);
     }
@@ -73,6 +78,20 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         deleteFirstMood();
 
         assertFalse(solo.searchText("Happiness"));
+    }
+
+    /**
+     * Makes sure if you create a mood it sticks around
+     */
+    public void testPersistence(){
+        logIn(solo);
+        createHappy(solo);
+        assertTrue(solo.searchText("Happiness"));   //checking if mood exist
+        logOut();
+        logIn(solo);
+        assertTrue(solo.searchText("Happiness"));   //checking if mood exist
+        deleteFirstMood();
+
     }
 
     /**
@@ -216,6 +235,13 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.assertCurrentActivity("Wrong activity", MainActivity.class);
     }
 
+    public void logInTest2(){
+        solo.enterText((EditText)solo.getView(R.id.usernameField), "tester2");
+        solo.clickOnView(solo.getView(R.id.signInButton));
+        solo.assertCurrentActivity("Wrong activity", MainActivity.class);
+
+    }
+
     public void checkMoods(){ //Makes sure the minimum fields exist within a mood
         solo.clickOnScreen(890, 1664); //The location of the fab button
         solo.clickOnView(solo.getView(R.id.fabAddMood));
@@ -271,6 +297,49 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.goBack();
         deleteFirstMood();//Clean up
     }
+    public void testFollow(){
+        //This makes a notification
+        logIn(solo);
+        solo.clickOnScreen(FAB_X,FAB_Y);
+        solo.clickOnView(solo.getView(R.id.fabProfile));
+        solo.assertCurrentActivity("Wrong activity", ViewProfileActivity.class);
+        solo.enterText(0, "tester2"); //Enters it into the first edit text
+        solo.typeText(0, "tester2"); //For some reason we need both of these
+        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.searchButton));
+        solo.goBack();
+        solo.assertCurrentActivity("Wrong activity", MainActivity.class);
+        logOut();
+        //This chunk creates a disgust mood in the person we intend to follow
+        logInTest2();
+        createHappy(solo);
+        solo.clickLongInList(0);
+        solo.clickOnText("Edit");
+        solo.clickOnText("Happiness");
+        solo.clickOnText("Disgust");
+        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnScreen(FAB_X,FAB_Y);
+        solo.clickOnView(solo.getView(R.id.fabNotification));
+        solo.assertCurrentActivity("Wrong Activity", ViewNotificationsActivity.class);
+        solo.clickOnText("Accept");
+        solo.goBack();
+        logOut();
+        //tester2 is logged out
+        //tester now logs in back in
+        logIn(solo);
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnScreen(FAB_X,FAB_Y);
+        solo.clickOnView(solo.getView(R.id.fabProfile));
+        assertTrue(solo.searchText("Disgust")); // Checks to see if the mood appears after following
+        solo.goBack();
+        solo.assertCurrentActivity("Wrong activity", MainActivity.class);
+        logOut();
+        //Test is now done, clean up time
+        logInTest2();
+        deleteFirstMood();
+
+
+    }
 
     public void createHappy(Solo solo){ //Creates a happy mood and returns to main
         solo.clickOnScreen(890, 1664); //This is the location of the fab button
@@ -294,6 +363,11 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
 
         solo.assertCurrentActivity("Wrong activity", MainActivity.class);
+    }
+
+    public void logOut(){
+        solo.clickOnScreen(890, 1664);
+        solo.clickOnView(solo.getView(R.id.fabLogout));
     }
 
 
