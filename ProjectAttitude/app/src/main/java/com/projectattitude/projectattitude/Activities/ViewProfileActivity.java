@@ -91,7 +91,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
 
-    private User user;
+    private User user = userController.getActiveUser();;
     /**
      * Initial set up on creation including setting up references, adapters, and readying the search
      * button.
@@ -186,7 +186,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         });
 
         //If image exists in user, set image
-        if(user.getPhoto().length() > 0){
+        if(user.getPhoto() != null && user.getPhoto().length() > 0){
             //decode base64 image stored in User
             byte[] imageBytes = Base64.decode(user.getPhoto(), Base64.DEFAULT);
             Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
