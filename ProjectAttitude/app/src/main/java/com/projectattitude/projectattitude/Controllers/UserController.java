@@ -45,6 +45,11 @@ import java.io.OutputStreamWriter;
  * Created by Vuk on 3/10/2017.
  */
 
+/**
+ * The UserController handles which user is logged in and is able to save and load to and from
+ * the gson files.
+ */
+
 public class UserController {
 
     private static UserController instance = new UserController();

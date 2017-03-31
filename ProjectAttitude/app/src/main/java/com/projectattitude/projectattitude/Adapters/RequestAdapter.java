@@ -18,10 +18,13 @@ import com.projectattitude.projectattitude.R;
 
 import java.util.ArrayList;
 
-import static java.util.logging.Logger.global;
-
 /**
  * Created by henrywei on 3/28/17.
+ */
+
+/**
+ * The RequestAdapater manages the Request view, modifying the request properties appropriately.
+ * Requests can be accessed from the Notifications page.
  */
 
 public class RequestAdapter extends ArrayAdapter<FollowRequest> {
