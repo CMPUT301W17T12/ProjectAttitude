@@ -234,7 +234,7 @@ public class ElasticSearchUserController {
             Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
 
             String json = gson.toJson(search_parameters[0].getMoodList());
-            json += "meme";
+            //json += "meme";
 
 //            json = json.replace("\\\"", "\"");
 //            json = json.replace("}\"", "}");
