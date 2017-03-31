@@ -420,6 +420,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        unregisterReceiver(netWorkChangeReceiver); //Make sure to unregister receiver to avoid android complaining
+    }
+
     /**
      * This method will take the user to the Create Mood view
      */
@@ -435,13 +441,13 @@ public class MainActivity extends AppCompatActivity {
         Mood moodCheck = userController.getActiveUser().getMoodList().get(itemPosition);
         Log.d("moodCheckEdit", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
         userController.getActiveUser().getMoodList().set(itemPosition, returnedMood);
+        MainController.sortList(userController.getActiveUser().getMoodList(),"Sort"); //Sort inside moods incase anything changed
         userController.saveInFile();
         filterMood(); //Calls refreshMoodList
         moodAdapter.notifyDataSetChanged();
 
         Log.d("editing", userController.getActiveUser().getMoodList().get(itemPosition).toString());
-
-
+        
         //updating db
         ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
         updateUserTask.execute(UserController.getInstance().getActiveUser());
@@ -570,9 +576,9 @@ public class MainActivity extends AppCompatActivity {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
 
                 userController.getActiveUser().getMoodList().add(returnedMood);
+                MainController.sortList(userController.getActiveUser().getMoodList(),"Sort"); //Sort inside moods incase anything changed
 
-                Mood moodCheck = returnedMood;
-                Log.d("moodCheckAdd", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
+                Log.d("moodCheckAdd", returnedMood.getEmotionState() + " " + returnedMood.getMoodDate() + " " + returnedMood.getTrigger() + " " + returnedMood.getSocialSituation());
 
                 userController.saveInFile();
 
