@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -38,6 +39,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -57,6 +59,7 @@ import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -83,14 +86,18 @@ public class ViewProfileActivity extends AppCompatActivity {
     private ArrayList<Mood> usersFollowedMoods = new ArrayList<Mood>();
     private ImageView image;
     private Activity thisActivity = this;
+    String s = "";
 
     final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
+
+    private User user;
     /**
      * Initial set up on creation including setting up references, adapters, and readying the search
      * button.
      * @param savedInstanceState
      */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,15 +109,11 @@ public class ViewProfileActivity extends AppCompatActivity {
         nameView = (TextView) findViewById(R.id.profileUname);
 
         recentMoodView = (ListView) findViewById(R.id.latestMood);
-        followingMoodView = (ListView) findViewById(R.id.followListView);
 
         recentMoodAdapter = new MoodMainAdapter(this, recentMoodList);
         recentMoodView.setAdapter(recentMoodAdapter);
 
-        followingMoodAdapter = new MoodMainAdapter(this, followingMoodList);
-        followingMoodView.setAdapter(followingMoodAdapter);
-
-        final User user = userController.getActiveUser();
+        user = userController.getActiveUser();
 
         searchButton.setOnClickListener(new View.OnClickListener() {    // adding a new user to following list
             @Override
@@ -182,6 +185,14 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         });
 
+        //If image exists in user, set image
+        if(user.getPhoto().length() > 0){
+            //decode base64 image stored in User
+            byte[] imageBytes = Base64.decode(user.getPhoto(), Base64.DEFAULT);
+            Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            image.setImageBitmap(decodedImage);
+        }
+
         /**
          * This handles when a user clicks on their most recent mood, taking them to the view mood screen
          */
@@ -190,18 +201,6 @@ public class ViewProfileActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intentView = new Intent(ViewProfileActivity.this, ViewMoodActivity.class);
                 intentView.putExtra("mood", recentMoodList.get(position));
-                startActivityForResult(intentView, 1);
-            }
-        });
-
-        /**
-         * This handles when a user clicks on a followed mood, taking them to the view mood screen
-         */
-        followingMoodView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intentView = new Intent(ViewProfileActivity.this, ViewMoodActivity.class);
-                intentView.putExtra("mood", followingMoodList.get(position));
                 startActivityForResult(intentView, 1);
             }
         });
@@ -250,27 +249,9 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         //adding recent moods for each followed person
 
-        usersFollowed = userController.getActiveUser().getFollowedList();
-        if(usersFollowed != null){
-            for(int i = 0; i < usersFollowed.size(); i++){
-                String stringFollowedUser = usersFollowed.get(i);
-                ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
-                try {
-                    User followedUser = getUserTask.execute(stringFollowedUser).get();
-                    if(followedUser != null){
-                        if(followedUser.getFirstMood() != null){
-                            followingMoodList.add(followedUser.getFirstMood());
-                        }
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
 
-        followingMoodAdapter.notifyDataSetChanged();
+        //TODO Check if the user has a profile pic, if so set image
+
 
     }
 
@@ -293,10 +274,38 @@ public class ViewProfileActivity extends AppCompatActivity {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 // Log.d(TAG, String.valueOf(bitmap));
 
+                //if greater then byte threshold, compress
+                if (bitmap.getByteCount() > 65536) {
+                    //4 or less times greater, scale by 2
+                    if (bitmap.getByteCount() / 65536 <= 4) {
+                        bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.getWidth() / 2), (bitmap.getHeight() / 2), false);
+                    }
+                    //9 or less times greater, scale by 3
+                    else if (bitmap.getByteCount() / 65536 <= 9) {
+                        bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.getWidth() / 3), (bitmap.getHeight() / 3), false);
+                    }
+                    else {
+                        //anything greater then 9 times, scale by 4
+                        bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.getWidth() / 4), (bitmap.getHeight() / 4), false);
+                    }
+                }
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                s = Base64.encodeToString(byteArray, Base64.DEFAULT);
                 image.setImageBitmap(bitmap);
+                user.setImage(bitmap);
+
+                //TODO Update the database
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            //TODO: Update user with profile picture
+            userController.getActiveUser().setPhoto(s);
+            ElasticSearchUserController.UpdateUserPictureTask updateUserPictureTask = new ElasticSearchUserController.UpdateUserPictureTask();
+            updateUserPictureTask.execute(UserController.getInstance().getActiveUser());
+
         }
     }
 

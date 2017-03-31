@@ -25,6 +25,8 @@
 
 package com.projectattitude.projectattitude.Objects;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -44,6 +46,17 @@ public class User implements Serializable {
     private ArrayList<Mood> moods;
 
     private String id;
+    private String photo;
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
+
+    private Bitmap image;
 
     /**
      * Creates the user object as well as initiating an arrayList of mood objects.
@@ -144,4 +157,11 @@ public class User implements Serializable {
         this.id = id;
     }
 
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
 }
