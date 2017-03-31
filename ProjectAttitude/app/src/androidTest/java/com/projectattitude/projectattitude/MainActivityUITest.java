@@ -44,6 +44,7 @@ import java.util.Date;
  * Created by Boris on 12/03/2017.
  *
  * This class starts in the login screen, logs in and attempts to make a mood.
+ * Currently testing only works on a nexus 5s due to using fab menus and click on screen
  */
 
 public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginActivity> {
@@ -79,6 +80,20 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         deleteFirstMood();
 
         assertFalse(solo.searchText("Happiness"));
+    }
+
+    /**
+     * Makes sure if you create a mood it sticks around
+     */
+    public void testPersistence(){
+        logIn(solo);
+        createHappy(solo);
+        assertTrue(solo.searchText("Happiness"));   //checking if mood exist
+        logOut();
+        logIn(solo);
+        assertTrue(solo.searchText("Happiness"));   //checking if mood exist
+        deleteFirstMood();
+
     }
 
     /**
