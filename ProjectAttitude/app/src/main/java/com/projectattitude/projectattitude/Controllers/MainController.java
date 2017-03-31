@@ -49,7 +49,7 @@ public class MainController {
      *
      * Postcondition: moodList is sorted, but arrayAdapter needs to be notified.
      */
-    public void sortList(ArrayList<Mood> moodList, String sortOrder){
+    public static void sortList(ArrayList<Mood> moodList, String sortOrder){
         //Taken from http://stackoverflow.com/questions/2839137/how-to-use-comparator-in-java-to-sort
         //Date: 3/6/2017
 
