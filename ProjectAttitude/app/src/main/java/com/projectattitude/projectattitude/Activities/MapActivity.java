@@ -28,6 +28,7 @@ package com.projectattitude.projectattitude.Activities;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -132,7 +133,7 @@ public class MapActivity extends AppCompatActivity
                 longitude = Math.round(gps.getLongitude() * 10000d) / 10000d;
 
                 if(latitude != 0 & longitude != 0) {
-                    Toast.makeText(MapActivity.this, "Could not find your location, please try again!",
+                    Toast.makeText(MapActivity.this, "Found your location",
                             Toast.LENGTH_LONG).show();
 
                     Log.d("Distance", "Current Location: " + latitude + " " + longitude);
@@ -143,6 +144,10 @@ public class MapActivity extends AppCompatActivity
 //                if(mood.getLatitude()!= null && mood.getLongitude() != null) {
                         if (mood != null) {
                             Double returned = calculateDistance(latitude, longitude, mood.getLatitude(), mood.getLongitude());
+                            returned = returned/1000;
+
+                            Log.d("Distance", "Current Distance: " + returned);
+                            Log.d("Distance", "Current comparison to: " + users.get(i).getUserName() + " " + mood.getEmotionState());
 
                             if (returned < 5) {
                                 String color = hm.get(mood.getEmotionState());
@@ -160,6 +165,7 @@ public class MapActivity extends AppCompatActivity
                     Toast.makeText(MapActivity.this, "Could not find your location, please try again!",
                             Toast.LENGTH_LONG).show();
                 }
+
 
 //        Integer val = (Integer) cMap.get(mood.getEmotionState());
 
@@ -326,36 +332,36 @@ public class MapActivity extends AppCompatActivity
 //        double myLongitude = myLocation.getLongitude();
 //        double moodLatitude = moodLocation.getLatitude();
 //        double moodLongitude = moodLocation.getLongitude();
-//        double earthRadius = 6371e3;
+       // double earthRadius = 6371e3;
 
-        double earthRadius = 6371;
+        //double earthRadius = 6371;
 
 //        double dlong = (moodLongitude - myLongitude);
 //        double dlat = (moodLatitude - myLatitude);
 
-        double dlong = (moodLong - myLong);
-        double dlat = (moodLat - myLat);
+//        double dlong = (moodLong - myLong);
+//        double dlat = (moodLat - myLat);
 
 ////        double a =(Math.sin(dlat/2)*Math.sin(dlat/2)) + Math.cos(myLatitude) * Math.cos(moodLatitude) * (Math.sin(dlong/2) * Math.sin(dlong/2));
-        double a =(Math.sin(dlat/2)*Math.sin(dlat/2)) + Math.cos(myLat) * Math.cos(moodLat) * (Math.sin(dlong/2) * Math.sin(dlong/2));
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+//        double a =(Math.sin(dlat/2)*Math.sin(dlat/2)) + Math.cos(myLat) * Math.cos(moodLat) * (Math.sin(dlong/2) * Math.sin(dlong/2));
+//        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 //
-        Log.d("Distance", earthRadius*c + "");
+        //Log.d("Distance", earthRadius*c + "");
 
-//        Location me   = new Location("");
-//        Location dest = new Location("");
-//
-//        me.setLatitude(myLat);
-//        me.setLongitude(myLong);
-//
-//        dest.setLatitude(moodLat);
-//        dest.setLongitude(moodLong);
+        Location me   = new Location("");
+        Location dest = new Location("");
 
-        return earthRadius * c;
+        me.setLatitude(myLat);
+        me.setLongitude(myLong);
 
-//        float dist = me.distanceTo(dest);
-//        Log.d("Distance",dist+"");
-//        return dist;
+        dest.setLatitude(moodLat);
+        dest.setLongitude(moodLong);
+
+        //return earthRadius * c;
+
+        double dist = me.distanceTo(dest);
+        //Log.d("Distance",dist+"");
+        return dist;
     }
 
 }
