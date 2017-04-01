@@ -132,6 +132,8 @@ public class EditMoodActivity extends MoodActivity {
                 if (errorCheck(errorText, etTrigger)) {
                     newMood = new Mood();
                     newMood.setEmotionState(emotionSpinner.getSelectedItem().toString());
+                    String username = getIntent().getStringExtra("username");
+                    newMood.setMaker(username);
                     newMood.setMoodDate(date.getDate());
                     newMood.setTrigger(etTrigger.getText().toString().trim());
                     newMood.setLatitude(latitude);

@@ -675,6 +675,7 @@ public class MainActivity extends AppCompatActivity {
 //              intentEdit.putExtra("mood", moodList.get(itemPosition));
                 if(toggle.isChecked()){
                     intentEdit.putExtra("mood", moodList.get(itemPosition));
+                    intentEdit.putExtra("username", userController.getActiveUser().getUserName());
                 }
                 else{
                     intentEdit.putExtra("mood", followingMoodList.get(itemPosition));
