@@ -85,7 +85,6 @@ public class ViewProfileActivity extends AppCompatActivity {
     private ImageView image;
     private Activity thisActivity = this;
     String s = "";
-    boolean changedFollow = false;
 
     final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
@@ -202,13 +201,12 @@ public class ViewProfileActivity extends AppCompatActivity {
                             Toast.makeText(ViewProfileActivity.this, "Invalid user. User not found.", Toast.LENGTH_SHORT).show();
                         } else {
                             Log.d("Error", "Followed User exists");
-                            changedFollow = true; //Notify MainActivity that following list has changed
                             setResult(RESULT_OK);
                             //user exists --> delete follower and update database
                             user.removeFollow(followingName);
                             ElasticSearchUserController.UpdateUserRequestTask updateUserRequestTask = new ElasticSearchUserController.UpdateUserRequestTask();
                             updateUserRequestTask.execute(user);
-                            Toast.makeText(ViewProfileActivity.this, "Followed user has been removed.!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ViewProfileActivity.this, "Followed user has been removed!", Toast.LENGTH_SHORT).show();
                         }
                     }
                     else{
@@ -286,20 +284,6 @@ public class ViewProfileActivity extends AppCompatActivity {
         //TODO Check if the user has a profile pic, if so set image
 
 
-    }
-
-    /**
-     * This method is called when activity ends. Send possible change in follow requests
-     */
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        if(changedFollow){ //If following list has been changed, notify mainactivity
-            setResult(RESULT_OK);
-        }else{
-            setResult(RESULT_CANCELED);
-        }
-        finish();
     }
 
     private boolean isNetworkAvailable() {  // checks if network available for searching database
