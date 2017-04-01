@@ -43,6 +43,9 @@ import com.robotium.solo.Solo;
  *
  * This class starts in the login screen, logs in and attempts to do a series of tests involving
  * making a mood, editing, deleting and other various functions off of the MainActivity.
+ *
+ * Now holds  a suite of tests for testing most functionality
+ * @version 0.9
  */
 
 public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginActivity> {
@@ -56,10 +59,18 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         super(com.projectattitude.projectattitude.Activities.LoginActivity.class);
     }
 
+    /**
+     * left as is
+     * @throws Exception
+     */
     public void setUp() throws Exception{
         solo = new Solo(getInstrumentation(), getActivity());
     }
 
+    /**
+     * Left as is
+     * @throws Exception
+     */
     public void testStart() throws Exception {
         Activity activity = getActivity();
     }
@@ -132,6 +143,10 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         deleteFirstMood();
     }
 
+    /**
+     * Makes sure you can see everything you want in view mood
+     * minus picture because how the fuck do I test that?
+     */
     public void testViewMood(){ //Making sure view mood works
         logIn(solo);
         createHappy(solo);
@@ -148,6 +163,9 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         assertFalse(solo.searchText("Happiness"));
     }
 
+    /**
+     * Tests to make sure the date and filtering by date works
+     */
     public void testFilterByDay(){
         logIn(solo);
         createHappy(solo);
@@ -196,6 +214,9 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         deleteFirstMood();
     }
 
+    /**
+     * Makes sure filtering by moods works
+     */
     public void testFilterMood(){
         logIn(solo);
         createHappy(solo);
@@ -222,6 +243,9 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         deleteFirstMood();
     }
 
+    /**'
+     * deletes the first mood in the list
+     */
     public void deleteFirstMood(){ //deletes the first mood in the list
         solo.clickLongInList(0);
         assertTrue(solo.searchText("Delete"));
@@ -229,12 +253,19 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
     }
     //TODO Maybe make a method to clean out the list fully?
 
+    /**
+     * logs in tester
+     * @param solo
+     */
     public void logIn(Solo solo){ //Logs in with tester account
         solo.enterText((EditText)solo.getView(R.id.usernameField), "tester");
         solo.clickOnView(solo.getView(R.id.signInButton));
         solo.assertCurrentActivity("Wrong activity", MainActivity.class);
     }
 
+    /**
+     * Logs in tester2
+     */
     public void logInTest2(){
         solo.enterText((EditText)solo.getView(R.id.usernameField), "tester2");
         solo.clickOnView(solo.getView(R.id.signInButton));
@@ -242,6 +273,9 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
 
     }
 
+    /**
+     * Checks to make sure all the options are there when making moods
+     */
     public void checkMoods(){ //Makes sure the minimum fields exist within a mood
         solo.clickOnScreen(890, 1664); //The location of the fab button
         solo.clickOnView(solo.getView(R.id.fabAddMood));
@@ -297,6 +331,11 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.goBack();
         deleteFirstMood();//Clean up
     }
+
+    /**
+     * This tests to make sure following works
+     * Due to the inability to remove followers it assumes tester follows tester2 already
+     */
     public void testFollow(){
         //This chunk creates a disgust mood in the person we intend to follow
         logInTest2();
@@ -322,6 +361,10 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
 
     }
 
+    /**
+     * Creates a happy mood to use for testing
+     * @param solo solo is a global, dont really need it, should refactor it out
+     */
     public void createHappy(Solo solo){ //Creates a happy mood and returns to main
         solo.clickOnScreen(890, 1664); //This is the location of the fab button
         solo.clickOnView(solo.getView(R.id.fabAddMood));
@@ -346,13 +389,19 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.assertCurrentActivity("Wrong activity", MainActivity.class);
     }
 
+    /**
+     * clicks on the log out button
+     */
     public void logOut(){
         solo.clickOnScreen(890, 1664);
         solo.clickOnView(solo.getView(R.id.fabLogout));
     }
 
 
-
+    /**
+     * I left this as is
+     * @throws Exception
+     */
     @Override
     public void tearDown() throws Exception{
         solo.finishOpenedActivities();
