@@ -108,8 +108,9 @@ public class EditMoodActivity extends MoodActivity {
 //        currentLocation.setText(getString(R.string.display_location, mood.getLatitude(), mood.getLongitude()));
         currentLocation.setText("Lat: " + mood.getLatitude() + " Long: " + mood.getLongitude());
 
-        tempDate.setYear(tempDate.getYear() + 1900);
-        date.setDate(tempDate);
+        //tempDate.setYear(tempDate.getYear() + 1900);
+        Log.d("Date", tempDate.toString());
+        date.setDate(tempDate.getYear()+1900, tempDate.getMonth(), tempDate.getDate());
         //disgusting single line way to set the spinners
         //Taken from http://stackoverflow.com/questions/2390102/how-to-set-selected-item-of-spinner-by-value-not-by-position
         emotionSpinner.setSelection(((ArrayAdapter<String>) emotionSpinner.getAdapter())
