@@ -54,6 +54,7 @@ public class ViewMoodActivity extends MoodActivity {
     private TextView date;
     private TextView trigger;
     private TextView socialSituation;
+    private TextView creator;
 //    private Button editButton;
 //    private Button deleteButton;
     private ImageView imageView;
@@ -75,6 +76,7 @@ public class ViewMoodActivity extends MoodActivity {
 //        deleteButton = (Button) findViewById(R.id.DeleteButton);
         r1 = (ScrollView) findViewById(R.id.activity_view_mood);
         imageView = (ImageView) findViewById(R.id.imageView3);
+        creator = (TextView) findViewById(R.id.creatorText);
 
         //set all text fields
         emotionState.setText("");
@@ -93,6 +95,7 @@ public class ViewMoodActivity extends MoodActivity {
         date.setText(sdf.format(mood.getMoodDate()));
         trigger.setText(mood.getTrigger());
         socialSituation.setText(mood.getSocialSituation());
+        creator.setText(mood.getMaker());
 
 
         // Show emoticons
