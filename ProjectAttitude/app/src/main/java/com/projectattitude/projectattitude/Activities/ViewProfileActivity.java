@@ -64,6 +64,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import static com.projectattitude.projectattitude.R.id.removeButton;
+
 
 /**
  * This is the profile page of the user. It shows the name of the user, as well as the portrait,
@@ -74,16 +76,12 @@ public class ViewProfileActivity extends AppCompatActivity {
     protected ArrayList<Mood> followingMoodList = new ArrayList<Mood>();
     private UserController userController = UserController.getInstance();
     private MoodMainAdapter recentMoodAdapter;
-    private MoodMainAdapter followingMoodAdapter;
 
     private Button searchButton;
+    private Button removeButton;
     private EditText searchBar;
     private TextView nameView;
-    private TextView countView;
     private ListView recentMoodView;    // refers to user's most recent mood
-    private ListView followingMoodView; // refers to moods user is following
-    private ArrayList<String> usersFollowed;
-    private ArrayList<Mood> usersFollowedMoods = new ArrayList<Mood>();
     private ImageView image;
     private Activity thisActivity = this;
     String s = "";
@@ -104,6 +102,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_profile);
         searchBar = (EditText) findViewById(R.id.searchBar);
         searchButton = (Button) findViewById(R.id.searchButton);
+        removeButton = (Button) findViewById(R.id.removeButton);
 
         image = (ImageView) findViewById(R.id.profileImage);
         nameView = (TextView) findViewById(R.id.profileUname);
@@ -185,6 +184,39 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         });
 
+        //On-click for removeButton
+        removeButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                String followingName = searchBar.getText().toString();
+
+                if (followingName.equals("")) {   // no username entered to search for
+                    searchBar.requestFocus(); // search has been canceled
+                }
+
+                else {
+                    if(isNetworkAvailable()){
+                        if (!user.getFollowList().contains(followingName)){ //If user not in following list
+                            Log.d("Error", "Invalid user.");
+                            Toast.makeText(ViewProfileActivity.this, "Invalid user. User not found.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.d("Error", "Followed User exists");
+                            setResult(RESULT_OK);
+                            //user exists --> delete follower and update database
+                            user.removeFollow(followingName);
+                            ElasticSearchUserController.UpdateUserRequestTask updateUserRequestTask = new ElasticSearchUserController.UpdateUserRequestTask();
+                            updateUserRequestTask.execute(user);
+                            Toast.makeText(ViewProfileActivity.this, "Followed user has been removed!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else{
+                        Toast.makeText(ViewProfileActivity.this, "Must be connected to internet to remove user!",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+
         //If image exists in user, set image
         if(user.getPhoto() != null && user.getPhoto().length() > 0){
             //decode base64 image stored in User
@@ -248,7 +280,6 @@ public class ViewProfileActivity extends AppCompatActivity {
         }
 
         //adding recent moods for each followed person
-
 
         //TODO Check if the user has a profile pic, if so set image
 

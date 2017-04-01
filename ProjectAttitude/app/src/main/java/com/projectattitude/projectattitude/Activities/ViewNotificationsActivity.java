@@ -59,8 +59,8 @@ public class ViewNotificationsActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         }
 
+        setResult(RESULT_OK);
         adapter.notifyDataSetChanged();
 
     }
-
 }
