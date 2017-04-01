@@ -157,6 +157,10 @@ public class User implements Serializable {
         this.id = id;
     }
 
+    /**
+     * Gets the user photo
+     * @return String photo
+     */
     public String getPhoto() {
         return photo;
     }

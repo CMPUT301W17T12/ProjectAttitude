@@ -34,8 +34,6 @@ import com.projectattitude.projectattitude.Activities.EditMoodActivity;
 import com.projectattitude.projectattitude.Activities.LoginActivity;
 import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Activities.ViewMoodActivity;
-import com.projectattitude.projectattitude.Activities.ViewNotificationsActivity;
-import com.projectattitude.projectattitude.Activities.ViewProfileActivity;
 import com.robotium.solo.Solo;
 
 /**
@@ -44,7 +42,7 @@ import com.robotium.solo.Solo;
  * This class starts in the login screen, logs in and attempts to do a series of tests involving
  * making a mood, editing, deleting and other various functions off of the MainActivity.
  *
- * Now holds  a suite of tests for testing most functionality
+ * Now holds a suite of tests for testing most functionality
  * @version 0.9
  */
 
@@ -92,7 +90,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
     }
 
     /**
-     * Makes sure if you create a mood it sticks around
+     * Making sure if a mood is created, it sticks around and has persistence
      */
     public void testPersistence(){
         logIn(solo);
@@ -145,7 +143,6 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
 
     /**
      * Makes sure you can see everything you want in view mood
-     * minus picture because how the fuck do I test that?
      */
     public void testViewMood(){ //Making sure view mood works
         logIn(solo);
@@ -169,15 +166,6 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
     public void testFilterByDay(){
         logIn(solo);
         createHappy(solo);
-
-//        solo.clickLongInList(0);
-//        assertTrue(solo.searchText("Edit"));
-//        solo.clickOnText("Edit");
-//        solo.assertCurrentActivity("Wrong activity", EditMoodActivity.class);
-//        assertTrue(solo.searchText("Happiness"));
-//
-//        assertTrue(solo.searchText("Save"));
-//        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
 
         createHappy(solo);  //creating second mood
 

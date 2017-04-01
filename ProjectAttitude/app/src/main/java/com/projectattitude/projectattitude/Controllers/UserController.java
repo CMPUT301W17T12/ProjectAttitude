@@ -75,6 +75,9 @@ public class UserController {
         //saveInFile();
     }
 
+    /**
+     * Saves the file in a gson file.
+     */
     public void saveInFile(){
         try {
             String state = Environment.getExternalStorageState();
@@ -100,6 +103,9 @@ public class UserController {
         }
     }
 
+    /**
+     * Loads from the gson file.
+     */
     public void loadFromFile() {
         try {
             String state = Environment.getExternalStorageState();

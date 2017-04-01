@@ -37,7 +37,9 @@ import java.util.ArrayList;
  * Created by Boris on 25/02/2017.
  */
 /**
- * These unit tests check if the list object for storing moods works properly.
+ * These unit tests check if the list object for storing moods works properly. Checks creation,
+ * adding, deleting, getting the list, getting the count, cloning the list and getting a mood
+ * from the list.
  */
 public class MoodListTest extends ActivityInstrumentationTestCase2 {
 
