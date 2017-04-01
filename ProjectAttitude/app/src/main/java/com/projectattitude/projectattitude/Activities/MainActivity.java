@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
                 viewMapIntent.putExtra("users", users);
 //                viewMapIntent.putExtra("flag", 1);
-                startActivityForResult(viewMapIntent, 0);
+                startActivity(viewMapIntent);
 
             }
         });
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("mood", userController.getActiveUser().getMoodList().get(0));
                 }
                 intent.putExtra("user", user);
-                startActivity(intent);
+                startActivityForResult(intent, 4);
             }
         });
 
@@ -310,11 +310,10 @@ public class MainActivity extends AppCompatActivity {
                  fabMenu.close(true);
                  Intent intent = new Intent(MainActivity.this, ViewNotificationsActivity.class);
                  intent.putExtra("user", user);
-                 startActivity(intent);
+                 startActivityForResult(intent, 4);
              }
          });
 //     }
-
 
         /**
          * This handles the toggle button to alternate between your mood list and the mood list of
@@ -617,6 +616,7 @@ public class MainActivity extends AppCompatActivity {
     // requestCode 0 = Add mood
     // requestCode 1 = View mood -- resultCode 2 = delete, 3 = Edit Mood
     // requestCode 2 = Edit Mood
+    // requestCode 4 = User's followList may have changed
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Mood returnedMood;
 
@@ -669,6 +669,33 @@ public class MainActivity extends AppCompatActivity {
                 returnedMood = (Mood) data.getSerializableExtra("mood");
                 editMood(returnedMood);
             }
+        }
+
+        //ViewProfileActivity and ViewNotificationsActivity results
+        if (requestCode == 4){
+            //Update user following list
+            //This function populates the list of moods from people being followed
+            usersFollowed = userController.getActiveUser().getFollowList();
+            if(usersFollowed != null){
+                for(int i = 0; i < usersFollowed.size(); i++){
+                    String stringFollowedUser = usersFollowed.get(i);
+                    ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+                    try {
+                        User followedUser = getUserTask.execute(stringFollowedUser).get();
+                        if(followedUser != null){
+                            if(followedUser.getFirstMood() != null){
+                                followingOriginalMoodList.add(followedUser.getFirstMood()); //Populate both an unfiltered mood list and filtered moodlist
+                                followingMoodList.add(followedUser.getFirstMood());
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            filterMood(); //calls refreshMoodList
         }
     }
 
