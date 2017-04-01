@@ -26,7 +26,9 @@
 package com.projectattitude.projectattitude.Activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -44,6 +46,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.projectattitude.projectattitude.Objects.ColorMap;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.PermissionUtils;
 import com.projectattitude.projectattitude.R;
@@ -97,25 +100,19 @@ public class MapActivity extends AppCompatActivity
         mMap.setOnMyLocationButtonClickListener(this);
         enableMyLocation();
 
-        //ColorMap<String, Integer> cMap = new ColorMap<>();
         //couldn't get ColorMap to work, so made one for the meantime
-        HashMap<String, String> hm = new HashMap<String, String>();
-        hm.put("Anger", "#e3333e");
-        hm.put("Confusion", "#ed8b5f");
-        hm.put("Disgust", "#c0ca55");
-        hm.put("Fear", "#684f15");
-        hm.put("Happiness", "#7fc7af");
-        hm.put("Sadness", "#919185");
-        hm.put("Shame", "#005885");
-        hm.put("Surprise", "#e36820");
+        HashMap<String, Integer[]> hm = new HashMap<String, Integer[]>();
+        hm.put("Anger", new Integer[] {227, 51, 62});
+        hm.put("Confusion", new Integer[] {237, 139, 95});
+        hm.put("Disgust", new Integer[] {192, 202, 85});
+        hm.put("Fear", new Integer[] {104, 79, 21});
+        hm.put("Happiness", new Integer[] {127, 199, 175});
+        hm.put("Sadness", new Integer[] {145, 145, 133});
+        hm.put("Shame", new Integer[] {0, 88, 133});
+        hm.put("Surprise", new Integer[] {227, 104, 32});
+
 
 //        Integer val = (Integer) cMap.get(mood.getEmotionState());
-
-        //Taken from https://developers.google.com/maps/documentation/android-api/marker
-        //On March 21st at 17:53
-        map.addMarker(new MarkerOptions()   // adding a marker
-                .position(new LatLng(53.5444, -113.4909))   // Edmonton location
-                .title("Edmonton"));
 
         //User user = (User) getIntent().getSerializableExtra("user");
         //ArrayList<Mood> userMoodList = user.getMoodList();
@@ -124,8 +121,7 @@ public class MapActivity extends AppCompatActivity
         for(int i = 0;i < userMoodList.size();i++){ //TODO this will get EVERY mood from the user, which could be too many
 
             Mood mood = userMoodList.get(i);
-            String color = hm.get(mood.getEmotionState());
-            Log.d("MapMoodsColor", color);
+            Integer[] color = hm.get(mood.getEmotionState());
 
             if(mood.getLongitude() == 0 && mood.getLatitude() == 0){
                 Log.d("MapMoods", "Mood: " + mood.getEmotionState() + "not mapped");
@@ -136,7 +132,7 @@ public class MapActivity extends AppCompatActivity
                 //Log.d("MapMoodsColor", val.toString());
                 map.addMarker(new MarkerOptions()
                         .position(new LatLng(mood.getLatitude(), mood.getLongitude()))
-                        .icon(getMarkerColor(color)));
+                        .icon(getHue(color)));
             }
 //            if(mood.getGeoLocation() != null){
 //                double latitude = mood.getGeoLocation().getLatitude();  //get lat
@@ -150,14 +146,30 @@ public class MapActivity extends AppCompatActivity
     }
 
     /**
-     * taken from http://stackoverflow.com/questions/19076124/android-map-marker-color
-     * @param color
+     * http://stackoverflow.com/questions/23090019/fastest-formula-to-get-hue-from-rgb
+     * @param colors
      * @return
      */
-    public BitmapDescriptor getMarkerColor(String color){
-        float[] hsv = new float[3];
-        Color.colorToHSV(Color.parseColor(color), hsv);
-        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
+    public BitmapDescriptor getHue(Integer[] colors) {
+
+        float min = Math.min(Math.min(colors[0], colors[1]), colors[2]);
+        float max = Math.max(Math.max(colors[0], colors[1]), colors[2]);
+
+        float hue = 0f;
+        if (max == colors[0]) {
+            hue = (colors[1] - colors[2]) / (max - min);
+
+        } else if (max == colors[1]) {
+            hue = 2f + (colors[2] - colors[0]) / (max - min);
+
+        } else {
+            hue = 4f + (colors[0] - colors[1]) / (max - min);
+        }
+
+        hue = hue * 60;
+        if (hue < 0) hue = hue + 360;
+
+        return BitmapDescriptorFactory.defaultMarker(Math.round(hue));
     }
 
     /**
