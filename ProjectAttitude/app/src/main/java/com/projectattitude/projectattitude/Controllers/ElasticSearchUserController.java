@@ -36,6 +36,8 @@ import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import io.searchbox.client.JestResult;
@@ -43,6 +45,8 @@ import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
 
 /**
@@ -136,6 +140,44 @@ public class ElasticSearchUserController {
             }
 
             return userExist;
+        }
+    }
+
+    public static class GetAllUsersTask extends AsyncTask<String, Void, ArrayList<User>>{
+        @Override
+        protected ArrayList<User> doInBackground(String... search_parameters) {
+            verifySettings();
+
+            ArrayList<User> users = new ArrayList<User>();
+
+            //Search search = new Search.Builder(search_parameters[0]).addIndex(INDEX).addType(TYPE).build();
+            String query = "{\n" +
+                    "   \"size\":200,\n" +
+                    "    \"query\" : {\n"+
+                    "        \"match_all\" : {}\n" +
+                    "    }\n" +
+                    "}";
+//
+            Search search = new Search.Builder(query)
+                    .addIndex(INDEX)
+                    .addType(TYPE)
+                    .build();
+
+            try {
+                SearchResult result = client.execute(search);
+                if(result.isSucceeded()){
+                    List userList = result.getSourceAsObjectList(User.class);
+                    users.addAll(userList);
+
+                }
+                else{
+                    Log.d("Error", "Elasticsearch was not able to get requests.");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "The application failed to connect to DB");
+            }
+            return users;
         }
     }
 
