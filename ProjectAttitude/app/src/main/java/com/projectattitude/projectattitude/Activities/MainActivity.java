@@ -44,7 +44,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -103,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "CheckNetworkStatus";
     private NetWorkChangeReceiver receiver;
     private boolean isConnected = false;
+    private ArrayList<User> users = new ArrayList<User>();
 
     private  int listItem; //This is the index of the item pressed in the list
 
@@ -133,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
         //get passed user from LoginActivity
         final User user = (User) getIntent().getSerializableExtra("PassUserToMain");
         userController.setActiveUser(user);
+
+
 
         moodListView = (ListView) findViewById(R.id.moodListView);
         toggle = (ToggleButton) findViewById(R.id.moodToggle);
@@ -226,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fabProfile = (FloatingActionButton) findViewById(R.id.fabProfile);
         FloatingActionButton fabLogout = (FloatingActionButton) findViewById(R.id.fabLogout);
         FloatingActionButton fabNotifications = (FloatingActionButton) findViewById(R.id.fabNotification);
+        FloatingActionButton fabMapRadius = (FloatingActionButton) findViewById(R.id.fabMapRadius);
 
         // on click listener for adding moods
         fabAddMood.setOnClickListener(new View.OnClickListener() {
@@ -238,10 +241,43 @@ public class MainActivity extends AppCompatActivity {
         fabMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 fabMenu.close(true);
+                if(toggle.isChecked()){ //user moods
+                    Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
+                    viewMapIntent.putExtra("user", moodList);
+                    startActivityForResult(viewMapIntent, 0);
+                }
+                else{ //following
+                    Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
+                    viewMapIntent.putExtra("user", followingMoodList);
+                    startActivityForResult(viewMapIntent, 0);
+                }
+
+//                Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
+//                viewMapIntent.putExtra("user", moodList);
+//                startActivityForResult(viewMapIntent, 0);
+            }
+        });
+
+        fabMapRadius.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v){
+
+                ElasticSearchUserController.GetAllUsersTask getAllUsersTask = new ElasticSearchUserController.GetAllUsersTask();
+                try {
+                    users = getAllUsersTask.execute("").get();
+                }
+
+                catch(Exception e){
+                }
+
                 Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
-                viewMapIntent.putExtra("user", moodList);
+                viewMapIntent.putExtra("users", users);
+//                viewMapIntent.putExtra("flag", 1);
                 startActivityForResult(viewMapIntent, 0);
+
             }
         });
 
