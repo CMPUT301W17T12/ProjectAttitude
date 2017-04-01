@@ -62,7 +62,6 @@ import java.util.HashMap;
  * through scrolling, zooming and clicking on pins displayed which will bring up additional
  * information, allowing the user to view moods at the associated pins.
  */
-
 public class MapActivity extends AppCompatActivity
         implements
         //GoogleMap.OnMyLocationButtonClickListener,
@@ -98,6 +97,10 @@ public class MapActivity extends AppCompatActivity
         mapFragment.getMapAsync(this);
     }
 
+    /**
+     * Handles everything
+     * @param map
+     */
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
@@ -264,6 +267,11 @@ public class MapActivity extends AppCompatActivity
 
     }
 
+    /**
+     * Changes colors from RGB to HSV for map markers
+     * @param color string of the color to convert
+     * @return a marker of that color
+     */
     public BitmapDescriptor getMarkerColor(String color) {
         float[] hsv = new float[3];
         Color.colorToHSV(Color.parseColor(color), hsv);
@@ -312,6 +320,7 @@ public class MapActivity extends AppCompatActivity
         }
     }
 
+
 //    @Override
 //    public boolean onMyLocationButtonClick() {
 //        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
@@ -321,6 +330,12 @@ public class MapActivity extends AppCompatActivity
 //    }
 
 
+    /**
+     * Ensures it has the proper locations
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -338,6 +353,9 @@ public class MapActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Came with the interface
+     */
     @Override
     protected void onResumeFragments() {
         super.onResumeFragments();
@@ -357,7 +375,16 @@ public class MapActivity extends AppCompatActivity
     }
 
 //    public double calculateDistance(GeoPoint myLocation, GeoPoint moodLocation){  // calculates the difference between two points on the earth
-        //algorithm taken from https://en.wikipedia.org/wiki/Haversine_formula March 28th, 2017
+
+    /**
+     * This function calculates the distance from user to a mood for the 5km map
+     * algorithm taken from https://en.wikipedia.org/wiki/Haversine_formula March 28th, 2017
+     * @param myLat the lattitude of the user
+     * @param myLong the longitude of the user
+     * @param moodLat the lattitude of the mood
+     * @param moodLong the longitude of the mood
+     * @return the distance between the user and the mood
+     */
     public double calculateDistance(Double myLat, Double myLong, Double moodLat, Double moodLong){
 
 //        double myLatitude = myLocation.getLatitude();

@@ -20,13 +20,9 @@ import java.util.ArrayList;
 
 /**
  * Created by henrywei on 3/28/17.
- */
-
-/**
  * The RequestAdapater manages the Request view, modifying the request properties appropriately.
  * Requests can be accessed from the Notifications page.
  */
-
 public class RequestAdapter extends ArrayAdapter<FollowRequest> {
 
     private FollowRequest request;
@@ -36,6 +32,13 @@ public class RequestAdapter extends ArrayAdapter<FollowRequest> {
         super(context, 0, requests);
     }
 
+    /**
+     * Handles updating the notifications view with items
+     * @param position the position of each item
+     * @param convertView the view to be fixed
+     * @param parent
+     * @return the updated view
+     */
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -92,6 +95,9 @@ public class RequestAdapter extends ArrayAdapter<FollowRequest> {
             }
         });
 
+        /**
+         * If the deny button is clicked it deletes the request
+         */
         denyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

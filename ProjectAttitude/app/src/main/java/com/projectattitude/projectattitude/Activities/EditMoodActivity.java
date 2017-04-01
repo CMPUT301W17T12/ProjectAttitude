@@ -57,7 +57,6 @@ import java.util.Date;
  * to help the user remember what was already there. By updating the mood object, the object
  * in the list is then also updated.
  */
-
 public class EditMoodActivity extends MoodActivity {
     Button completeButton;
 

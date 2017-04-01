@@ -183,6 +183,9 @@ public class MainActivity extends AppCompatActivity {
 
         registerForContextMenu(moodListView);
 
+        /**
+         * This handles clicking on a mood taking the user to a mood view
+         */
         moodListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -239,6 +242,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Handles clicking on the map button, taking either the users moods or their followed list
+         */
         fabMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -261,6 +267,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Handles the 5km radius button
+         */
         fabMapRadius.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -282,6 +291,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Takes the user to the profile
+         */
         fabProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -296,6 +308,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Logs the user out and returns them to login screen
+         */
         fabLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -305,6 +320,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        /**
+         * Takes the user to their notifications
+         */
          fabNotifications.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
@@ -444,6 +462,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Search for triggers using the text box
+         */
         SearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -455,6 +476,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Clears the search bar
+         */
         ClearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -612,12 +636,17 @@ public class MainActivity extends AppCompatActivity {
         sortMood(null);
     }
 
-    //accept returned information from activities
+    /**
+     * accept returned information from activities
+     * requestCode 0 = Add mood
+     * requestCode 1 = View mood -- resultCode 2 = delete, 3 = Edit Mood
+     * requestCode 2 = Edit Mood
+     * requestCode 3 = User's followList may have changed
+     * @param requestCode the activity to go to
+     * @param resultCode the code returned by that activity
+     * @param data the intent that contains any information with it
+     */
     @Override
-    // requestCode 0 = Add mood
-    // requestCode 1 = View mood -- resultCode 2 = delete, 3 = Edit Mood
-    // requestCode 2 = Edit Mood
-    // requestCode 3 = User's followList may have changed
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Mood returnedMood;
         Log.d("Error", "Returning to MainActivity");

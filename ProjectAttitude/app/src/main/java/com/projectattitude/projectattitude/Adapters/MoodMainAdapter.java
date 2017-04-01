@@ -47,13 +47,24 @@ import java.util.Locale;
  * Created by Vuk on 2/27/2017.
  * The MoodMainAdapter updates the listview as moods are manipulated and updated using a MVC model.
  */
-
 public class MoodMainAdapter extends ArrayAdapter<Mood> {
 
+    /**
+     * Constructor for the adapter
+     * @param context
+     * @param moods an ArrayList of moods to be displayed
+     */
     public MoodMainAdapter(Context context, ArrayList<Mood> moods){
         super(context, 0, moods);
     }
 
+    /**
+     * Handles the display of moods on the main screen
+     * @param position position of the mood
+     * @param convertView
+     * @param parent
+     * @return The new view to be displayed
+     */
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
