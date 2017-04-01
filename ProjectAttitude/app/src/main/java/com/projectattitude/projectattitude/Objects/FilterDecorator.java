@@ -57,7 +57,8 @@ public abstract class FilterDecorator {
     }
 
     /**
-     * Filters the moodList based off the parameters.
+     * Filters the moodList based off the parameters. Calls enclosedDecorator's filter function
+     * if it exists.
      * @param moodList moodList object to be passed in
      */
     public void filter(ArrayList<Mood> moodList){
