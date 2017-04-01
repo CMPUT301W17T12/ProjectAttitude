@@ -135,10 +135,18 @@ public class ViewMoodActivity extends MoodActivity {
         finish();
 
     }
+
+    /**
+     * This should no longer be used as we no longer delete or edit moods from viewing them
+     * requestCode 0 = Add mood
+     * requestCode 1 = View mood -- resultCode 2 = delete, 3 = Edit Mood
+     * requestCode 2 = Edit Mood
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
-    // requestCode 0 = Add mood
-    // requestCode 1 = View mood -- resultCode 2 = delete, 3 = Edit Mood
-    // requestCode 2 = Edit Mood
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Mood returnedMood;
 

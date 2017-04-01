@@ -18,9 +18,9 @@ import com.projectattitude.projectattitude.Abstracts.MoodActivity;
  */
 
 /**
- * This activity manages
+ * This activity manages the gps location of the device
+ *Taken from http://stackoverflow.com/questions/25496726/getting-location-when-button-is-clicked
  */
-//Taken from http://stackoverflow.com/questions/25496726/getting-location-when-button-is-clicked
 public class GPSTracker extends MoodActivity implements LocationListener {
 
 
@@ -50,11 +50,19 @@ public class GPSTracker extends MoodActivity implements LocationListener {
     // Declaring a Location Manager
     protected LocationManager locationManager;
 
+    /**
+     * This creates a gps tracker with getLocation
+     * @param context
+     */
     public GPSTracker(Context context) {
         this.mContext = context;
         getLocation();
     }
 
+    /**
+     * Gets the Fine Location of the device
+     * @return the location
+     */
     public Location getLocation() {
 
         if ( ContextCompat.checkSelfPermission( mContext, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
@@ -173,6 +181,11 @@ public class GPSTracker extends MoodActivity implements LocationListener {
         return this.canGetLocation;
     }
 
+    /**
+     * These functions are empty and unused
+     * The interface required them
+     * @param location
+     */
     @Override
     public void onLocationChanged(Location location) {
     }
