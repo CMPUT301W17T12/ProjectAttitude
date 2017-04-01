@@ -200,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(netWorkChangeReceiver, new IntentFilter("networkConnectBroadcast"));   //TODO is crashing the app sometimes when returning from the profile page
 
         // twitter init
+        // https://docs.fabric.io/android/twitter/installation.html#twitter-kit-login
         TwitterAuthConfig authConfig =  new TwitterAuthConfig("consumerKey", "consumerSecret");
         Fabric.with(this, new TwitterCore(authConfig), new TweetComposer());
 
