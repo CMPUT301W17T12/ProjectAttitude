@@ -45,7 +45,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- *  * This object represents the DatePickerEditText when creating and editing moods.
+ * This object represents the DatePickerEditText when creating and editing moods.
  * This allows the user to select the appropriate time for their mood.
  * @See CreateMoodActivity
  * @See EditMoodActivity
@@ -60,6 +60,11 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
     private int year;
     private Context _context;
 
+    /**
+     * Sets the date text.
+     * @param context Date
+     * @param editTextViewID ID of the editView
+     */
     public DatePickerEditText(Context context, int editTextViewID)
     {
         Activity act = (Activity)context;
@@ -68,6 +73,13 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
         this._context = context;
     }
 
+    /**
+     * Updates the views date.
+     * @param view The view.
+     * @param year The year.
+     * @param monthOfYear The month.
+     * @param dayOfMonth The day.
+     */
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         this.year = year;
@@ -76,6 +88,10 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
         updateDisplay();
     }
 
+    /**
+     * Sets the date.
+     * @param date The date.
+     */
     public void setDate(Date date) {
         this.year = date.getYear();
         this.month = date.getMonth();
@@ -83,6 +99,12 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
         updateDisplay();
     }
 
+    /**
+     * Sets the date.
+     * @param year The year.
+     * @param month The month.
+     * @param day The day.
+     */
     public void setDate(int year, int month, int day){
         this.year = year;
         this.month = month;
@@ -90,6 +112,10 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
         updateDisplay();
     }
 
+    /**
+     * On clicking the date, bring up the date picker.
+     * @param v The view object.
+     */
     @Override
     public void onClick(View v) {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
@@ -99,9 +125,12 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
                 calendar.get(Calendar.DAY_OF_MONTH));
 
         dialog.show();
-
     }
 
+    /**
+     * Getting the date.
+     * @return Returns the date
+     */
     public Date getDate(){
         String date_str = editText.getText().toString();
         Log.d("DATE:_getdate - str", date_str);
@@ -117,7 +146,9 @@ public class DatePickerEditText implements View.OnClickListener, DatePickerDialo
         }
     }
 
-    // updates the date in the birth date EditText
+    /**
+     * updates the date in the date EditText
+     */
     private void updateDisplay() {
         editText.setText(new StringBuilder()
                 // Month is 0 based so add 1

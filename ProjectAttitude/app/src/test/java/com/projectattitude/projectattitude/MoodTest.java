@@ -31,8 +31,6 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Objects.Mood;
 
-import org.osmdroid.util.GeoPoint;
-
 import java.util.Date;
 
 /**
@@ -46,12 +44,18 @@ public class MoodTest extends ActivityInstrumentationTestCase2{
         super(MainActivity.class);
     }
 
+    /**
+     * Tests if getting the date of the mood works.
+     */
     public void testGetMoodDate(){
         Mood mood = new Mood();
         Date date = new Date();
         assertTrue(mood.getMoodDate() == date);
     }
 
+    /**
+     * Tests if setting the date of the mood works.
+     */
     public void testSetMoodDate(){
         Mood mood = new Mood();
         Date date = new Date();
@@ -60,12 +64,18 @@ public class MoodTest extends ActivityInstrumentationTestCase2{
         assertEquals(mood.getMoodDate(), date);
     }
 
+    /**
+     * Tests if getting the mood's emotion state works.
+     */
     public void testGetEmotionState(){
         Mood mood = new Mood();
         mood.setEmotionState("Happy");
         assertEquals("Happy", mood.getEmotionState());
     }
 
+    /**
+     * Tests if setting a mood's emotional state works.
+     */
     public void testSetEmotionState(){
         Mood mood = new Mood();
         mood.setEmotionState("Happy");
@@ -74,30 +84,45 @@ public class MoodTest extends ActivityInstrumentationTestCase2{
 
 //TODO: Junit tests for locations
 
+    /**
+     * Tests if trigger can be obtained correctly.
+     */
     public void testGetTrigger(){
         Mood mood = new Mood();
         mood.setTrigger("testTrigger");
         assertEquals(mood.getTrigger(), "testTrigger");
     }
 
+    /**
+     * Tests if setting the mood's trigger works.
+     */
     public void testSetTrigger(){
         Mood mood = new Mood();
         mood.setTrigger("testTrigger");
         assertEquals(mood.getTrigger(), "testTrigger");
     }
 
+    /**
+     * Tests if getting the mood's explanation works.
+     */
     public void testGetExplanation(){
         Mood mood = new Mood();
         mood.setExplanation("testExplanation");
         assertEquals(mood.getExplanation(), "testExplanation");
     }
 
+    /**
+     * Tests if setting the mood's explanation works.
+     */
     public void testSetExplanation(){
         Mood mood = new Mood();
         mood.setExplanation("testExplanation");
         assertEquals(mood.getExplanation(), "testExplanation");
     }
 
+    /**
+     * Tests if getting the image works.
+     */
     public void testGetImage(){
         Mood mood = new Mood();
 
@@ -106,6 +131,9 @@ public class MoodTest extends ActivityInstrumentationTestCase2{
         assertEquals(image, mood.getImage());
     }
 
+    /**
+     * Tests if setting the image works.
+     */
     public void testSetImage(){
         Mood mood = new Mood();
 
@@ -114,24 +142,36 @@ public class MoodTest extends ActivityInstrumentationTestCase2{
         assertEquals(image, mood.getImage());
     }
 
+    /**
+     * Tests if getting the social situation works.
+     */
     public void testGetSocialSituation(){
         Mood mood = new Mood();
         mood.setSocialSituation("Alone");
         assertEquals("Alone", mood.getSocialSituation());
     }
 
+    /**
+     * Tests if setting the social situation works.
+     */
     public void testSetSocialSituation(){
         Mood mood = new Mood();
         mood.setSocialSituation("Alone");
         assertEquals("Alone", mood.getSocialSituation());
     }
 
+    /**
+     * Tests if getting the ID works.
+     */
     public void testGetId(){
         Mood mood = new Mood();
         mood.setId("1234");
         assertEquals("1234", mood.getId());
     }
 
+    /**
+     * Tests if setting the ID works.
+     */
     public void testSetId(){
         Mood mood = new Mood();
         mood.setId("1234");
