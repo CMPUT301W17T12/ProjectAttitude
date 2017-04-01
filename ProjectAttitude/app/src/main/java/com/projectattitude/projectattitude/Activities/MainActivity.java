@@ -292,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("mood", userController.getActiveUser().getMoodList().get(0));
                 }
                 intent.putExtra("user", user);
-                startActivityForResult(intent, 4);
+                startActivityForResult(intent, 3);
             }
         });
 
@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
                  fabMenu.close(true);
                  Intent intent = new Intent(MainActivity.this, ViewNotificationsActivity.class);
                  intent.putExtra("user", user);
-                 startActivityForResult(intent, 4);
+                 startActivityForResult(intent, 3);
              }
          });
 //     }
@@ -617,10 +617,10 @@ public class MainActivity extends AppCompatActivity {
     // requestCode 0 = Add mood
     // requestCode 1 = View mood -- resultCode 2 = delete, 3 = Edit Mood
     // requestCode 2 = Edit Mood
-    // requestCode 4 = User's followList may have changed
+    // requestCode 3 = User's followList may have changed
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Mood returnedMood;
-
+        Log.d("Error", "Returning to MainActivity");
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 returnedMood = (Mood) data.getSerializableExtra("addMoodIntent");
@@ -673,30 +673,33 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //ViewProfileActivity and ViewNotificationsActivity results
-        if (requestCode == 4){
+        if (requestCode == 3){
             //Update user following list
             //This function populates the list of moods from people being followed
-            usersFollowed = userController.getActiveUser().getFollowList();
-            if(usersFollowed != null){
-                for(int i = 0; i < usersFollowed.size(); i++){
-                    String stringFollowedUser = usersFollowed.get(i);
-                    ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
-                    try {
-                        User followedUser = getUserTask.execute(stringFollowedUser).get();
-                        if(followedUser != null){
-                            if(followedUser.getFirstMood() != null){
-                                followingOriginalMoodList.add(followedUser.getFirstMood()); //Populate both an unfiltered mood list and filtered moodlist
-                                followingMoodList.add(followedUser.getFirstMood());
+            if (resultCode == RESULT_OK) {
+                followingOriginalMoodList.clear();
+                usersFollowed = userController.getActiveUser().getFollowList();
+                Log.d("Error", "Current follow list:"+userController.getActiveUser().getFollowList().toString());
+                if (usersFollowed != null) {
+                    for (int i = 0; i < usersFollowed.size(); i++) {
+                        String stringFollowedUser = usersFollowed.get(i);
+                        ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+                        try {
+                            User followedUser = getUserTask.execute(stringFollowedUser).get();
+                            if (followedUser != null) {
+                                if (followedUser.getFirstMood() != null) {
+                                    followingOriginalMoodList.add(followedUser.getFirstMood()); //Populate both an unfiltered mood list and filtered moodlist
+                                }
                             }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
                     }
                 }
+                filterMood(); //calls refreshMoodList
             }
-            filterMood(); //calls refreshMoodList
         }
     }
 
