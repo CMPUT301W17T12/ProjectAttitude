@@ -132,21 +132,23 @@ public class CreateMoodActivity extends MoodActivity{
             public void onClick(View v) {
                 if(saveLocation.isChecked()) {
                     GPSTracker gps = new GPSTracker(CreateMoodActivity.this);
-                        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-                        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                                Log.d("UserLocation", "latitude:" + gps.getLatitude()
-                                        + ", longitude: " + gps.getLongitude());
+                    LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-                                //sometimes only round to 3 decimals, I think it has to do with the
-                                //how the round function calculates
-                                latitude = Math.round(gps.getLatitude() * 10000d) / 10000d;
-                                longitude = Math.round(gps.getLongitude() * 10000d) / 10000d;
+                    if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        Log.d("UserLocation", "latitude:" + gps.getLatitude()
+                                + ", longitude: " + gps.getLongitude());
 
-                                if(latitude == 0 & longitude == 0){
-                                    Toast.makeText(CreateMoodActivity.this, "Could not find your location, please try again!",
-                                            Toast.LENGTH_LONG).show();
-                                }
+                        //sometimes only round to 3 decimals, I think it has to do with the
+                        //how the round function calculates
+                        latitude = Math.round(gps.getLatitude() * 10000d) / 10000d;
+                        longitude = Math.round(gps.getLongitude() * 10000d) / 10000d;
+
+                        if(latitude == 0 & longitude == 0){
+                            Toast.makeText(CreateMoodActivity.this, "Could not find your location, please try again!",
+                                    Toast.LENGTH_LONG).show();
                         }
+                    }
+
                     else{
                         Toast.makeText(CreateMoodActivity.this, "Please turn on GPS for locations!",
                                 Toast.LENGTH_LONG).show();
