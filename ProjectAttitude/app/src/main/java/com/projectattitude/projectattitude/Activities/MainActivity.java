@@ -44,7 +44,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -238,10 +237,22 @@ public class MainActivity extends AppCompatActivity {
         fabMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 fabMenu.close(true);
-                Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
-                viewMapIntent.putExtra("user", moodList);
-                startActivityForResult(viewMapIntent, 0);
+                if(toggle.isChecked()){ //user moods
+                    Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
+                    viewMapIntent.putExtra("user", moodList);
+                    startActivityForResult(viewMapIntent, 0);
+                }
+                else{ //following
+                    Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
+                    viewMapIntent.putExtra("user", followingMoodList);
+                    startActivityForResult(viewMapIntent, 0);
+                }
+
+//                Intent viewMapIntent = new Intent(MainActivity.this, MapActivity.class);
+//                viewMapIntent.putExtra("user", moodList);
+//                startActivityForResult(viewMapIntent, 0);
             }
         });
 

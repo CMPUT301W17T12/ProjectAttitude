@@ -113,9 +113,9 @@ public class MapActivity extends AppCompatActivity
 
         //Taken from https://developers.google.com/maps/documentation/android-api/marker
         //On March 21st at 17:53
-        map.addMarker(new MarkerOptions()   // adding a marker
-                .position(new LatLng(53.5444, -113.4909))   // Edmonton location
-                .title("Edmonton"));
+//        map.addMarker(new MarkerOptions()   // adding a marker
+//                .position(new LatLng(53.5444, -113.4909))   // Edmonton location
+//                .title("Edmonton"));
 
         //User user = (User) getIntent().getSerializableExtra("user");
         //ArrayList<Mood> userMoodList = user.getMoodList();
@@ -136,6 +136,9 @@ public class MapActivity extends AppCompatActivity
                 //Log.d("MapMoodsColor", val.toString());
                 map.addMarker(new MarkerOptions()
                         .position(new LatLng(mood.getLatitude(), mood.getLongitude()))
+//                        .title(mood.getMaker() +" " + mood.getEmotionState())
+                        .title(mood.getMaker())
+                        .snippet(mood.getEmotionState())
                         .icon(getMarkerColor(color)));
             }
 //            if(mood.getGeoLocation() != null){
