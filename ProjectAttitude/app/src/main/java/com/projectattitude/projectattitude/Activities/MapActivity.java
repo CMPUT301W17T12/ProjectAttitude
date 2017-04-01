@@ -42,7 +42,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -66,7 +65,7 @@ import java.util.HashMap;
 
 public class MapActivity extends AppCompatActivity
         implements
-        OnMyLocationButtonClickListener,
+        //GoogleMap.OnMyLocationButtonClickListener,
         OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -131,7 +130,7 @@ public class MapActivity extends AppCompatActivity
             map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
 
-        mMap.setOnMyLocationButtonClickListener(this);
+//        mMap.setOnMyLocationButtonClickListener(this);
         enableMyLocation();
 
         //couldn't get ColorMap to work, so made one for the meantime
@@ -313,13 +312,13 @@ public class MapActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onMyLocationButtonClick() {
-        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
-        return false;
-    }
+//    @Override
+//    public boolean onMyLocationButtonClick() {
+//        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+//        // Return false so that we don't consume the event and the default behavior still occurs
+//        // (the camera animates to the user's current position).
+//        return false;
+//    }
 
 
     @Override
