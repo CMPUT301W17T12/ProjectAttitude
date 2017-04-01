@@ -298,17 +298,6 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         deleteFirstMood();//Clean up
     }
     public void testFollow(){
-        //This makes a notification
-        logIn(solo);
-        solo.clickOnScreen(FAB_X,FAB_Y);
-        solo.clickOnView(solo.getView(R.id.fabProfile));
-        solo.assertCurrentActivity("Wrong activity", ViewProfileActivity.class);
-        solo.enterText(0, "tester2"); //Enters it into the first edit text
-        solo.typeText(0, "tester2"); //For some reason we need both of these
-        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.searchButton));
-        solo.goBack();
-        solo.assertCurrentActivity("Wrong activity", MainActivity.class);
-        logOut();
         //This chunk creates a disgust mood in the person we intend to follow
         logInTest2();
         createHappy(solo);
@@ -318,21 +307,13 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.clickOnText("Disgust");
         solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.saveButton));
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
-        solo.clickOnScreen(FAB_X,FAB_Y);
-        solo.clickOnView(solo.getView(R.id.fabNotification));
-        solo.assertCurrentActivity("Wrong Activity", ViewNotificationsActivity.class);
-        solo.clickOnText("Accept");
-        solo.goBack();
         logOut();
         //tester2 is logged out
         //tester now logs in back in
         logIn(solo);
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
-        solo.clickOnScreen(FAB_X,FAB_Y);
-        solo.clickOnView(solo.getView(R.id.fabProfile));
-        assertTrue(solo.searchText("Disgust")); // Checks to see if the mood appears after following
-        solo.goBack();
-        solo.assertCurrentActivity("Wrong activity", MainActivity.class);
+        solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.moodToggle));
+        assertTrue(solo.searchText("tester2")); // Checks to see if the mood appears after following
         logOut();
         //Test is now done, clean up time
         logInTest2();
