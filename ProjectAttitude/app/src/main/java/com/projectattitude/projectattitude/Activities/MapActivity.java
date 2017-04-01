@@ -26,8 +26,10 @@
 package com.projectattitude.projectattitude.Activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -38,12 +40,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.projectattitude.projectattitude.Objects.Mood;
@@ -61,7 +64,7 @@ import java.util.HashMap;
  */
 public class MapActivity extends AppCompatActivity
         implements
-        OnMyLocationButtonClickListener,
+        //GoogleMap.OnMyLocationButtonClickListener,
         OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -82,6 +85,7 @@ public class MapActivity extends AppCompatActivity
 
     private double latitude;
     private double longitude;
+    private int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +105,35 @@ public class MapActivity extends AppCompatActivity
     public void onMapReady(GoogleMap map) {
         mMap = map;
 
-        mMap.setOnMyLocationButtonClickListener(this);
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+
+
+        if ( ContextCompat.checkSelfPermission( MapActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+
+            ActivityCompat.requestPermissions( MapActivity.this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
+                    MY_PERMISSION_ACCESS_COARSE_LOCATION );
+        }
+
+        /**
+         * http://stackoverflow.com/questions/18425141/android-google-maps-api-v2-zoom-to-current-location 4/1/2017 4:20pm
+         */
+        Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+        if (location != null)
+        {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
+
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+                    .zoom(15)                   // Sets the zoom
+                    .bearing(0)                // Sets the orientation of the camera to east
+                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                    .build();                   // Creates a CameraPosition from the builder
+            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
+
+//        mMap.setOnMyLocationButtonClickListener(this);
         enableMyLocation();
 
         //couldn't get ColorMap to work, so made one for the meantime
@@ -128,7 +160,7 @@ public class MapActivity extends AppCompatActivity
         if(getIntent().hasExtra("users")) {
             ArrayList<User> users = (ArrayList<User>) getIntent().getSerializableExtra("users");
             GPSTracker gps = new GPSTracker(MapActivity.this);
-            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            //LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             //LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -288,17 +320,14 @@ public class MapActivity extends AppCompatActivity
         }
     }
 
-    /**
-     * Takes the map to the users location
-     * @return
-     */
-    @Override
-    public boolean onMyLocationButtonClick() {
-        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
-        return false;
-    }
+
+//    @Override
+//    public boolean onMyLocationButtonClick() {
+//        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+//        // Return false so that we don't consume the event and the default behavior still occurs
+//        // (the camera animates to the user's current position).
+//        return false;
+//    }
 
 
     /**

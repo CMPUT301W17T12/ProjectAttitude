@@ -105,6 +105,10 @@ public class User implements Serializable {
         followList.add(followName);
     }
 
+    public void removeFollow(String followName){
+        followList.remove(followName);
+    }
+
     /**
      * Adds a followed to the user.
      * @param followedName followedName
@@ -157,6 +161,10 @@ public class User implements Serializable {
         this.id = id;
     }
 
+    /**
+     * Gets the user photo
+     * @return String photo
+     */
     public String getPhoto() {
         return photo;
     }

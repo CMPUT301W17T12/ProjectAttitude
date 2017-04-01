@@ -27,7 +27,7 @@ package com.projectattitude.projectattitude.Controllers;
 
 /**
  * Created by Chris on 2/24/2017.
- * Currently is not being used. Instead, the osmdroid IMapController is being used.
+ * Currently is not being used. Instead, the googleMaps API is being used.
  */
 
 public class MapController {

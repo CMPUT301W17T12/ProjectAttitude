@@ -117,7 +117,9 @@ public class ElasticSearchUserController {
     }
 
 
-    //add user to ES DB
+    /**
+     * Add user to ES DB
+     */
     public static class AddUserTask extends AsyncTask<User, Void, Boolean> {
 
         @Override
@@ -143,6 +145,9 @@ public class ElasticSearchUserController {
         }
     }
 
+    /**
+     * Gets all users in the datebase.
+     */
     public static class GetAllUsersTask extends AsyncTask<String, Void, ArrayList<User>>{
         @Override
         protected ArrayList<User> doInBackground(String... search_parameters) {
@@ -181,7 +186,9 @@ public class ElasticSearchUserController {
         }
     }
 
-    //search for username in DB, and return user, either as null or as the object
+    /**
+     * Search for username in DB, and return user, either as null or as the object
+     */
     public static class GetUserTask extends AsyncTask<String, Void, User> {
 
         @Override
@@ -242,6 +249,9 @@ public class ElasticSearchUserController {
         }
     }
 
+    /**
+     * Deletes a user from the database.
+     */
     public static class DeleteUserTask extends AsyncTask<User, Void, Boolean>{
 
         @Override
@@ -260,8 +270,9 @@ public class ElasticSearchUserController {
         }
     }
 
-//    /**
-//     */
+    /**
+     * Updates a user in the database.
+     */
     public static class UpdateUserTask extends  AsyncTask<User, Void, Void> {
         @Override
         protected Void doInBackground(User... search_parameters) {
@@ -311,8 +322,9 @@ public class ElasticSearchUserController {
         }
     }
 
-    //    /**
-//     */
+    /**
+     * Updates a user request in the database.
+     */
     public static class UpdateUserRequestTask extends  AsyncTask<User, Void, Void> {
         @Override
         protected Void doInBackground(User... search_parameters) {
@@ -348,8 +360,9 @@ public class ElasticSearchUserController {
         }
     }
 
-    //    /**
-//     */
+    /**
+     * Updates a user picture in the database.
+     */
     public static class UpdateUserPictureTask extends  AsyncTask<User, Void, Void> {
         @Override
         protected Void doInBackground(User... search_parameters) {
@@ -383,6 +396,9 @@ public class ElasticSearchUserController {
         }
     }
 
+    /**
+     * Verifies settings.
+     */
     //copied from lonelytwitter
     private static void verifySettings(){
         if(client == null){

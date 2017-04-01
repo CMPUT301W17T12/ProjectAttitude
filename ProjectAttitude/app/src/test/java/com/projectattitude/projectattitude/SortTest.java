@@ -46,6 +46,9 @@ public class SortTest extends ActivityInstrumentationTestCase2 {
         super(MainActivity.class);
     }
 
+    /**
+     * Tests sorting.
+     */
     public void testVoidSort(){
         ArrayList<Mood> list = new ArrayList<Mood>();
         MainController controller = new MainController();
@@ -65,7 +68,9 @@ public class SortTest extends ActivityInstrumentationTestCase2 {
         assertEquals(list, newList); //Make sure the list is still the same afterwards
     }
 
-    //Test to test if sort works + basic functionality
+    /**
+     * Tests to test if sort works with basic functionality
+     */
     public void testSort(){
         ArrayList<Mood> list = new ArrayList<Mood>();
         MainController controller = new MainController();
@@ -93,7 +98,9 @@ public class SortTest extends ActivityInstrumentationTestCase2 {
 
     }
 
-    //Test to test if reverseSort works
+    /**
+     * Testing to see if reverse sorting works
+     */
     public void testReverseSort(){
         ArrayList<Mood> list = new ArrayList<Mood>();
         MainController controller = new MainController();
