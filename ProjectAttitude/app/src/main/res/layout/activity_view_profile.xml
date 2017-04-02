@@ -38,17 +38,17 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp">
+        app:layout_constraintVertical_bias="0.0">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -164,57 +164,61 @@
                 android:id="@+id/followListLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Followed Users:"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/searchBar"
                 android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:text="Followed Users:"
                 app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginStart="8dp" />
+                app:layout_constraintTop_toBottomOf="@+id/removeButton" />
 
             <TextView
                 android:id="@+id/followedByListLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Who Follows Me:"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/removeButton"
+                android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
+                android:text="Who Follows Me:"
                 app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginEnd="8dp" />
+                app:layout_constraintTop_toBottomOf="@+id/removeButton" />
 
-            <ListView
+            <com.projectattitude.projectattitude.Objects.MyListView
                 android:id="@+id/followList"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_gravity="fill_vertical"
+                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:scrollbars="vertical"
+                android:nestedScrollingEnabled="true"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/followListLabel"
                 app:layout_constraintRight_toLeftOf="@+id/placeHolderDONOTUSE"
-                android:layout_marginRight="8dp" />
+                app:layout_constraintTop_toBottomOf="@+id/followListLabel" />
 
-            <ListView
+            <com.projectattitude.projectattitude.Objects.MyListView
                 android:id="@+id/followedList"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="6dp"
-                android:layout_marginRight="6dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/followedByListLabel"
-                app:layout_constraintLeft_toRightOf="@+id/placeHolderDONOTUSE"
+                android:layout_gravity="fill_vertical"
+                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
-                />
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:scrollbars="vertical"
+                android:nestedScrollingEnabled="true"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintLeft_toRightOf="@+id/placeHolderDONOTUSE"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/followedByListLabel" />
 
             <TextView
                 android:id="@+id/placeHolderDONOTUSE"
                 android:layout_width="1dp"
-                android:layout_height="1dp"
+                android:layout_height="160dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text=" "
                 app:layout_constraintLeft_toLeftOf="parent"

@@ -329,20 +329,15 @@ public class ViewProfileActivity extends AppCompatActivity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 // Log.d(TAG, String.valueOf(bitmap));
+                Log.d("PhotoBytes1", bitmap.getByteCount() + "");
+                Log.d("PhotoHeight1", bitmap.getHeight() + "");
+                Log.d("PhotoHeight1", bitmap.getWidth() + "");
 
                 //if greater then byte threshold, compress
                 if (bitmap.getByteCount() > 65536) {
-                    //4 or less times greater, scale by 2
-                    if (bitmap.getByteCount() / 65536 <= 4) {
+                    while(bitmap.getByteCount() > 65536){ //Keep compressing photo until photo is small enough
                         bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.getWidth() / 2), (bitmap.getHeight() / 2), false);
-                    }
-                    //9 or less times greater, scale by 3
-                    else if (bitmap.getByteCount() / 65536 <= 9) {
-                        bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.getWidth() / 3), (bitmap.getHeight() / 3), false);
-                    }
-                    else {
-                        //anything greater then 9 times, scale by 4
-                        bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.getWidth() / 4), (bitmap.getHeight() / 4), false);
+                        Log.d("imageCompressed", bitmap.getByteCount() + "");
                     }
                 }
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
