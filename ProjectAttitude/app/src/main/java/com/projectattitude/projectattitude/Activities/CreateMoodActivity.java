@@ -192,8 +192,10 @@ public class CreateMoodActivity extends MoodActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-
+        Log.d("PhotoTake", "picking photo");
         //successful picking of photo
+        Log.d("PhotoTakeTest", "RequestCode: " + requestCode + " ResultCode: " + " Data: " + data );
+
         if(requestCode == 3 && resultCode == RESULT_OK && null != data ) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             Log.d("PhotoBytes1", photo.getByteCount() + "");
@@ -252,11 +254,13 @@ public class CreateMoodActivity extends MoodActivity{
         }
         //cover case of taking picture, then aborting the taking of another
         else if (imageView.getDrawable() != null && !s.equals("")){
+            Log.d("PhotoAbort", "aborted");
         }
-        //no picture was picked
+        //cover case when image is aborted
         else{
-            s = "";
-            Log.d("PhotoEmpty", s);
+            imageView.setImageBitmap(null);
+            imageView.setVisibility(View.GONE);
+//            imageView.setImageBitmap(null);
         }
     }
 
