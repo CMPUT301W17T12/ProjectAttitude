@@ -23,6 +23,10 @@ public class MyListView extends ListView {
         super(context, attrs);
     }
 
+    /**
+     * Handles the drawing of the list view when it is updated
+     * @param canvas
+     */
     @Override
     protected void onDraw(Canvas canvas)
     {
