@@ -27,6 +27,7 @@ package com.projectattitude.projectattitude.Activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Criteria;
@@ -48,6 +49,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.PermissionUtils;
@@ -65,6 +67,8 @@ import java.util.HashMap;
 public class MapActivity extends AppCompatActivity
         implements
         //GoogleMap.OnMyLocationButtonClickListener,
+        GoogleMap.OnInfoWindowLongClickListener,
+        GoogleMap.OnInfoWindowClickListener,
         OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -157,6 +161,9 @@ public class MapActivity extends AppCompatActivity
 
         //User user = (User) getIntent().getSerializableExtra("user");
         //ArrayList<Mood> userMoodList = user.getMoodList();
+
+        map.setOnInfoWindowClickListener(this);
+
         if(getIntent().hasExtra("users")) {
             ArrayList<User> users = (ArrayList<User>) getIntent().getSerializableExtra("users");
             GPSTracker gps = new GPSTracker(MapActivity.this);
@@ -246,7 +253,9 @@ public class MapActivity extends AppCompatActivity
 //                        .title(mood.getMaker() +" " + mood.getEmotionState())
                             .title(mood.getMaker())
                             .snippet(mood.getEmotionState())
-                            .icon(getMarkerColor(color)));
+                            .icon(getMarkerColor(color)))
+                            .setTag(mood);
+
                 }
 //            if(mood.getGeoLocation() != null){
 //                double latitude = mood.getGeoLocation().getLatitude();  //get lat
@@ -267,6 +276,20 @@ public class MapActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void onInfoWindowClick(final Marker marker) {
+        Intent intent = new Intent(MapActivity.this, ViewMoodActivity.class);
+        intent.putExtra("mood", (Mood) marker.getTag());
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    public void onInfoWindowLongClick(final Marker marker) {
+        Intent intent = new Intent(MapActivity.this, EditMoodActivity.class);
+        intent.putExtra("mood", (Mood) marker.getTag());
+        startActivityForResult(intent, 2);
+    }
+
     /**
      * Changes colors from RGB to HSV for map markers
      * @param color string of the color to convert
@@ -277,33 +300,6 @@ public class MapActivity extends AppCompatActivity
         Color.colorToHSV(Color.parseColor(color), hsv);
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
-
-    /**
-     * http://stackoverflow.com/questions/23090019/fastest-formula-to-get-hue-from-rgb
-     * @param colors
-     * @return
-     */
-//    public BitmapDescriptor getHue(Integer[] colors) {
-//
-//        float min = Math.min(Math.min(colors[0], colors[1]), colors[2]);
-//        float max = Math.max(Math.max(colors[0], colors[1]), colors[2]);
-//
-//        float hue = 0f;
-//        if (max == colors[0]) {
-//            hue = (colors[1] - colors[2]) / (max - min);
-//
-//        } else if (max == colors[1]) {
-//            hue = 2f + (colors[2] - colors[0]) / (max - min);
-//
-//        } else {
-//            hue = 4f + (colors[0] - colors[1]) / (max - min);
-//        }
-//
-//        hue = hue * 60;
-//        if (hue < 0) hue = hue + 360;
-//
-//        return BitmapDescriptorFactory.defaultMarker(Math.round(hue));
-//    }
 
     /**
      * Enables the My Location layer if the fine location permission has been granted.
