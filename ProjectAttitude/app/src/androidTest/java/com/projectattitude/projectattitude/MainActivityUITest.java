@@ -79,6 +79,9 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
      * Then checks to make sure delete works
      */
     public void testCreateMood(){
+        if (solo.getCurrentActivity().equals(MainActivity.class)){
+            logOut();
+        }
         logIn(solo);
         checkMoods();
         createHappy(solo);
@@ -87,6 +90,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         deleteFirstMood();
 
         assertFalse(solo.searchText("Happiness"));
+        logOut();
     }
 
     /**
@@ -100,6 +104,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         logIn(solo);
         assertTrue(solo.searchText("Happiness"));   //checking if mood exist
         deleteFirstMood();
+        logOut();
 
     }
 
@@ -139,6 +144,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         assertTrue(solo.searchText("Anger"));
         assertFalse(solo.searchButton("Happiness"));
         deleteFirstMood();
+        logOut();
     }
 
     /**
@@ -158,6 +164,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.assertCurrentActivity("Wrong activity", MainActivity.class);
         deleteFirstMood();
         assertFalse(solo.searchText("Happiness"));
+        logOut();
     }
 
     /**
@@ -200,6 +207,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.clickOnImageButton(0);
         solo.clickOnText("Clear Filters");
         deleteFirstMood();
+        logOut();
     }
 
     /**
@@ -229,6 +237,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.clickOnImageButton(0);
         solo.clickOnText("Clear Filters");
         deleteFirstMood();
+        logOut();
     }
 
     /**'
@@ -318,6 +327,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         assertTrue(solo.searchText("Disgust")); //Checks most recent mood
         solo.goBack();
         deleteFirstMood();//Clean up
+        logOut();
     }
 
     /**
@@ -345,6 +355,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         //Test is now done, clean up time
         logInTest2();
         deleteFirstMood();
+        logOut();
 
 
     }

@@ -136,6 +136,7 @@ public class UserController {
             }
 
         }catch (FileNotFoundException e) {
+            activeUser = new User();
             saveInFile(context);
             return false;
         }
