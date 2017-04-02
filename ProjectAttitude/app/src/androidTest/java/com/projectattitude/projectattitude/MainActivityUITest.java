@@ -99,6 +99,9 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
      * Making sure if a mood is created, it sticks around and has persistence
      */
     public void testPersistence(){
+        if (solo.searchText("Moods")){
+            logOut();
+        }
         logIn(solo);
         createHappy(solo);
         assertTrue(solo.searchText("Happiness"));   //checking if mood exist
@@ -173,6 +176,9 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
      * Tests to make sure the date and filtering by date works
      */
     public void testFilterByDay(){
+        if (solo.searchText("Moods")){
+            logOut();
+        }
         logIn(solo);
         createHappy(solo);
 
@@ -215,7 +221,10 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
     /**
      * Makes sure filtering by moods works
      */
-    public void testFilterMood(){
+    public void testFilterMood() throws InterruptedException {
+        if (solo.searchText("Moods")){
+            logOut();
+        }
         logIn(solo);
         createHappy(solo);
 
@@ -228,7 +237,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
 
         solo.clickOnImageButton(0);
         solo.clickOnText("Emotions");
-        solo.clickOnScreen(721,396);
+        solo.clickOnScreen(677,450);
 
         assertTrue(solo.searchText("Anger"));   // only anger should be present
         assertFalse(solo.searchText("Happiness"));
@@ -315,6 +324,9 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
      */
     //TODO: Add following moods
     public void testProfile(){
+        if (solo.searchText("Moods")){
+            logOut();
+        }
         logIn(solo);
         createHappy(solo);
         solo.clickLongInList(0);
@@ -338,6 +350,9 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
      */
     public void testFollow(){
         //This chunk creates a disgust mood in the person we intend to follow
+        if (solo.searchText("Moods")){
+            logOut();
+        }
         logInTest2();
         createHappy(solo);
         solo.clickLongInList(0);
