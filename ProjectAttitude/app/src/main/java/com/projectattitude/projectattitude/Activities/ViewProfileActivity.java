@@ -91,9 +91,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     private Activity thisActivity = this;
     String s = "";
 
-
     final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
-
 
     private User user = userController.getActiveUser();;
     /**
@@ -283,7 +281,6 @@ public class ViewProfileActivity extends AppCompatActivity {
         //Profile setup
         nameView.setText(userController.getActiveUser().getUserName()); //getting the name of the user
 
-        int moodCount = (int) getIntent().getSerializableExtra("moodCount");
         User user = (User) getIntent().getSerializableExtra("user");
 
         Mood userMood = (Mood) getIntent().getSerializableExtra("mood");    // getting user mood

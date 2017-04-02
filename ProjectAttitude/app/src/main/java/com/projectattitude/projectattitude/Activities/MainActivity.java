@@ -299,7 +299,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 fabMenu.close(true);
                 Intent intent = new Intent(MainActivity.this, ViewProfileActivity.class);
-                intent.putExtra("moodCount", moodList.size());
                 if (moodList.size() > 0) {
                     intent.putExtra("mood", userController.getActiveUser().getMoodList().get(0));
                 }

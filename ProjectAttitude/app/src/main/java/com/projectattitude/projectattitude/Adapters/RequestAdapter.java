@@ -73,6 +73,7 @@ public class RequestAdapter extends ArrayAdapter<FollowRequest> {
                 }
                 if(user != null){ //If user found, update its following list with requestee
                     user.addFollow(request.getRequestee());
+                    //TODO: get user requester and put in follower
                     try{//Update user in database
                         ElasticSearchUserController.UpdateUserRequestTask updateUserRequestTask = new ElasticSearchUserController.UpdateUserRequestTask();
                         updateUserRequestTask.execute(user);
