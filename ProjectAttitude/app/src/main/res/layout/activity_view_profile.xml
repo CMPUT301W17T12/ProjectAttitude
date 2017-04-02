@@ -196,7 +196,7 @@
                 android:layout_marginRight="8dp" />
 
             <ListView
-                android:id="@+id/followByList"
+                android:id="@+id/followedList"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
