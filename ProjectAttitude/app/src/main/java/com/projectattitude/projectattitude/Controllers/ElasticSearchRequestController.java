@@ -177,8 +177,8 @@ public class ElasticSearchRequestController {
                     "    \"query\" : {\n"+
                     "        \"bool\" : {\n" +
                     "            \"must\" : [\n" +
-                    "                { \"term\" : { \"requester\" : \""+search_parameters[0].getRequester()+"\" } },\n" + //Requester's user name
-                    "                { \"term\" : { \"requestee\" : \""+search_parameters[0].getRequestee()+"\" } }\n" + //Requestee's user name
+                    "                { \"term\" : { \"requester\" : \""+search_parameters[0].getRequester()+"\" } }\n" + //Requester's user name
+                    //"                { \"term\" : { \"requestee\" : \""+search_parameters[1].getRequestee()+"\" } }\n" + //Requestee's user name
                     "            ]\n" +
                     "        }\n" +
                     "    }\n" +

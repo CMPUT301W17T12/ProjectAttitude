@@ -184,7 +184,7 @@ public class EditMoodActivity extends MoodActivity {
                     GPSTracker gps = new GPSTracker(EditMoodActivity.this);
                     LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-                    if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                    if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                         Log.d("UserLocation", "latitude:" + gps.getLatitude()
                                 + ", longitude: " + gps.getLongitude());
 
