@@ -31,7 +31,6 @@ import com.projectattitude.projectattitude.Activities.MainActivity;
 import com.projectattitude.projectattitude.Controllers.MainController;
 import com.projectattitude.projectattitude.Objects.FilterDecorator;
 import com.projectattitude.projectattitude.Objects.FilterTimeDecorator;
-import com.projectattitude.projectattitude.Objects.FollowRequest;
 import com.projectattitude.projectattitude.Objects.Mood;
 
 import java.util.ArrayList;
@@ -50,7 +49,9 @@ public class FilterTest extends ActivityInstrumentationTestCase2 {
         super(MainActivity.class);
     }
 
-    //Tests if sort works + basic functionality
+    /**
+     * Tests if sorting works with basic functionality
+     */
     public void testFilterByDay(){
         ArrayList<Mood> list = new ArrayList<Mood>();
         MainController controller = new MainController();
@@ -87,7 +88,9 @@ public class FilterTest extends ActivityInstrumentationTestCase2 {
 
     }
 
-    //Test if monthFilter works
+    /**
+     * Testing if filtering by month works.
+     */
     public void testFilterByMonth(){
         ArrayList<Mood> list = new ArrayList<Mood>();
         MainController controller = new MainController();
@@ -124,6 +127,9 @@ public class FilterTest extends ActivityInstrumentationTestCase2 {
 
     }
 
+    /**
+     * Tests if filtering by year works.
+     */
     public void testFilterByYear(){
         ArrayList<Mood> list = new ArrayList<Mood>();
         MainController controller = new MainController();

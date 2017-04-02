@@ -39,22 +39,34 @@ import java.util.ArrayList;
 
 public class UserTest extends ActivityInstrumentationTestCase2{
 
+    /**
+     * Creates the userTest.
+     */
     public UserTest() {
         super(MainActivity.class);
     }
 
+    /**
+     * Tests getting the userName.
+     */
     public void testGetUserName(){
         User user = new User();
         user.setUserName("UserName");
         assertEquals("UserName", user.getUserName());
     }
 
+    /**
+     * Tests setting the userName.
+     */
     public void testSetUserName(){
         User user = new User();
         user.setUserName("newUserName");
         assertEquals("newUserName", user.getUserName());
     }
 
+    /**
+     * Tests getting the follow list.
+     */
     public void testGetFollowList(){
         User user = new User();
         user.setUserName("UserName");
@@ -66,6 +78,9 @@ public class UserTest extends ActivityInstrumentationTestCase2{
         assertEquals(user.getFollowList(), testArray);
     }
 
+    /**
+     * Tests getting the followed list.
+     */
     public void testGetFollowedList(){
         User user = new User();
         user.setUserName("UserName");
@@ -77,6 +92,9 @@ public class UserTest extends ActivityInstrumentationTestCase2{
         assertEquals(user.getFollowedList(), testArray);
     }
 
+    /**
+     * Tests adding a follow.
+     */
     public void testAddFollow(){
         User user = new User();
         user.setUserName("UserName");
@@ -84,6 +102,10 @@ public class UserTest extends ActivityInstrumentationTestCase2{
         user.addFollow("followName");
         assertTrue(user.getFollowList() != null);
     }
+
+    /**
+     * Tests adding a followed.
+     */
     public void testAddFollowed(){
         User user = new User();
         user.setUserName("UserName");
@@ -92,6 +114,9 @@ public class UserTest extends ActivityInstrumentationTestCase2{
         assertTrue(user.getFollowedList() != null);
     }
 
+    /**
+     * Tests setting an ID.
+     */
     public void testSetID(){
         User user = new User();
         user.setUserName("UserName");
@@ -100,6 +125,9 @@ public class UserTest extends ActivityInstrumentationTestCase2{
         assertEquals(user.getId(), "1234");
     }
 
+    /**
+     * Tests getting an ID.
+     */
     public void testGetID(){
         User user = new User();
         user.setUserName("UserName");

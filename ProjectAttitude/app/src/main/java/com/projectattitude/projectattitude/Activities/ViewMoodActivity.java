@@ -30,6 +30,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -54,10 +55,12 @@ public class ViewMoodActivity extends MoodActivity {
     private TextView date;
     private TextView trigger;
     private TextView socialSituation;
+    private TextView creator;
 //    private Button editButton;
 //    private Button deleteButton;
     private ImageView imageView;
     private ImageView emotionStateIcon;
+    private Button profileButton;
 
     ScrollView r1;
 
@@ -67,6 +70,7 @@ public class ViewMoodActivity extends MoodActivity {
         setContentView(R.layout.activity_view_mood);
 
         //Get all the fields
+        profileButton = (Button) findViewById(R.id.profileButton);
         emotionState = (TextView) findViewById(R.id.EmotionStateView);
         date = (TextView) findViewById(R.id.DateView);
         trigger = (TextView) findViewById(R.id.TriggerView);
@@ -75,12 +79,14 @@ public class ViewMoodActivity extends MoodActivity {
 //        deleteButton = (Button) findViewById(R.id.DeleteButton);
         r1 = (ScrollView) findViewById(R.id.activity_view_mood);
         imageView = (ImageView) findViewById(R.id.imageView3);
+        creator = (TextView) findViewById(R.id.creatorText);
 
         //set all text fields
         emotionState.setText("");
         date.setText("");
         trigger.setText("");
         socialSituation.setText("");
+
 
 
         imageView = (ImageView) findViewById(R.id.imageView3);
@@ -93,6 +99,8 @@ public class ViewMoodActivity extends MoodActivity {
         date.setText(sdf.format(mood.getMoodDate()));
         trigger.setText(mood.getTrigger());
         socialSituation.setText(mood.getSocialSituation());
+        creator.setText(mood.getMaker());
+        profileButton.setText("View " + mood.getMaker() + "'s Profile");
 
 
         // Show emoticons
@@ -135,10 +143,18 @@ public class ViewMoodActivity extends MoodActivity {
         finish();
 
     }
+
+    /**
+     * This should no longer be used as we no longer delete or edit moods from viewing them
+     * requestCode 0 = Add mood
+     * requestCode 1 = View mood -- resultCode 2 = delete, 3 = Edit Mood
+     * requestCode 2 = Edit Mood
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
-    // requestCode 0 = Add mood
-    // requestCode 1 = View mood -- resultCode 2 = delete, 3 = Edit Mood
-    // requestCode 2 = Edit Mood
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Mood returnedMood;
 

@@ -112,10 +112,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/SocialSituationView"
+            app:layout_constraintTop_toBottomOf="@+id/profileButton"
             app:srcCompat="@drawable/add_button"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/textView8"
@@ -156,5 +156,41 @@
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/TriggerView" />
+
+        <TextView
+            android:id="@+id/creatorLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Created by:"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/SocialSituationView"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <TextView
+            android:id="@+id/creatorText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_marginTop="0dp"
+            android:textSize="16pt"
+            app:layout_constraintTop_toBottomOf="@+id/creatorLabel"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_bias="0.0" />
+
+        <Button
+            android:id="@+id/profileButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="View Profile"
+            tools:layout_editor_absoluteY="661dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/creatorText"/>
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
