@@ -26,7 +26,6 @@
 package com.projectattitude.projectattitude.Controllers;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -34,7 +33,6 @@ import com.projectattitude.projectattitude.Objects.User;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -126,7 +124,11 @@ public class UserController {
             Gson gson = new Gson();
 
             User user = gson.fromJson(bufferedReader, User.class);
-            if (user.getUserName().equals("___NULL___USER___")) {
+
+            if(user == null){
+                return false;
+            }
+            else if (user.getUserName().equals("___NULL___USER___")) {
                 return false;
             }
             else {
