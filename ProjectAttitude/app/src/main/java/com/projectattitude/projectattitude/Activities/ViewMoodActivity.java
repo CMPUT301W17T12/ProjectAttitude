@@ -25,20 +25,27 @@
 
 package com.projectattitude.projectattitude.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Base64;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.projectattitude.projectattitude.Abstracts.MoodActivity;
+import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
 import com.projectattitude.projectattitude.Objects.ColorMap;
 import com.projectattitude.projectattitude.Objects.EmoticonMap;
 import com.projectattitude.projectattitude.Objects.Mood;
+import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
 import java.text.SimpleDateFormat;
@@ -56,7 +63,6 @@ public class ViewMoodActivity extends MoodActivity {
     private TextView trigger;
     private TextView socialSituation;
     private TextView creator;
-//    private Button editButton;
 //    private Button deleteButton;
     private ImageView imageView;
     private ImageView emotionStateIcon;
@@ -87,8 +93,6 @@ public class ViewMoodActivity extends MoodActivity {
         trigger.setText("");
         socialSituation.setText("");
 
-
-
         imageView = (ImageView) findViewById(R.id.imageView3);
         emotionStateIcon = (ImageView) findViewById(R.id.EmotionalStateImage);
 
@@ -100,8 +104,27 @@ public class ViewMoodActivity extends MoodActivity {
         trigger.setText(mood.getTrigger());
         socialSituation.setText(mood.getSocialSituation());
         creator.setText(mood.getMaker());
-        profileButton.setText("View " + mood.getMaker() + "'s Profile");
 
+        profileButton.setText("View " + mood.getMaker() + "'s Profile");
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewMoodActivity.this, ViewOtherProfileActivity.class);
+                ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+                getUserTask.execute(mood.getMaker());
+                try{
+                    User user = getUserTask.get();
+                    if(user != null){// is online and got user
+                        intent.putExtra("user", user);
+                        startActivity(intent);
+                    }else{ // is offline
+                        Toast.makeText(ViewMoodActivity.this, "Must be connected to internet to view user!", Toast.LENGTH_SHORT).show();
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
 
         // Show emoticons
         EmoticonMap<String, Integer> eMap = new EmoticonMap<>();
@@ -127,7 +150,6 @@ public class ViewMoodActivity extends MoodActivity {
         Intent intentEdit = new Intent(ViewMoodActivity.this, EditMoodActivity.class);
         intentEdit.putExtra("mood", mood);
         startActivityForResult(intentEdit, 0); //Handled in the results section
-
     }
 
 
@@ -141,7 +163,6 @@ public class ViewMoodActivity extends MoodActivity {
         Intent returnToMain = new Intent();
         setResult(2, returnToMain);
         finish();
-
     }
 
     /**
@@ -154,7 +175,6 @@ public class ViewMoodActivity extends MoodActivity {
      * @param data
      */
     @Override
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Mood returnedMood;
 
@@ -166,8 +186,18 @@ public class ViewMoodActivity extends MoodActivity {
                 setResult(3, returnCreateMoodIntent);
                 finish();
             }
-
         }
+    }
+
+    /**
+     * Taken from http://stackoverflow.com/questions/5474089/how-to-check-currently-internet-connection-is-available-or-not-in-android
+     * @return a bool if the device is connected to the internet
+     */
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 
     }
 
