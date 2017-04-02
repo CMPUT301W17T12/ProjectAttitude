@@ -315,6 +315,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 fabMenu.close(true);
+                userController.clearCache(getApplicationContext());
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 finish();
                 startActivity(intent);
@@ -432,7 +433,7 @@ public class MainActivity extends AppCompatActivity {
                                 //Delete all filters and refresh data
                                 filterDecorator = null;
                                 findViewById(R.id.clearButton).setVisibility(View.INVISIBLE);
-                                userController.loadFromFile();
+                                userController.loadFromFile(getApplicationContext());
                                 refreshMoodList();
                                 moodAdapter.notifyDataSetChanged();
                                 break;
@@ -516,7 +517,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("moodCheckEdit", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
         userController.getActiveUser().getMoodList().set(itemPosition, returnedMood);
         MainController.sortList(userController.getActiveUser().getMoodList(),"Sort"); //Sort inside moods incase anything changed
-        userController.saveInFile();
+        userController.saveInFile(getApplicationContext());
         filterMood(); //Calls refreshMoodList
         moodAdapter.notifyDataSetChanged();
 
@@ -550,7 +551,7 @@ public class MainActivity extends AppCompatActivity {
                 userController.getActiveUser().getMoodList().remove(delMood);
                 //controller.setMyMoodList(new MoodList(moodList));
                 //Log.d("deleting", moodList.get(i).toString());
-                userController.saveInFile();
+                userController.saveInFile(getApplicationContext());
                 Log.d("userController deleted", userController.getActiveUser().getMoodList().toString());
 
                 filterMood(); //Calls refreshMoodList
@@ -659,7 +660,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d("moodCheckAdd", returnedMood.getMaker() + " " + returnedMood.getEmotionState() + " " + returnedMood.getMoodDate() + " " + returnedMood.getTrigger() + " " + returnedMood.getSocialSituation());
 
-                userController.saveInFile();
+                userController.saveInFile(getApplicationContext());
 
                 filterMood(); //Calls refreshMoodList
                 moodAdapter.notifyDataSetChanged();
@@ -775,7 +776,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else{
                     intentEdit.putExtra("mood", followingMoodList.get(itemPosition));
-                }
+             }
                 startActivityForResult(intentEdit, 2); //Handled in the results section
                 //calculate itemPosition in user list
                 ArrayList<Mood> tmpList = userController.getActiveUser().getMoodList();
@@ -793,8 +794,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             // When tweet is pressed TODO build a proper string
             case R.id.tweet:
+                Mood tmp = moodList.get(itemPosition);
                 TweetComposer.Builder builder = new TweetComposer.Builder(this)
-                        .text("Today I'm feeling " + moodList.get(itemPosition).toString());
+                        .text("Today I'm feeling " + tmp.toString()
+                                + (tmp.getSocialSituation().toString().equals("") ?
+                                    ("\n Social Situation: " + tmp.getSocialSituation().toString()) : ""));
                 builder.show();
 
             default:
