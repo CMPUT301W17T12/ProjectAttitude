@@ -73,19 +73,18 @@ public class RequestAdapter extends ArrayAdapter<FollowRequest> {
                     e.printStackTrace();
                 }
                 if(user != null){ //If user found, update its following list with requestee
-                    //TODO: get user requester and put in follower
 
                     try{//Update both users in database
                         //Update requester followed list
-                        User requestee = UserController.getInstance().getActiveUser();
-                        requestee.addFollowed(request.getRequestee());
+                        User requester = UserController.getInstance().getActiveUser();
+                        requester.addFollowed(request.getRequester());
                         //Now update followee
-                        ElasticSearchUserController.UpdateUserRequestTask updateUserRequestTask = new ElasticSearchUserController.UpdateUserRequestTask();
-                        updateUserRequestTask.execute(user);
+                        ElasticSearchUserController.UpdateUserRequestFollowedTask updateUserRequestFollowedTask = new ElasticSearchUserController.UpdateUserRequestFollowedTask();
+                        updateUserRequestFollowedTask.execute(requester);
 
                         //Update requestee in database
                         user.addFollow(request.getRequestee());
-                        updateUserRequestTask = new ElasticSearchUserController.UpdateUserRequestTask();
+                        ElasticSearchUserController.UpdateUserRequestTask updateUserRequestTask = new ElasticSearchUserController.UpdateUserRequestTask();
                         updateUserRequestTask.execute(user);
                         //Now, delete request since request has been accepted
                         ElasticSearchRequestController.DeleteRequestTask deleteRequestTask = new ElasticSearchRequestController.DeleteRequestTask();

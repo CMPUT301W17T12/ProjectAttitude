@@ -59,8 +59,8 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
 
         recentMoodView = (ListView) findViewById(R.id.latestMood);
         //TODO: Uncomment this later when viewOtherProfile is complete
-        followUserList = (ListView) findViewById(R.id.followUserList);
-        followedUserList = (ListView) findViewById(R.id.followedUserList);
+        followUserList = (ListView) findViewById(R.id.followList);
+        followedUserList = (ListView) findViewById(R.id.followedList);
 
         recentMoodAdapter = new MoodMainAdapter(this, recentMoodList);
         recentMoodView.setAdapter(recentMoodAdapter);

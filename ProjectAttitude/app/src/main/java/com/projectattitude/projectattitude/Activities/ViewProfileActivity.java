@@ -113,7 +113,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         recentMoodView = (ListView) findViewById(R.id.latestMood);
         followUserList = (ListView) findViewById(R.id.followList);
-        followedUserList = (ListView) findViewById(R.id.followByList);
+        followedUserList = (ListView) findViewById(R.id.followedList);
 
         recentMoodAdapter = new MoodMainAdapter(this, recentMoodList);
         recentMoodView.setAdapter(recentMoodAdapter);
@@ -213,11 +213,26 @@ public class ViewProfileActivity extends AppCompatActivity {
                         } else {
                             Log.d("Error", "Followed User exists");
                             setResult(RESULT_OK);
+                            //remove followedList of who user is following
+                            try{
+                                ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+                                User followedUser = getUserTask.execute(followingName).get();
+                                if(followedUser != null){
+                                    //Remove followee and update database
+                                    followedUser.getFollowedList().remove(user.getUserName());
+                                    ElasticSearchUserController.UpdateUserRequestTask updateUserRequestTask = new ElasticSearchUserController.UpdateUserRequestTask();
+                                    updateUserRequestTask.execute(followedUser);
+                                }
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+
                             //user exists --> delete follower and update database
                             user.removeFollow(followingName);
                             ElasticSearchUserController.UpdateUserRequestTask updateUserRequestTask = new ElasticSearchUserController.UpdateUserRequestTask();
                             updateUserRequestTask.execute(user);
                             Toast.makeText(ViewProfileActivity.this, "Followed user has been removed!", Toast.LENGTH_SHORT).show();
+                            followUserAdapter.notifyDataSetChanged();
                         }
                     }
                     else{
