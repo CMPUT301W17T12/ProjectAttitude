@@ -93,8 +93,8 @@ public class EditMoodActivity extends MoodActivity {
 
         Button addPhoto = (Button) findViewById(R.id.addPhoto);
         imageView = (ImageView) findViewById(R.id.imageView);
-        imageView.setVisibility(View.GONE);
-        s = "";
+//        imageView.setVisibility(View.GONE);
+//        s = "";
 
         Mood mood = (Mood) getIntent().getSerializableExtra("mood");
         //Changes the fields to the selected mood
@@ -117,9 +117,20 @@ public class EditMoodActivity extends MoodActivity {
         socialSituationSpinner.setSelection(((ArrayAdapter<String>) socialSituationSpinner
                 .getAdapter()).getPosition(mood.getSocialSituation()));
 
-        final byte[] imageBytes = Base64.decode(mood.getPhoto(), Base64.DEFAULT);
-        final Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-        imageView.setImageBitmap(decodedImage);
+        s = mood.getPhoto();
+
+        if (mood.getPhoto().equals("")){
+            imageView.setVisibility(View.GONE);
+            imageView.setImageBitmap(null);
+            s = "";
+
+        }
+        else {
+            //s = mood.getPhoto();
+            final byte[] imageBytes = Base64.decode(mood.getPhoto(), Base64.DEFAULT);
+            final Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            imageView.setImageBitmap(decodedImage);
+        }
 
         /**
          * Saves all information stored in the activity and binds it to a mood.
@@ -147,12 +158,13 @@ public class EditMoodActivity extends MoodActivity {
                         newMood.setSocialSituation(socialSituationSpinner.getSelectedItem().toString());
                     }
 
-                    if(decodedImage!=null && s == ""){
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        decodedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                        byteArray = stream.toByteArray();
-                        s = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                    }
+                    //keep the original image
+//                    if(decodedImage!=null && s == ""){
+//                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                        decodedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//                        byteArray = stream.toByteArray();
+//                        s = Base64.encodeToString(byteArray, Base64.DEFAULT);
+//                    }
                     newMood.setPhoto(s);
                     Intent returnCreateMoodIntent = new Intent();
                     returnCreateMoodIntent.putExtra("mood", newMood);
@@ -229,30 +241,67 @@ public class EditMoodActivity extends MoodActivity {
             Log.d("PhotoHeight1", photo.getHeight()+"");
             Log.d("PhotoHeight1", photo.getWidth()+"");
 
-            if(photo.getByteCount() > 65536) {
-                Bitmap photo1 = Bitmap.createScaledBitmap(photo, (photo.getWidth() / 3), (photo.getHeight() / 3), false);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                photo1.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                Log.d("Compressed", photo1.getByteCount() + "");
-                byteArray = stream.toByteArray();
-                s = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                imageView.setImageBitmap(photo1);
+            if (imageView.getDrawable() == null) {
+                Log.d("imageView", "empty");
+                //nothing
             }
 
-            else{
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byteArray = stream.toByteArray();
-                s = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                imageView.setImageBitmap(photo);
+            else {
+                //greater then byte threshold
+                if (photo.getByteCount() > 65536) {
+                    //4 or less times greater, scale by 2
+                    if (photo.getByteCount() / 65536 <= 4) {
+                        Bitmap photo1 = Bitmap.createScaledBitmap(photo, (photo.getWidth() / 2), (photo.getHeight() / 2), false);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        photo1.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        Log.d("imageViewCompressed", photo1.getByteCount() + "");
+                        byteArray = stream.toByteArray();
+                        s = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                        imageView.setImageBitmap(photo1);
+
+                    }
+                    //9 or less times greater, scale by 3
+                    else if (photo.getByteCount() / 65536 <= 9) {
+                        Bitmap photo1 = Bitmap.createScaledBitmap(photo, (photo.getWidth() / 3), (photo.getHeight() / 3), false);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        photo1.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        Log.d("Compressed", photo1.getByteCount() + "");
+                        byteArray = stream.toByteArray();
+                        s = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                        imageView.setImageBitmap(photo1);
+                    }
+                    else {
+                        //anything greater then 9 times, scale by 4
+                        Bitmap photo1 = Bitmap.createScaledBitmap(photo, (photo.getWidth() / 4), (photo.getHeight() / 4), false);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        photo1.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        Log.d("Compressed", photo1.getByteCount() + "");
+                        byteArray = stream.toByteArray();
+                        s = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                        imageView.setImageBitmap(photo1);
+                    }
+                }
+                else {
+                    //remains the same, no scaling
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byteArray = stream.toByteArray();
+                    s = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                    imageView.setImageBitmap(photo);
+                }
             }
         }
+        //cover case of taking picture, then aborting the taking of another
+        else if (imageView.getDrawable() != null  && !s.equals("")){
+            Log.d("PhotoAbort", "aborted");
+        }
 
+        //cover case when image is aborted
         else{
-            s = "";
-            Log.d("PhotoEmpty", s);
+            imageView.setImageBitmap(null);
+            imageView.setVisibility(View.GONE);
+//            imageView.setImageBitmap(null);
         }
-
     }
 
     /**
