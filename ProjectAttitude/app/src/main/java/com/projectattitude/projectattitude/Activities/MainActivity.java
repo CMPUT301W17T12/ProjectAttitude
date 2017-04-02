@@ -183,6 +183,9 @@ public class MainActivity extends AppCompatActivity {
 
         registerForContextMenu(moodListView);
 
+        /**
+         * This handles clicking on a mood taking the user to a mood view
+         */
         moodListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -239,6 +242,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Handles clicking on the map button, taking either the users moods or their followed list
+         */
         fabMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -261,6 +267,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Handles the 5km radius button
+         */
         fabMapRadius.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -282,12 +291,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Takes the user to the profile
+         */
         fabProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fabMenu.close(true);
                 Intent intent = new Intent(MainActivity.this, ViewProfileActivity.class);
-                intent.putExtra("moodCount", moodList.size());
                 if (moodList.size() > 0) {
                     intent.putExtra("mood", userController.getActiveUser().getMoodList().get(0));
                 }
@@ -296,15 +307,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Logs the user out and returns them to login screen
+         */
         fabLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fabMenu.close(true);
+                userController.clearCache(getApplicationContext());
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 finish();
                 startActivity(intent);
             }
         });
+        /**
+         * Takes the user to their notifications
+         */
          fabNotifications.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
@@ -414,7 +432,7 @@ public class MainActivity extends AppCompatActivity {
                                 //Delete all filters and refresh data
                                 filterDecorator = null;
                                 findViewById(R.id.clearButton).setVisibility(View.INVISIBLE);
-                                userController.loadFromFile();
+                                userController.loadFromFile(getApplicationContext());
                                 refreshMoodList();
                                 moodAdapter.notifyDataSetChanged();
                                 break;
@@ -444,6 +462,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Search for triggers using the text box
+         */
         SearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -455,6 +476,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Clears the search bar
+         */
         ClearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -492,7 +516,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("moodCheckEdit", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
         userController.getActiveUser().getMoodList().set(itemPosition, returnedMood);
         MainController.sortList(userController.getActiveUser().getMoodList(),"Sort"); //Sort inside moods incase anything changed
-        userController.saveInFile();
+        userController.saveInFile(getApplicationContext());
         filterMood(); //Calls refreshMoodList
         moodAdapter.notifyDataSetChanged();
 
@@ -526,7 +550,7 @@ public class MainActivity extends AppCompatActivity {
                 userController.getActiveUser().getMoodList().remove(delMood);
                 //controller.setMyMoodList(new MoodList(moodList));
                 //Log.d("deleting", moodList.get(i).toString());
-                userController.saveInFile();
+                userController.saveInFile(getApplicationContext());
                 Log.d("userController deleted", userController.getActiveUser().getMoodList().toString());
 
                 filterMood(); //Calls refreshMoodList
@@ -612,12 +636,17 @@ public class MainActivity extends AppCompatActivity {
         sortMood(null);
     }
 
-    //accept returned information from activities
+    /**
+     * accept returned information from activities
+     * requestCode 0 = Add mood
+     * requestCode 1 = View mood -- resultCode 2 = delete, 3 = Edit Mood
+     * requestCode 2 = Edit Mood
+     * requestCode 3 = User's followList may have changed
+     * @param requestCode the activity to go to
+     * @param resultCode the code returned by that activity
+     * @param data the intent that contains any information with it
+     */
     @Override
-    // requestCode 0 = Add mood
-    // requestCode 1 = View mood -- resultCode 2 = delete, 3 = Edit Mood
-    // requestCode 2 = Edit Mood
-    // requestCode 3 = User's followList may have changed
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Mood returnedMood;
         Log.d("Error", "Returning to MainActivity");
@@ -630,7 +659,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d("moodCheckAdd", returnedMood.getMaker() + " " + returnedMood.getEmotionState() + " " + returnedMood.getMoodDate() + " " + returnedMood.getTrigger() + " " + returnedMood.getSocialSituation());
 
-                userController.saveInFile();
+                userController.saveInFile(getApplicationContext());
 
                 filterMood(); //Calls refreshMoodList
                 moodAdapter.notifyDataSetChanged();
@@ -746,7 +775,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else{
                     intentEdit.putExtra("mood", followingMoodList.get(itemPosition));
-                }
+             }
                 startActivityForResult(intentEdit, 2); //Handled in the results section
                 //calculate itemPosition in user list
                 ArrayList<Mood> tmpList = userController.getActiveUser().getMoodList();
@@ -764,8 +793,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             // When tweet is pressed TODO build a proper string
             case R.id.tweet:
+                Mood tmp = moodList.get(itemPosition);
                 TweetComposer.Builder builder = new TweetComposer.Builder(this)
-                        .text("Today I'm feeling " + moodList.get(itemPosition).toString());
+                        .text("Today I'm feeling " + tmp.toString()
+                                + (tmp.getSocialSituation().toString().equals("") ?
+                                    ("\n Social Situation: " + tmp.getSocialSituation().toString()) : ""));
                 builder.show();
 
             default:

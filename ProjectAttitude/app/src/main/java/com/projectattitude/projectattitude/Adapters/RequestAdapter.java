@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.projectattitude.projectattitude.Controllers.ElasticSearchRequestController;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
+import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.FollowRequest;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
@@ -20,13 +21,9 @@ import java.util.ArrayList;
 
 /**
  * Created by henrywei on 3/28/17.
- */
-
-/**
  * The RequestAdapater manages the Request view, modifying the request properties appropriately.
  * Requests can be accessed from the Notifications page.
  */
-
 public class RequestAdapter extends ArrayAdapter<FollowRequest> {
 
     private FollowRequest request;
@@ -36,6 +33,13 @@ public class RequestAdapter extends ArrayAdapter<FollowRequest> {
         super(context, 0, requests);
     }
 
+    /**
+     * Handles updating the notifications view with items
+     * @param position the position of each item
+     * @param convertView the view to be fixed
+     * @param parent
+     * @return the updated view
+     */
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -69,8 +73,17 @@ public class RequestAdapter extends ArrayAdapter<FollowRequest> {
                     e.printStackTrace();
                 }
                 if(user != null){ //If user found, update its following list with requestee
-                    user.addFollow(request.getRequestee());
-                    try{//Update user in database
+
+                    try{//Update both users in database
+                        //Update requester followed list
+                        User requester = UserController.getInstance().getActiveUser();
+                        requester.addFollowed(request.getRequester());
+                        //Now update followee
+                        ElasticSearchUserController.UpdateUserRequestFollowedTask updateUserRequestFollowedTask = new ElasticSearchUserController.UpdateUserRequestFollowedTask();
+                        updateUserRequestFollowedTask.execute(requester);
+
+                        //Update requestee in database
+                        user.addFollow(request.getRequestee());
                         ElasticSearchUserController.UpdateUserRequestTask updateUserRequestTask = new ElasticSearchUserController.UpdateUserRequestTask();
                         updateUserRequestTask.execute(user);
                         //Now, delete request since request has been accepted
@@ -92,6 +105,9 @@ public class RequestAdapter extends ArrayAdapter<FollowRequest> {
             }
         });
 
+        /**
+         * If the deny button is clicked it deletes the request
+         */
         denyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

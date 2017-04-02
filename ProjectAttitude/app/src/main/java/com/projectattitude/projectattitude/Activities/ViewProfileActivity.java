@@ -43,6 +43,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -76,18 +77,21 @@ public class ViewProfileActivity extends AppCompatActivity {
     protected ArrayList<Mood> followingMoodList = new ArrayList<Mood>();
     private UserController userController = UserController.getInstance();
     private MoodMainAdapter recentMoodAdapter;
+    private ArrayAdapter<String> followUserAdapter;
+    private ArrayAdapter<String> followedUserAdapter;
 
     private Button searchButton;
     private Button removeButton;
     private EditText searchBar;
     private TextView nameView;
     private ListView recentMoodView;    // refers to user's most recent mood
+    private ListView followUserList;
+    private ListView followedUserList;
     private ImageView image;
     private Activity thisActivity = this;
     String s = "";
 
     final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
-
 
     private User user = userController.getActiveUser();;
     /**
@@ -108,11 +112,18 @@ public class ViewProfileActivity extends AppCompatActivity {
         nameView = (TextView) findViewById(R.id.profileUname);
 
         recentMoodView = (ListView) findViewById(R.id.latestMood);
+        followUserList = (ListView) findViewById(R.id.followList);
+        followedUserList = (ListView) findViewById(R.id.followedList);
 
         recentMoodAdapter = new MoodMainAdapter(this, recentMoodList);
         recentMoodView.setAdapter(recentMoodAdapter);
 
         user = userController.getActiveUser();
+
+        followUserAdapter = new ArrayAdapter<String>(this, R.layout.list_item, user.getFollowList());
+        followedUserAdapter = new ArrayAdapter<String>(this, R.layout.list_item,user.getFollowedList());
+        followUserList.setAdapter(followUserAdapter);
+        followedUserList.setAdapter(followedUserAdapter);
 
         searchButton.setOnClickListener(new View.OnClickListener() {    // adding a new user to following list
             @Override
@@ -202,11 +213,26 @@ public class ViewProfileActivity extends AppCompatActivity {
                         } else {
                             Log.d("Error", "Followed User exists");
                             setResult(RESULT_OK);
+                            //remove followedList of who user is following
+                            try{
+                                ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+                                User followedUser = getUserTask.execute(followingName).get();
+                                if(followedUser != null){
+                                    //Remove followee and update database
+                                    followedUser.getFollowedList().remove(user.getUserName());
+                                    ElasticSearchUserController.UpdateUserRequestTask updateUserRequestTask = new ElasticSearchUserController.UpdateUserRequestTask();
+                                    updateUserRequestTask.execute(followedUser);
+                                }
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+
                             //user exists --> delete follower and update database
                             user.removeFollow(followingName);
                             ElasticSearchUserController.UpdateUserRequestTask updateUserRequestTask = new ElasticSearchUserController.UpdateUserRequestTask();
                             updateUserRequestTask.execute(user);
                             Toast.makeText(ViewProfileActivity.this, "Followed user has been removed!", Toast.LENGTH_SHORT).show();
+                            followUserAdapter.notifyDataSetChanged();
                         }
                     }
                     else{
@@ -270,7 +296,6 @@ public class ViewProfileActivity extends AppCompatActivity {
         //Profile setup
         nameView.setText(userController.getActiveUser().getUserName()); //getting the name of the user
 
-        int moodCount = (int) getIntent().getSerializableExtra("moodCount");
         User user = (User) getIntent().getSerializableExtra("user");
 
         Mood userMood = (Mood) getIntent().getSerializableExtra("mood");    // getting user mood
@@ -325,7 +350,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                 byte[] byteArray = stream.toByteArray();
                 s = Base64.encodeToString(byteArray, Base64.DEFAULT);
                 image.setImageBitmap(bitmap);
-                user.setImage(bitmap);
+                user.setPhoto(s);
 
                 //TODO Update the database
             } catch (IOException e) {

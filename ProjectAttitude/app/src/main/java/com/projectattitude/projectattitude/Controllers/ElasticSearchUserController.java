@@ -361,6 +361,44 @@ public class ElasticSearchUserController {
     }
 
     /**
+     * Updates a user request in the database.
+     */
+    public static class UpdateUserRequestFollowedTask extends  AsyncTask<User, Void, Void> {
+        @Override
+        protected Void doInBackground(User... search_parameters) {
+            verifySettings();
+
+            String query = "";
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.create();
+
+            String json = gson.toJson(search_parameters[0].getFollowedList());
+
+            query = "{\"doc\" : { \"followedList\" : " + json + "}}";
+            Update update = new Update.Builder(query).index(INDEX).type(TYPE).id(search_parameters[0].getUserName()).build();
+            Log.d("error", "UserName of update: " + search_parameters[0].getUserName());
+            Log.d("error", "list of update: " +  search_parameters[0].getFollowedList().toString());
+
+            try {
+                // where is the client
+                JestResult result = client.execute(update);
+                if (result.isSucceeded()) {
+                    //If the request succeeds, we see a response similar to that of the index request: Similar to the jest
+                    //partial update to doc guide, this part looks good, response to post request
+                    //if you check db, you can see the update happened.
+                    Log.d("error", "Check update Json String " + result.getJsonString());
+                } else {
+                    Log.i("Error", "Elasticsearch was not able to update the user.");
+                }
+            } catch (Exception e) {
+                Log.i("Error", "The application failed to build and send the user");
+            }
+
+            return null;
+        }
+    }
+
+    /**
      * Updates a user picture in the database.
      */
     public static class UpdateUserPictureTask extends  AsyncTask<User, Void, Void> {

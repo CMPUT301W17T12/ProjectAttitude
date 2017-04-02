@@ -58,7 +58,7 @@
     <!-- Strings related to filter menu-->
     <string name="filter_menu">Filter</string>
     <string name="time_option">Filter By Time</string>
-    <string name="emotion_option">Filter by Emotions</string>
+    <string name="emotion_option">Filter By Emotions</string>
     <string name="all_option">Clear Filters</string>
 
     <!-- Strings related to filter by time menu-->

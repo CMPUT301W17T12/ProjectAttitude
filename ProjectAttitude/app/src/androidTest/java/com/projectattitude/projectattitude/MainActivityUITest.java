@@ -27,6 +27,7 @@ package com.projectattitude.projectattitude;
 
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.projectattitude.projectattitude.Activities.CreateMoodActivity;
@@ -79,6 +80,10 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
      * Then checks to make sure delete works
      */
     public void testCreateMood(){
+        Log.d("Intents", solo.getCurrentActivity().toString());
+        if (solo.searchText("Moods")){
+            logOut();
+        }
         logIn(solo);
         checkMoods();
         createHappy(solo);
@@ -87,12 +92,16 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         deleteFirstMood();
 
         assertFalse(solo.searchText("Happiness"));
+        logOut();
     }
 
     /**
      * Making sure if a mood is created, it sticks around and has persistence
      */
     public void testPersistence(){
+        if (solo.searchText("Moods")){
+            logOut();
+        }
         logIn(solo);
         createHappy(solo);
         assertTrue(solo.searchText("Happiness"));   //checking if mood exist
@@ -100,6 +109,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         logIn(solo);
         assertTrue(solo.searchText("Happiness"));   //checking if mood exist
         deleteFirstMood();
+        logOut();
 
     }
 
@@ -139,6 +149,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         assertTrue(solo.searchText("Anger"));
         assertFalse(solo.searchButton("Happiness"));
         deleteFirstMood();
+        logOut();
     }
 
     /**
@@ -158,12 +169,16 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.assertCurrentActivity("Wrong activity", MainActivity.class);
         deleteFirstMood();
         assertFalse(solo.searchText("Happiness"));
+        logOut();
     }
 
     /**
      * Tests to make sure the date and filtering by date works
      */
     public void testFilterByDay(){
+        if (solo.searchText("Moods")){
+            logOut();
+        }
         logIn(solo);
         createHappy(solo);
 
@@ -200,12 +215,16 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.clickOnImageButton(0);
         solo.clickOnText("Clear Filters");
         deleteFirstMood();
+        logOut();
     }
 
     /**
      * Makes sure filtering by moods works
      */
-    public void testFilterMood(){
+    public void testFilterMood() throws InterruptedException {
+        if (solo.searchText("Moods")){
+            logOut();
+        }
         logIn(solo);
         createHappy(solo);
 
@@ -218,7 +237,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
 
         solo.clickOnImageButton(0);
         solo.clickOnText("Emotions");
-        solo.clickOnScreen(721,396);
+        solo.clickOnScreen(677,450);
 
         assertTrue(solo.searchText("Anger"));   // only anger should be present
         assertFalse(solo.searchText("Happiness"));
@@ -229,6 +248,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         solo.clickOnImageButton(0);
         solo.clickOnText("Clear Filters");
         deleteFirstMood();
+        logOut();
     }
 
     /**'
@@ -304,6 +324,9 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
      */
     //TODO: Add following moods
     public void testProfile(){
+        if (solo.searchText("Moods")){
+            logOut();
+        }
         logIn(solo);
         createHappy(solo);
         solo.clickLongInList(0);
@@ -318,6 +341,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         assertTrue(solo.searchText("Disgust")); //Checks most recent mood
         solo.goBack();
         deleteFirstMood();//Clean up
+        logOut();
     }
 
     /**
@@ -326,6 +350,9 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
      */
     public void testFollow(){
         //This chunk creates a disgust mood in the person we intend to follow
+        if (solo.searchText("Moods")){
+            logOut();
+        }
         logInTest2();
         createHappy(solo);
         solo.clickLongInList(0);
@@ -345,6 +372,7 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
         //Test is now done, clean up time
         logInTest2();
         deleteFirstMood();
+        logOut();
 
 
     }

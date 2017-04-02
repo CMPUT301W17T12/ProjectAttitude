@@ -64,6 +64,10 @@ public class CreateMoodActivity extends MoodActivity{
     private double latitude;
     private double longitude;
 
+    /**
+     * Sets all the ui elements when the create mood activity is created
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,6 +169,9 @@ public class CreateMoodActivity extends MoodActivity{
             }
         });
 
+        /**
+         * This handles clicking on the add photo button to add photos to a mood
+         */
         addPhoto.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -176,11 +183,19 @@ public class CreateMoodActivity extends MoodActivity{
         });
     }
 
+    /**
+     * This handles the results of the add photo activity
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-
+        Log.d("PhotoTake", "picking photo");
         //successful picking of photo
+        Log.d("PhotoTakeTest", "RequestCode: " + requestCode + " ResultCode: " + " Data: " + data );
+
         if(requestCode == 3 && resultCode == RESULT_OK && null != data ) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             Log.d("PhotoBytes1", photo.getByteCount() + "");
@@ -239,16 +254,20 @@ public class CreateMoodActivity extends MoodActivity{
         }
         //cover case of taking picture, then aborting the taking of another
         else if (imageView.getDrawable() != null && !s.equals("")){
+            Log.d("PhotoAbort", "aborted");
         }
-        //no picture was picked
+        //cover case when image is aborted
         else{
-            s = "";
-            Log.d("PhotoEmpty", s);
+            imageView.setImageBitmap(null);
+            imageView.setVisibility(View.GONE);
+//            imageView.setImageBitmap(null);
         }
     }
 
-    /*error checks Emotional State spinner to make sure an emotional state was chosen
-    also error checks trigger input field for character length*/
+    /**
+     * error checks Emotional State spinner to make sure an emotional state was chosen
+     * also error checks trigger input field for character length
+     */
     public boolean errorCheck(TextView emotionStateText, EditText etTriggerText) {
 
         String etTriggerString = etTriggerText.getText().toString().trim();
