@@ -51,6 +51,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.Mood;
 import com.projectattitude.projectattitude.Objects.PermissionUtils;
 import com.projectattitude.projectattitude.Objects.User;
@@ -67,7 +68,6 @@ import java.util.HashMap;
 public class MapActivity extends AppCompatActivity
         implements
         //GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnInfoWindowLongClickListener,
         GoogleMap.OnInfoWindowClickListener,
         OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback {
@@ -90,6 +90,8 @@ public class MapActivity extends AppCompatActivity
     private double latitude;
     private double longitude;
     private int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
+
+    private UserController userController = UserController.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -276,18 +278,15 @@ public class MapActivity extends AppCompatActivity
 
     }
 
+    /**
+     * Shows mood view activity on info window click
+     * @param marker
+     */
     @Override
     public void onInfoWindowClick(final Marker marker) {
         Intent intent = new Intent(MapActivity.this, ViewMoodActivity.class);
         intent.putExtra("mood", (Mood) marker.getTag());
         startActivityForResult(intent, 1);
-    }
-
-    @Override
-    public void onInfoWindowLongClick(final Marker marker) {
-        Intent intent = new Intent(MapActivity.this, EditMoodActivity.class);
-        intent.putExtra("mood", (Mood) marker.getTag());
-        startActivityForResult(intent, 2);
     }
 
     /**
