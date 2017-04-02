@@ -25,7 +25,7 @@
 
 package com.projectattitude.projectattitude.Controllers;
 
-import android.os.Environment;
+import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -33,7 +33,6 @@ import com.projectattitude.projectattitude.Objects.User;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -56,7 +55,7 @@ public class UserController {
     private ElasticSearchUserController ES = ElasticSearchUserController.getInstance();
 
     private User activeUser;
-    private static String ACTIVE_USER_SAV = "active_user.json";
+    private static final String FILENAME = "user_cache.sav";
 
 
     public static UserController getInstance() {
@@ -78,26 +77,19 @@ public class UserController {
     /**
      * Saves the file in a gson file.
      */
-    public void saveInFile(){
+    public void saveInFile(Context context){
         try {
-            String state = Environment.getExternalStorageState();
-            if (Environment.MEDIA_MOUNTED.equals(state)) {
-                File file = new File(Environment.getExternalStorageDirectory(), ACTIVE_USER_SAV);
-                FileOutputStream fileOutputStream = new FileOutputStream(file);
+            FileOutputStream fileOutputStream = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
 
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
+            Gson gson = new Gson();
+            gson.toJson(activeUser, bufferedWriter);
+            Log.d("SAVED", activeUser.getUserName());
+            bufferedWriter.flush();
 
-                Gson gson = new Gson();
-                gson.toJson(activeUser, bufferedWriter);
-                bufferedWriter.flush();
-
-                fileOutputStream.close();
-            } else {
-                throw new IOException("External storage was not available!");
-            }
+            fileOutputStream.close();
 
         } catch (FileNotFoundException e) {
-            Log.d("No file", "no file");
         } catch (IOException e) {
             throw new RuntimeException();
         }
@@ -106,22 +98,68 @@ public class UserController {
     /**
      * Loads from the gson file.
      */
-    public void loadFromFile() {
+    public void loadFromFile(Context context) {
         try {
-            String state = Environment.getExternalStorageState();
-            if (Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-                File file = new File(Environment.getExternalStorageDirectory(), ACTIVE_USER_SAV);
+            FileInputStream fileInputStream = context.openFileInput(FILENAME);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
-                FileInputStream fileInputStream = new FileInputStream(file);
+            Gson gson = new Gson();
 
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+            activeUser = gson.fromJson(bufferedReader, User.class);
 
-                Gson gson = new Gson();
-                activeUser = gson.fromJson(bufferedReader, User.class);
-                //setCached(true);
+        }catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    /**
+     * Returns whether there's a user currently logged in
+     * @return
+     */
+    public boolean isLoggedIn(Context context) {
+        try {
+            FileInputStream fileInputStream = context.openFileInput(FILENAME);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+
+            Gson gson = new Gson();
+
+            User user = gson.fromJson(bufferedReader, User.class);
+
+            if(user == null){
+                return false;
             }
+            else if (user.getUserName().equals("___NULL___USER___")) {
+                return false;
+            }
+            else {
+                return true;
+            }
+
+        }catch (FileNotFoundException e) {
+            saveInFile(context);
+            return false;
+        }
+    }
+
+    /**
+     * Clears the gson file
+     */
+    public void clearCache(Context context) {
+        try {
+            FileOutputStream fileOutputStream = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
+
+            Gson gson = new Gson();
+            User user = new User();
+            user.setUserName("___NULL___USER___");
+            gson.toJson(user, bufferedWriter);
+            bufferedWriter.flush();
+
+            fileOutputStream.close();
+
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException();
         }
     }
 

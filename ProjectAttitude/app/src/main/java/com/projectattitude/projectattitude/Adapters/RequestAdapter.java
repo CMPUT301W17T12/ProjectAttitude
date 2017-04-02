@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.projectattitude.projectattitude.Controllers.ElasticSearchRequestController;
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
+import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.FollowRequest;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
@@ -72,10 +73,19 @@ public class RequestAdapter extends ArrayAdapter<FollowRequest> {
                     e.printStackTrace();
                 }
                 if(user != null){ //If user found, update its following list with requestee
-                    user.addFollow(request.getRequestee());
                     //TODO: get user requester and put in follower
-                    try{//Update user in database
+
+                    try{//Update both users in database
+                        //Update requester followed list
+                        User requestee = UserController.getInstance().getActiveUser();
+                        requestee.addFollowed(request.getRequestee());
+                        //Now update followee
                         ElasticSearchUserController.UpdateUserRequestTask updateUserRequestTask = new ElasticSearchUserController.UpdateUserRequestTask();
+                        updateUserRequestTask.execute(user);
+
+                        //Update requestee in database
+                        user.addFollow(request.getRequestee());
+                        updateUserRequestTask = new ElasticSearchUserController.UpdateUserRequestTask();
                         updateUserRequestTask.execute(user);
                         //Now, delete request since request has been accepted
                         ElasticSearchRequestController.DeleteRequestTask deleteRequestTask = new ElasticSearchRequestController.DeleteRequestTask();

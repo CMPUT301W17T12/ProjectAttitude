@@ -112,8 +112,8 @@ public class ViewProfileActivity extends AppCompatActivity {
         nameView = (TextView) findViewById(R.id.profileUname);
 
         recentMoodView = (ListView) findViewById(R.id.latestMood);
-        followUserList = (ListView) findViewById(R.id.followUserList);
-        followedUserList = (ListView) findViewById(R.id.followedUserList);
+        followUserList = (ListView) findViewById(R.id.followList);
+        followedUserList = (ListView) findViewById(R.id.followByList);
 
         recentMoodAdapter = new MoodMainAdapter(this, recentMoodList);
         recentMoodView.setAdapter(recentMoodAdapter);
