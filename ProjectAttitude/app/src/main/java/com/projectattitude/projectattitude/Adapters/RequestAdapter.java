@@ -42,7 +42,7 @@ public class RequestAdapter extends ArrayAdapter<FollowRequest> {
      */
     @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         request = getItem(position);
 
@@ -63,6 +63,7 @@ public class RequestAdapter extends ArrayAdapter<FollowRequest> {
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                request = getItem(position);
                 //Find requester
                 User user = null;
                 try{
@@ -100,7 +101,7 @@ public class RequestAdapter extends ArrayAdapter<FollowRequest> {
                 }else{
                     Log.d("error", "Requester not found!");
                 }
-                adapter.remove(request);
+                adapter.remove(getItem(position));
                 adapter.notifyDataSetChanged();
             }
         });
@@ -111,10 +112,11 @@ public class RequestAdapter extends ArrayAdapter<FollowRequest> {
         denyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                request = getItem(position);
                 //if denied, just delete request
                 ElasticSearchRequestController.DeleteRequestTask deleteRequestTask = new ElasticSearchRequestController.DeleteRequestTask();
                 deleteRequestTask.execute(request);
-                adapter.remove(request);
+                adapter.remove(getItem(position));
                 adapter.notifyDataSetChanged();
             }
         });
