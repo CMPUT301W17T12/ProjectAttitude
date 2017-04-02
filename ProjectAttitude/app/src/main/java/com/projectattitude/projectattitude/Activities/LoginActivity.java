@@ -38,6 +38,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.projectattitude.projectattitude.Controllers.ElasticSearchUserController;
+import com.projectattitude.projectattitude.Controllers.UserController;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 import com.twitter.sdk.android.Twitter;
@@ -63,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText usernameView;
 
+    private UserController userController = UserController.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,18 @@ public class LoginActivity extends AppCompatActivity {
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new Twitter(authConfig));
         setContentView(R.layout.activity_login);
+
+        if (userController.isLoggedIn(getApplicationContext())) {
+            userController.loadFromFile(getApplicationContext());
+            Log.d("FILEIO:", "loaded from file");
+            Log.d("FILEIO:", userController.getActiveUser().getUserName());
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
+            intent.putExtra("PassUserToMain", userController.getActiveUser());
+            startActivity(intent);
+            finish();
+        }
+        userController.clearCache(getApplicationContext());
 
         usernameView = (EditText) findViewById(R.id.usernameField);
 
@@ -100,6 +114,8 @@ public class LoginActivity extends AppCompatActivity {
                         //user does not exist
                         if (ElasticSearchUserController.getInstance().verifyUser(user)) {
                             Log.d("Error", "User did not exist");
+                            userController.setActiveUser(user);
+                            userController.saveInFile(getApplicationContext());
                             //creates user using ElasticSearchUserController and switch to MainActivity
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.putExtra("PassUserToMain", user);
@@ -119,6 +135,9 @@ public class LoginActivity extends AppCompatActivity {
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
                             }
+
+                            userController.setActiveUser(user1);
+                            userController.saveInFile(getApplicationContext());
 
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.putExtra("PassUserToMain", user1);
