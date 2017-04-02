@@ -30,6 +30,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -59,6 +60,7 @@ public class ViewMoodActivity extends MoodActivity {
 //    private Button deleteButton;
     private ImageView imageView;
     private ImageView emotionStateIcon;
+    private Button profileButton;
 
     ScrollView r1;
 
@@ -68,6 +70,7 @@ public class ViewMoodActivity extends MoodActivity {
         setContentView(R.layout.activity_view_mood);
 
         //Get all the fields
+        profileButton = (Button) findViewById(R.id.profileButton);
         emotionState = (TextView) findViewById(R.id.EmotionStateView);
         date = (TextView) findViewById(R.id.DateView);
         trigger = (TextView) findViewById(R.id.TriggerView);
@@ -85,6 +88,7 @@ public class ViewMoodActivity extends MoodActivity {
         socialSituation.setText("");
 
 
+
         imageView = (ImageView) findViewById(R.id.imageView3);
         emotionStateIcon = (ImageView) findViewById(R.id.EmotionalStateImage);
 
@@ -96,6 +100,7 @@ public class ViewMoodActivity extends MoodActivity {
         trigger.setText(mood.getTrigger());
         socialSituation.setText(mood.getSocialSituation());
         creator.setText(mood.getMaker());
+        profileButton.setText("View " + mood.getMaker() + "'s Profile");
 
 
         // Show emoticons
