@@ -27,6 +27,7 @@ package com.projectattitude.projectattitude;
 
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.projectattitude.projectattitude.Activities.CreateMoodActivity;
@@ -79,7 +80,8 @@ public class MainActivityUITest extends ActivityInstrumentationTestCase2<LoginAc
      * Then checks to make sure delete works
      */
     public void testCreateMood(){
-        if (solo.getCurrentActivity().equals(MainActivity.class)){
+        Log.d("Intents", solo.getCurrentActivity().toString());
+        if (solo.searchText("Moods")){
             logOut();
         }
         logIn(solo);
