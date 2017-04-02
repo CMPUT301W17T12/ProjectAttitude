@@ -43,6 +43,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -76,15 +77,20 @@ public class ViewProfileActivity extends AppCompatActivity {
     protected ArrayList<Mood> followingMoodList = new ArrayList<Mood>();
     private UserController userController = UserController.getInstance();
     private MoodMainAdapter recentMoodAdapter;
+    private ArrayAdapter<String> followUserAdapter;
+    private ArrayAdapter<String> followedUserAdapter;
 
     private Button searchButton;
     private Button removeButton;
     private EditText searchBar;
     private TextView nameView;
     private ListView recentMoodView;    // refers to user's most recent mood
+    private ListView followUserList;
+    private ListView followedUserList;
     private ImageView image;
     private Activity thisActivity = this;
     String s = "";
+
 
     final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
@@ -108,11 +114,18 @@ public class ViewProfileActivity extends AppCompatActivity {
         nameView = (TextView) findViewById(R.id.profileUname);
 
         recentMoodView = (ListView) findViewById(R.id.latestMood);
+        followUserList = (ListView) findViewById(R.id.followUserList);
+        followedUserList = (ListView) findViewById(R.id.followedUserList);
 
         recentMoodAdapter = new MoodMainAdapter(this, recentMoodList);
         recentMoodView.setAdapter(recentMoodAdapter);
 
         user = userController.getActiveUser();
+
+        followUserAdapter = new ArrayAdapter<String>(this, R.layout.list_item, user.getFollowList());
+        followedUserAdapter = new ArrayAdapter<String>(this, R.layout.list_item,user.getFollowedList());
+        followUserList.setAdapter(followUserAdapter);
+        followedUserList.setAdapter(followedUserAdapter);
 
         searchButton.setOnClickListener(new View.OnClickListener() {    // adding a new user to following list
             @Override
@@ -325,7 +338,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                 byte[] byteArray = stream.toByteArray();
                 s = Base64.encodeToString(byteArray, Base64.DEFAULT);
                 image.setImageBitmap(bitmap);
-                user.setImage(bitmap);
+                user.setPhoto(s);
 
                 //TODO Update the database
             } catch (IOException e) {

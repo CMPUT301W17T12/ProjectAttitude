@@ -48,16 +48,6 @@ public class User implements Serializable {
     private String id;
     private String photo;
 
-    public Bitmap getImage() {
-        return image;
-    }
-
-    public void setImage(Bitmap image) {
-        this.image = image;
-    }
-
-    private Bitmap image;
-
     /**
      * Creates the user object as well as initiating an arrayList of mood objects.
      */
@@ -172,4 +162,5 @@ public class User implements Serializable {
     public void setPhoto(String photo) {
         this.photo = photo;
     }
+
 }
