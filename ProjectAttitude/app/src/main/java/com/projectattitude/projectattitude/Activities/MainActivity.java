@@ -111,12 +111,14 @@ public class MainActivity extends AppCompatActivity {
     NetWorkChangeReceiver netWorkChangeReceiver = new NetWorkChangeReceiver() {
         @Override
         public void onReceive(Context context, Intent intent){
-        if(isNetworkAvailable()){
-            if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-                ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-                addUserTask.execute(UserController.getInstance().getActiveUser());
+            if(isNetworkAvailable()){
+                //if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+    //                ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+    //                addUserTask.execute(UserController.getInstance().getActiveUser());
+                    ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+                    updateUserTask.execute(UserController.getInstance().getActiveUser());
+                //}
             }
-        }
         }
     };
     //2017-03-21T17:03:03-0600 <----- stored
@@ -153,9 +155,7 @@ public class MainActivity extends AppCompatActivity {
             moodListView.setAdapter(followingMoodAdapater);
         }
         //Load user and mood, and update current displayed list
-        //Fred's code - ONLY UNCOMMENT IF CACHEING WORKS!
-        //userController.loadFromFile();
-        //Log.d("userController load", userController.getActiveUser().getMoodList().toString());
+        userController.loadFromFile(getApplicationContext());
         sortingDate = "Sort";
         refreshMoodList();
 
@@ -200,20 +200,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+        updateUserTask.execute(UserController.getInstance().getActiveUser());
+
+        userController.saveInFile(getApplicationContext());
+
         registerReceiver(netWorkChangeReceiver, new IntentFilter("networkConnectBroadcast"));   //TODO is crashing the app sometimes when returning from the profile page
 
         // twitter init
         // https://docs.fabric.io/android/twitter/installation.html#twitter-kit-login
         TwitterAuthConfig authConfig =  new TwitterAuthConfig("consumerKey", "consumerSecret");
         Fabric.with(this, new TwitterCore(authConfig), new TweetComposer());
-
-        // sync on start
-        if(isNetworkAvailable()) {
-            if (ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())) {
-                ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-                addUserTask.execute(UserController.getInstance().getActiveUser());
-            }
-        }
 
         try{
             ArrayList<Mood> tempList = userController.getActiveUser().getMoodList();
@@ -302,7 +299,22 @@ public class MainActivity extends AppCompatActivity {
                 if (moodList.size() > 0) {
                     intent.putExtra("mood", userController.getActiveUser().getMoodList().get(0));
                 }
-                intent.putExtra("user", user);
+
+                User user1 = new User();
+                ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+
+                try{
+                    user1 = getUserTask.execute(user.getUserName()).get();
+                    userController.setActiveUser(user1);
+                }
+
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+                intent.putExtra("user", user1);
+                //intent.putExtra("user", user);
                 startActivityForResult(intent, 3);
             }
         });
@@ -313,6 +325,8 @@ public class MainActivity extends AppCompatActivity {
         fabLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 fabMenu.close(true);
                 userController.clearCache(getApplicationContext());
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -328,7 +342,22 @@ public class MainActivity extends AppCompatActivity {
              public void onClick(View v) {
                  fabMenu.close(true);
                  Intent intent = new Intent(MainActivity.this, ViewNotificationsActivity.class);
-                 intent.putExtra("user", user);
+
+                 User user1 = new User();
+                 ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+
+                 try{
+                     user1 = getUserTask.execute(user.getUserName()).get();
+                     userController.setActiveUser(user1);
+                 }
+
+                 catch (InterruptedException e) {
+                     e.printStackTrace();
+                 } catch (ExecutionException e) {
+                     e.printStackTrace();
+                 }
+                 userController.saveInFile(getApplicationContext());
+                 intent.putExtra("user", user1);
                  startActivityForResult(intent, 3);
              }
          });
@@ -344,11 +373,18 @@ public class MainActivity extends AppCompatActivity {
                     // The toggle is enabled, or its set to my moods
                     registerForContextMenu(moodListView);
                     moodListView.setAdapter(moodAdapter);
+
                 } else {
                     // The toggle is disabled, or it is set to followed moods
-                    //followingMoodList.add(userController.getActiveUser().getFirstMood()); // This was a test function to see if moods were showing up.
                     unregisterForContextMenu(moodListView);
                     moodListView.setAdapter(followingMoodAdapater);
+
+                    if (isNetworkAvailable()) {
+                        populateFollowing();
+                        refreshMoodList();
+                    }
+
+                    userController.saveInFile(getApplicationContext());
                 }
                 //Have to re-filter mood when changing mood lists
                 filterMood();
@@ -706,32 +742,38 @@ public class MainActivity extends AppCompatActivity {
             //Update user following list
             //This function populates the list of moods from people being followed
             if (resultCode == RESULT_OK) {
-                followingOriginalMoodList.clear();
-                usersFollowed = userController.getActiveUser().getFollowList();
-                Log.d("Error", "Current follow list:"+userController.getActiveUser().getFollowList().toString());
-                if (usersFollowed != null) {
-                    for (int i = 0; i < usersFollowed.size(); i++) {
-                        String stringFollowedUser = usersFollowed.get(i);
-                        ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
-                        try {
-                            User followedUser = getUserTask.execute(stringFollowedUser).get();
-                            if (followedUser != null) {
-                                if (followedUser.getFirstMood() != null) {
-                                    followingOriginalMoodList.add(followedUser.getFirstMood()); //Populate both an unfiltered mood list and filtered moodlist
-                                }
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
+                populateFollowing();
                 filterMood(); //calls refreshMoodList
             }
         }
     }
 
+    /**
+     * Populates the list of moods from users we follow
+     */
+    public void populateFollowing() {
+        followingOriginalMoodList.clear();
+        usersFollowed = userController.getActiveUser().getFollowList();
+        Log.d("Error", "Current follow list:"+userController.getActiveUser().getFollowList().toString());
+        if (usersFollowed != null) {
+            for (int i = 0; i < usersFollowed.size(); i++) {
+                String stringFollowedUser = usersFollowed.get(i);
+                ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+                try {
+                    User followedUser = getUserTask.execute(stringFollowedUser).get();
+                    if (followedUser != null) {
+                        if (followedUser.getFirstMood() != null) {
+                            followingOriginalMoodList.add(followedUser.getFirstMood()); //Populate both an unfiltered mood list and filtered moodlist
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     /**
      * Taken from
@@ -796,8 +838,11 @@ public class MainActivity extends AppCompatActivity {
                 Mood tmp = moodList.get(itemPosition);
                 TweetComposer.Builder builder = new TweetComposer.Builder(this)
                         .text("Today I'm feeling " + tmp.toString()
-                                + (tmp.getSocialSituation().toString().equals("") ?
-                                    ("\n Social Situation: " + tmp.getSocialSituation().toString()) : ""));
+                                + (tmp.getSocialSituation().equals("") ? "" :
+                                    ("\nSocial Situation: " + tmp.getSocialSituation()))
+                                + (tmp.getTrigger().equals("") ? "" :
+                                    ("\nTrigger: " + tmp.getTrigger())));
+
                 builder.show();
 
             default:
