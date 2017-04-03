@@ -830,10 +830,10 @@ public class MainActivity extends AppCompatActivity {
                 Mood tmp = moodList.get(itemPosition);
                 TweetComposer.Builder builder = new TweetComposer.Builder(this)
                         .text("Today I'm feeling " + tmp.toString()
-                                + (tmp.getSocialSituation().toString().equals("") ? "" :
-                                    ("\nSocial Situation: " + tmp.getSocialSituation().toString()))
-                                + (tmp.getTrigger().toString().equals("") ? "" :
-                                    ("\nTrigger: " + tmp.getTrigger().toString())));
+                                + (tmp.getSocialSituation().equals("") ? "" :
+                                    ("\nSocial Situation: " + tmp.getSocialSituation()))
+                                + (tmp.getTrigger().equals("") ? "" :
+                                    ("\nTrigger: " + tmp.getTrigger())));
 
                 builder.show();
 
