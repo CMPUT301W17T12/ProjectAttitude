@@ -3,7 +3,10 @@ package com.projectattitude.projectattitude.Controllers;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.projectattitude.projectattitude.Objects.FollowRequest;
+import com.projectattitude.projectattitude.Objects.User;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
@@ -12,11 +15,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.searchbox.client.JestResult;
 import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
+import io.searchbox.core.Update;
 
 /**
  * Created by henry on 3/26/2017.
@@ -45,7 +50,7 @@ public class ElasticSearchRequestController {
     //points to server
     private static String DATABASE_URL = "http://cmput301.softwareprocess.es:8080/";
     //type of object stored on DB
-    private static final String TYPE = "FollowRequest";
+    private static final String TYPE = "User";
     //index on server
     private static final String INDEX = "cmput301w17t12";
 
@@ -194,6 +199,48 @@ public class ElasticSearchRequestController {
                 Log.d("Error", "Elasticsearch failed.");
             }
             return true;
+        }
+    }
+
+    /**
+     * Updates a user in the database.
+     */
+    public static class UpdateRequestsTask extends  AsyncTask<User, Void, Void> {
+        @Override
+        protected Void doInBackground(User... search_parameters) {
+            verifySettings();
+
+            String query = "";
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.create();
+
+            String json = gson.toJson(search_parameters[0].getRequests());
+
+            query = "{\"doc\" : { \"requests\" : " + json + "}}";
+            Update update = new Update.Builder(query).index(INDEX).type(TYPE).id(search_parameters[0].getUserName()).build();
+            Log.d("error", "UserName of update: " + search_parameters[0].getUserName());
+            Log.d("error", "list of update: " +  search_parameters[0].getRequests().toString());
+
+            Log.d("error", "Check update value string: " + update.toString());
+
+            try {
+                // where is the client
+                JestResult result = client.execute(update);
+                //Log.d("InAsyncTask ID", result.getId());
+                if (result.isSucceeded()) {
+                    //If the request succeeds, we see a response similar to that of the index request: Similar to the jest
+                    //partial update to doc guide, this part looks good, response to post request
+                    //if you check db, you can see the update happened.
+                    Log.d("error", "Check update Json String " + result.getJsonString());
+                    //Log.d("In AsyncTask ID", result.getId());
+                } else {
+                    Log.i("Error", "Elasticsearch was not able to update the user.");
+                }
+            } catch (Exception e) {
+                Log.i("Error", "The application failed to build and send the user");
+            }
+            //}
+            return null;
         }
     }
 

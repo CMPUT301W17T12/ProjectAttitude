@@ -161,11 +161,19 @@ public class ViewProfileActivity extends AppCompatActivity {
                                             }
                                             else{// user not already in list
                                                 //check if request between users already exists in database
-                                                ElasticSearchRequestController.CheckRequestTask checkRequestTask = new ElasticSearchRequestController.CheckRequestTask();
-                                                checkRequestTask.execute(user.getUserName(), followedUser.getUserName());
-                                                if(checkRequestTask.get().size() == 0){ //request doesn't exists - not sure why .get always returns an filled array or empty array
-                                                    ElasticSearchRequestController.AddRequestTask addRequestTask = new ElasticSearchRequestController.AddRequestTask();
-                                                    addRequestTask.execute(new FollowRequest(user.getUserName(),followedUser.getUserName()));
+                                                boolean isContained = false;
+                                                ArrayList<FollowRequest> requests = followedUser.getRequests();
+                                                for(int i = 0; i < followedUser.getRequests().size(); i++){ //Checks if request already exists
+                                                    if(requests.get(i).getRequester().equals(user.getUserName())
+                                                            && requests.get(i).getRequestee().equals(followedUser.getUserName())){
+                                                        isContained = true;
+                                                        break;
+                                                    }
+                                                }
+                                                if(!isContained){ //request doesn't exists - not sure why .get always returns an filled array or empty array
+                                                    followedUser.getRequests().add(new FollowRequest(user.getUserName(), followedUser.getUserName()));
+                                                    ElasticSearchRequestController.UpdateRequestsTask updateRequestsTask = new ElasticSearchRequestController.UpdateRequestsTask();
+                                                    updateRequestsTask.execute(followedUser);
                                                     Toast.makeText(ViewProfileActivity.this, "Request sent!", Toast.LENGTH_SHORT).show();
                                                 }else{ // request exists
                                                     Toast.makeText(ViewProfileActivity.this, "Request already exists.", Toast.LENGTH_SHORT).show();
