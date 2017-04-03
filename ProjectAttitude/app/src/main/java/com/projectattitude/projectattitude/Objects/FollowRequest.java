@@ -4,12 +4,14 @@ package com.projectattitude.projectattitude.Objects;
  * Created by henry on 3/26/2017.
  */
 
+import java.io.Serializable;
+
 /**
  * The class that acts as the instance of a request object made when a user wishes to follow another
  * user. This object is instantiated in the profile page and is managed by the ElasticSearchRequestController.
  * @see com.projectattitude.projectattitude.Controllers.ElasticSearchRequestController
  */
-public class FollowRequest {
+public class FollowRequest implements Serializable{
     private String requester; //User ID that initialized request
     private String requestee; //User ID that receives request
     private String ID; //Request's ID assigned by elastic search

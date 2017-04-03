@@ -43,6 +43,7 @@ public class User implements Serializable {
     private String userName;    //name of user
     private ArrayList<String> followList = new ArrayList<String>();    //arrayList of people that are following this user
     private ArrayList<String> followedList = new ArrayList<String>();    //arrayList of people that this user is following
+    private ArrayList<FollowRequest> requests = new ArrayList<FollowRequest>();
     private ArrayList<Mood> moods;
 
     private String id;
@@ -163,4 +164,11 @@ public class User implements Serializable {
         this.photo = photo;
     }
 
+    public ArrayList<FollowRequest> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(ArrayList<FollowRequest> requests) {
+        this.requests = requests;
+    }
 }
