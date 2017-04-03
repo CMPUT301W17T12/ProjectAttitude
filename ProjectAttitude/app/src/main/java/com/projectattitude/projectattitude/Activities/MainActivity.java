@@ -373,22 +373,18 @@ public class MainActivity extends AppCompatActivity {
                     // The toggle is enabled, or its set to my moods
                     registerForContextMenu(moodListView);
                     moodListView.setAdapter(moodAdapter);
+
                 } else {
-                     ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
-
-                     try{
-                         userController.setActiveUser(getUserTask.execute(user.getUserName()).get());
-                     }
-
-                     catch (InterruptedException e) {
-                         e.printStackTrace();
-                     } catch (ExecutionException e) {
-                         e.printStackTrace();
-                     }
                     // The toggle is disabled, or it is set to followed moods
-                    //followingMoodList.add(userController.getActiveUser().getFirstMood()); // This was a test function to see if moods were showing up.
                     unregisterForContextMenu(moodListView);
                     moodListView.setAdapter(followingMoodAdapater);
+
+                    if (isNetworkAvailable()) {
+                        populateFollowing();
+                        refreshMoodList();
+                    }
+
+                    userController.saveInFile(getApplicationContext());
                 }
                 //Have to re-filter mood when changing mood lists
                 filterMood();
@@ -746,32 +742,38 @@ public class MainActivity extends AppCompatActivity {
             //Update user following list
             //This function populates the list of moods from people being followed
             if (resultCode == RESULT_OK) {
-                followingOriginalMoodList.clear();
-                usersFollowed = userController.getActiveUser().getFollowList();
-                Log.d("Error", "Current follow list:"+userController.getActiveUser().getFollowList().toString());
-                if (usersFollowed != null) {
-                    for (int i = 0; i < usersFollowed.size(); i++) {
-                        String stringFollowedUser = usersFollowed.get(i);
-                        ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
-                        try {
-                            User followedUser = getUserTask.execute(stringFollowedUser).get();
-                            if (followedUser != null) {
-                                if (followedUser.getFirstMood() != null) {
-                                    followingOriginalMoodList.add(followedUser.getFirstMood()); //Populate both an unfiltered mood list and filtered moodlist
-                                }
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
+                populateFollowing();
                 filterMood(); //calls refreshMoodList
             }
         }
     }
 
+    /**
+     * Populates the list of moods from users we follow
+     */
+    public void populateFollowing() {
+        followingOriginalMoodList.clear();
+        usersFollowed = userController.getActiveUser().getFollowList();
+        Log.d("Error", "Current follow list:"+userController.getActiveUser().getFollowList().toString());
+        if (usersFollowed != null) {
+            for (int i = 0; i < usersFollowed.size(); i++) {
+                String stringFollowedUser = usersFollowed.get(i);
+                ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+                try {
+                    User followedUser = getUserTask.execute(stringFollowedUser).get();
+                    if (followedUser != null) {
+                        if (followedUser.getFirstMood() != null) {
+                            followingOriginalMoodList.add(followedUser.getFirstMood()); //Populate both an unfiltered mood list and filtered moodlist
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     /**
      * Taken from
