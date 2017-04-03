@@ -199,7 +199,8 @@ public class MapActivity extends AppCompatActivity
                                         .position(new LatLng(mood.getLatitude(), mood.getLongitude()))
                                         .title(mood.getMaker())
                                         .snippet(mood.getEmotionState())
-                                        .icon(getMarkerColor(color)));
+                                        .icon(getMarkerColor(color)))
+                                        .setTag(mood);
                             }
                         }
                     }

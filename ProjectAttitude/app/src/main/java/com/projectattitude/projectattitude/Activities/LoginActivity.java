@@ -71,20 +71,21 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new Twitter(authConfig));
+
         setContentView(R.layout.activity_login);
 
         if (userController.isLoggedIn(getApplicationContext())) {
             userController.loadFromFile(getApplicationContext());
-            Log.d("FILEIO:", "loaded from file");
-            Log.d("FILEIO:", userController.getActiveUser().getUserName());
+            Log.d("LOGINTEST:", " success");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 
             intent.putExtra("PassUserToMain", userController.getActiveUser());
             startActivity(intent);
             finish();
+        } else {
+            Log.d("LOGINTEST", "failed");
+            userController.clearCache(getApplicationContext());
         }
-        userController.clearCache(getApplicationContext());
-
         usernameView = (EditText) findViewById(R.id.usernameField);
 
         final Button signInButton = (Button) findViewById(R.id.signInButton);
