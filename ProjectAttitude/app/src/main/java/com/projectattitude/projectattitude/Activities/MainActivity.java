@@ -111,14 +111,14 @@ public class MainActivity extends AppCompatActivity {
     NetWorkChangeReceiver netWorkChangeReceiver = new NetWorkChangeReceiver() {
         @Override
         public void onReceive(Context context, Intent intent){
-        if(isNetworkAvailable()){
-            //if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-//                ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-//                addUserTask.execute(UserController.getInstance().getActiveUser());
-                ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
-                updateUserTask.execute(UserController.getInstance().getActiveUser());
-            //}
-        }
+            if(isNetworkAvailable()){
+                //if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+    //                ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+    //                addUserTask.execute(UserController.getInstance().getActiveUser());
+                    ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+                    updateUserTask.execute(UserController.getInstance().getActiveUser());
+                //}
+            }
         }
     };
     //2017-03-21T17:03:03-0600 <----- stored
@@ -155,9 +155,7 @@ public class MainActivity extends AppCompatActivity {
             moodListView.setAdapter(followingMoodAdapater);
         }
         //Load user and mood, and update current displayed list
-        //Fred's code - ONLY UNCOMMENT IF CACHEING WORKS!
-        //userController.loadFromFile();
-        //Log.d("userController load", userController.getActiveUser().getMoodList().toString());
+        userController.loadFromFile(getApplicationContext());
         sortingDate = "Sort";
         refreshMoodList();
 
@@ -202,20 +200,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+        updateUserTask.execute(UserController.getInstance().getActiveUser());
+
+        userController.saveInFile(getApplicationContext());
+
         registerReceiver(netWorkChangeReceiver, new IntentFilter("networkConnectBroadcast"));   //TODO is crashing the app sometimes when returning from the profile page
 
         // twitter init
         // https://docs.fabric.io/android/twitter/installation.html#twitter-kit-login
         TwitterAuthConfig authConfig =  new TwitterAuthConfig("consumerKey", "consumerSecret");
         Fabric.with(this, new TwitterCore(authConfig), new TweetComposer());
-
-        // sync on start
-        if(isNetworkAvailable()) {
-            if (ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())) {
-                ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-                addUserTask.execute(UserController.getInstance().getActiveUser());
-            }
-        }
 
         try{
             ArrayList<Mood> tempList = userController.getActiveUser().getMoodList();
@@ -361,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
                  } catch (ExecutionException e) {
                      e.printStackTrace();
                  }
-//                 intent.putExtra("user", user);
+                 userController.saveInFile(getApplicationContext());
                  intent.putExtra("user", user1);
                  startActivityForResult(intent, 3);
              }
@@ -379,6 +374,17 @@ public class MainActivity extends AppCompatActivity {
                     registerForContextMenu(moodListView);
                     moodListView.setAdapter(moodAdapter);
                 } else {
+                     ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+
+                     try{
+                         userController.setActiveUser(getUserTask.execute(user.getUserName()).get());
+                     }
+
+                     catch (InterruptedException e) {
+                         e.printStackTrace();
+                     } catch (ExecutionException e) {
+                         e.printStackTrace();
+                     }
                     // The toggle is disabled, or it is set to followed moods
                     //followingMoodList.add(userController.getActiveUser().getFirstMood()); // This was a test function to see if moods were showing up.
                     unregisterForContextMenu(moodListView);
