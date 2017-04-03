@@ -143,15 +143,15 @@ public class MapActivity extends AppCompatActivity
         enableMyLocation();
 
         //couldn't get ColorMap to work, so made one for the meantime
-        HashMap<String, String> hm = new HashMap<String, String>();
-        hm.put("Anger", "#e3333e");
-        hm.put("Confusion", "#ed8b5f");
-        hm.put("Disgust", "#c0ca55");
-        hm.put("Fear", "#684f15");
-        hm.put("Happiness", "#7fc7af");
-        hm.put("Sadness", "#919185");
-        hm.put("Shame", "#005885");
-        hm.put("Surprise", "#e36820");
+        HashMap<String, Integer> hm = new HashMap<String, Integer>();
+        hm.put("Anger", 356);
+        hm.put("Confusion", 19);
+        hm.put("Disgust", 65);
+        hm.put("Fear", 42);
+        hm.put("Happiness", 160);
+        hm.put("Sadness", 60);
+        hm.put("Shame", 200);
+        hm.put("Surprise", 22);
 
 
 
@@ -194,12 +194,12 @@ public class MapActivity extends AppCompatActivity
                             Log.d("Distance", "Current comparison to: " + users.get(i).getUserName() + " " + mood.getEmotionState());
 
                             if (returned < 5) {
-                                String color = hm.get(mood.getEmotionState());
+                                Integer color = hm.get(mood.getEmotionState());
                                 map.addMarker(new MarkerOptions()
                                         .position(new LatLng(mood.getLatitude(), mood.getLongitude()))
                                         .title(mood.getMaker())
                                         .snippet(mood.getEmotionState())
-                                        .icon(getMarkerColor(color)))
+                                        .icon(BitmapDescriptorFactory.defaultMarker(color)))
                                         .setTag(mood);
                             }
                         }
@@ -243,8 +243,7 @@ public class MapActivity extends AppCompatActivity
             for (int i = 0; i < userMoodList.size(); i++) { //TODO this will get EVERY mood from the user, which could be too many
 
                 Mood mood = userMoodList.get(i);
-                String color = hm.get(mood.getEmotionState());
-                Log.d("MapMoodsColor", color);
+                Integer color = hm.get(mood.getEmotionState());
 
                 if (mood.getLongitude() == 0 && mood.getLatitude() == 0) {
                     Log.d("MapMoods", "Mood: " + mood.getEmotionState() + "not mapped");
@@ -256,7 +255,7 @@ public class MapActivity extends AppCompatActivity
 //                        .title(mood.getMaker() +" " + mood.getEmotionState())
                             .title(mood.getMaker())
                             .snippet(mood.getEmotionState())
-                            .icon(getMarkerColor(color)))
+                            .icon(BitmapDescriptorFactory.defaultMarker(color)))
                             .setTag(mood);
 
                 }
@@ -288,17 +287,6 @@ public class MapActivity extends AppCompatActivity
         Intent intent = new Intent(MapActivity.this, ViewMoodActivity.class);
         intent.putExtra("mood", (Mood) marker.getTag());
         startActivityForResult(intent, 1);
-    }
-
-    /**
-     * Changes colors from RGB to HSV for map markers
-     * @param color string of the color to convert
-     * @return a marker of that color
-     */
-    public BitmapDescriptor getMarkerColor(String color) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(Color.parseColor(color), hsv);
-        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
     /**
