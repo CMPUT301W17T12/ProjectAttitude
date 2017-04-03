@@ -143,15 +143,15 @@ public class MapActivity extends AppCompatActivity
         enableMyLocation();
 
         //couldn't get ColorMap to work, so made one for the meantime
-        HashMap<String, Integer> hm = new HashMap<String, Integer>();
-        hm.put("Anger", 356);
-        hm.put("Confusion", 19);
-        hm.put("Disgust", 65);
-        hm.put("Fear", 42);
-        hm.put("Happiness", 160);
-        hm.put("Sadness", 60);
-        hm.put("Shame", 200);
-        hm.put("Surprise", 22);
+        HashMap<String, BitmapDescriptor> hm = new HashMap<String, BitmapDescriptor>();
+        hm.put("Anger", BitmapDescriptorFactory.fromResource(R.drawable.ic_anger_colour_36px));//defaultMarker(356));
+        hm.put("Confusion", BitmapDescriptorFactory.fromResource(R.drawable.ic_confusion_colour_36px));//defaultMarker(19));
+        hm.put("Disgust", BitmapDescriptorFactory.fromResource(R.drawable.ic_disgust_colour_36px));//defaultMarker(65));
+        hm.put("Fear", BitmapDescriptorFactory.fromResource(R.drawable.ic_fear_colour_36px));//defaultMarker(42));
+        hm.put("Happiness", BitmapDescriptorFactory.fromResource(R.drawable.ic_happiness_colour_36px));//defaultMarker(160));
+        hm.put("Sadness", BitmapDescriptorFactory.fromResource(R.drawable.ic_sadness_colour_36px));//defaultMarker(60));
+        hm.put("Shame", BitmapDescriptorFactory.fromResource(R.drawable.ic_shame_colour_36px));//defaultMarker(200));
+        hm.put("Surprise", BitmapDescriptorFactory.fromResource(R.drawable.ic_surprise_colour_36px));//defaultMarker(22));
 
 
 
@@ -194,12 +194,11 @@ public class MapActivity extends AppCompatActivity
                             Log.d("Distance", "Current comparison to: " + users.get(i).getUserName() + " " + mood.getEmotionState());
 
                             if (returned < 5) {
-                                Integer color = hm.get(mood.getEmotionState());
                                 map.addMarker(new MarkerOptions()
                                         .position(new LatLng(mood.getLatitude(), mood.getLongitude()))
                                         .title(mood.getMaker())
                                         .snippet(mood.getEmotionState())
-                                        .icon(BitmapDescriptorFactory.defaultMarker(color)))
+                                        .icon(hm.get(mood.getEmotionState())))
                                         .setTag(mood);
                             }
                         }
@@ -243,7 +242,6 @@ public class MapActivity extends AppCompatActivity
             for (int i = 0; i < userMoodList.size(); i++) { //TODO this will get EVERY mood from the user, which could be too many
 
                 Mood mood = userMoodList.get(i);
-                Integer color = hm.get(mood.getEmotionState());
 
                 if (mood.getLongitude() == 0 && mood.getLatitude() == 0) {
                     Log.d("MapMoods", "Mood: " + mood.getEmotionState() + "not mapped");
@@ -255,7 +253,7 @@ public class MapActivity extends AppCompatActivity
 //                        .title(mood.getMaker() +" " + mood.getEmotionState())
                             .title(mood.getMaker())
                             .snippet(mood.getEmotionState())
-                            .icon(BitmapDescriptorFactory.defaultMarker(color)))
+                            .icon(hm.get(mood.getEmotionState())))
                             .setTag(mood);
 
                 }
