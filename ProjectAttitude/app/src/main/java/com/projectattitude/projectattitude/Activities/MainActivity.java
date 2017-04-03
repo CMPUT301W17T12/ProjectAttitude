@@ -379,8 +379,10 @@ public class MainActivity extends AppCompatActivity {
                     unregisterForContextMenu(moodListView);
                     moodListView.setAdapter(followingMoodAdapater);
 
-                    populateFollowing();
-                    refreshMoodList();
+                    if (isNetworkAvailable()) {
+                        populateFollowing();
+                        refreshMoodList();
+                    }
 
                     userController.saveInFile(getApplicationContext());
                 }
