@@ -122,7 +122,8 @@ public class LoginActivity extends AppCompatActivity {
                             intent.putExtra("PassUserToMain", user);
                             startActivity(intent);
                             finish();
-                        } else {
+                        }
+                        else {
                             Log.d("Error", "User did exist");
                             //grab user from db and pass to MainActivity, since they exist
                             User user1 = new User();

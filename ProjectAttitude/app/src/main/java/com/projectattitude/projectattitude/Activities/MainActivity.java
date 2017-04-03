@@ -112,10 +112,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent){
         if(isNetworkAvailable()){
-            if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-                ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-                addUserTask.execute(UserController.getInstance().getActiveUser());
-            }
+            //if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+//                ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+//                addUserTask.execute(UserController.getInstance().getActiveUser());
+                ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+                updateUserTask.execute(UserController.getInstance().getActiveUser());
+            //}
         }
         }
     };
@@ -313,6 +315,8 @@ public class MainActivity extends AppCompatActivity {
         fabLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 fabMenu.close(true);
                 userController.clearCache(getApplicationContext());
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
