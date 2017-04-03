@@ -126,9 +126,11 @@ public class UserController {
             User user = gson.fromJson(bufferedReader, User.class);
 
             if(user == null){
+                Log.d("LOGINTEST", "no user");
                 return false;
             }
             else if (user.getUserName().equals("___NULL___USER___")) {
+                Log.d("LOGINTEST", "logged out");
                 return false;
             }
             else {
@@ -136,6 +138,7 @@ public class UserController {
             }
 
         }catch (FileNotFoundException e) {
+            Log.d("LOGINTEST", "failed - filenotfound");
             activeUser = new User();
             saveInFile(context);
             return false;
