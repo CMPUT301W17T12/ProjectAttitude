@@ -228,8 +228,8 @@ public class ViewProfileActivity extends AppCompatActivity {
                                 if(followedUser != null){
                                     //Remove followee and update database
                                     followedUser.getFollowedList().remove(user.getUserName());
-                                    ElasticSearchUserController.UpdateUserRequestTask updateUserRequestTask = new ElasticSearchUserController.UpdateUserRequestTask();
-                                    updateUserRequestTask.execute(followedUser);
+                                    ElasticSearchUserController.UpdateUserRequestFollowedTask updateUserRequestFollowedTask = new ElasticSearchUserController.UpdateUserRequestFollowedTask();
+                                    updateUserRequestFollowedTask.execute(followedUser);
                                 }
                             }catch(Exception e){
                                 e.printStackTrace();
