@@ -65,8 +65,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import static com.projectattitude.projectattitude.R.id.removeButton;
-
 
 /**
  * This is the profile page of the user. It shows the name of the user, as well as the portrait,
@@ -379,6 +377,4 @@ public class ViewProfileActivity extends AppCompatActivity {
                 }
         }
     }
-
-
-    }
+}

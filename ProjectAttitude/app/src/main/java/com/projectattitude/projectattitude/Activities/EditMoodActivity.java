@@ -158,13 +158,6 @@ public class EditMoodActivity extends MoodActivity {
                         newMood.setSocialSituation(socialSituationSpinner.getSelectedItem().toString());
                     }
 
-                    //keep the original image
-//                    if(decodedImage!=null && s == ""){
-//                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                        decodedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//                        byteArray = stream.toByteArray();
-//                        s = Base64.encodeToString(byteArray, Base64.DEFAULT);
-//                    }
                     newMood.setPhoto(s);
                     Intent returnCreateMoodIntent = new Intent();
                     returnCreateMoodIntent.putExtra("mood", newMood);

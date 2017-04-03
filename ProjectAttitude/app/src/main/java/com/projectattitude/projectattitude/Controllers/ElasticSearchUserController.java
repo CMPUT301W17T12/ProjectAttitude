@@ -155,7 +155,6 @@ public class ElasticSearchUserController {
 
             ArrayList<User> users = new ArrayList<User>();
 
-            //Search search = new Search.Builder(search_parameters[0]).addIndex(INDEX).addType(TYPE).build();
             String query = "{\n" +
                     "   \"size\":200,\n" +
                     "    \"query\" : {\n"+
@@ -197,26 +196,16 @@ public class ElasticSearchUserController {
 
             Log.d("Error", "name: " + search_parameters[0]);
             Get get = new Get.Builder(INDEX, search_parameters[0]).type(TYPE).build();
-            //Search get = new Search.Builder("{\"query\" : {\"term\" : { \"userName\" : \"" + search_parameters[0] + "\" }}}").addIndex(INDEX).addType(TYPE).build();
 
             //Log.d("test1", search_parameters[0]);
 
             User user = null;
             try {
                 JestResult result = client.execute(get);
-                //SearchResult result = client.execute(get);
-                //user = result.getSourceAsObject(User.class);
-//                if(result.getHits(User.class).size()!=0){
-//                    Log.d("Error", (result.getHits(User.class).size()) + "");
-//                    SearchResult.Hit<User, Void> thing = result.getFirstHit(User.class);
-//                    user = thing.source;
-//                }
                 if(result.isSucceeded()){
                     Log.d("Error", "success getting user");
-                    //user = result.getSourceAsObject(User.class);
                     Log.d("Error", "Name that was gotten: " + result.getJsonObject());
-//                    Log.d("Error", "Name that was gotten: " + result.getSourceAsObject(User.class).getUserName());
-//                    Log.d("Error", "List that was gotten: " + result.getSourceAsObject(User.class).getMoodList());
+
                    String userJson = result.getSourceAsString();
 
                     //Json string is exactley whats expected following the retrieve document guide on ES
@@ -227,9 +216,6 @@ public class ElasticSearchUserController {
                     //Date: 3/21/2017
                     GsonBuilder gsonBuilder = new GsonBuilder();
                     Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
-
-//                    GsonBuilder gsonBuilder = new GsonBuilder();
-//                    Gson gson = gsonBuilder.create();
 
                     user = gson.fromJson(userJson, User.class);
                     Log.d("Error", "Username: " + user.getUserName() + " MoodList: " + user.getMoodList());
@@ -278,21 +264,12 @@ public class ElasticSearchUserController {
         protected Void doInBackground(User... search_parameters) {
             verifySettings();
 
-            //query = "{\"doc\" : { \"type\" : \"nested\", \"followList\" : " + user.getGsonFollowList() + "}}";
-
-            //for (User user : users) {
             String query = "";
             GsonBuilder gsonBuilder = new GsonBuilder();
             Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
 
             String json = gson.toJson(search_parameters[0].getMoodList());
-            //json += "meme";
 
-//            json = json.replace("\\\"", "\"");
-//            json = json.replace("}\"", "}");
-//            json = json.replace("\"{","{");
-
-//            query = "{\"doc\" : { \"type\" : \"nested\", \"moods\" : " + json + "}}";
             query = "{\"doc\" : { \"moods\" : " + json + "}}";
             Update update = new Update.Builder(query).index(INDEX).type(TYPE).id(search_parameters[0].getUserName()).build();
             Log.d("error", "UserName of update: " + search_parameters[0].getUserName());

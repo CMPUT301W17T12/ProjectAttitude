@@ -63,7 +63,6 @@ public class ViewMoodActivity extends MoodActivity {
     private TextView trigger;
     private TextView socialSituation;
     private TextView creator;
-//    private Button deleteButton;
     private ImageView imageView;
     private ImageView emotionStateIcon;
     private Button profileButton;
@@ -81,8 +80,6 @@ public class ViewMoodActivity extends MoodActivity {
         date = (TextView) findViewById(R.id.DateView);
         trigger = (TextView) findViewById(R.id.TriggerView);
         socialSituation = (TextView) findViewById(R.id.SocialSituationView);
-//        editButton = (Button) findViewById(R.id.EditButton);
-//        deleteButton = (Button) findViewById(R.id.DeleteButton);
         r1 = (ScrollView) findViewById(R.id.activity_view_mood);
         imageView = (ImageView) findViewById(R.id.imageView3);
         creator = (TextView) findViewById(R.id.creatorText);

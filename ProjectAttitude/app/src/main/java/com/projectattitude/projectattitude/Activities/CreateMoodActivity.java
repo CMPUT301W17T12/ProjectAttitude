@@ -311,25 +311,4 @@ public class CreateMoodActivity extends MoodActivity{
     private void createPicture(){
         return;
     }
-
-//    @Override
-//    public void onLocationChanged(Location location) {
-//        currentLattitude = location.getLatitude();
-//        currentLongitude = location.getLongitude();
-//    }
-//
-//    @Override
-//    public void onProviderDisabled(String provider) {
-//        Log.d("Latitude","disable");
-//    }
-//
-//    @Override
-//    public void onProviderEnabled(String provider) {
-//        Log.d("Latitude","enable");
-//    }
-//
-//    @Override
-//    public void onStatusChanged(String provider, int status, Bundle extras) {
-//        Log.d("Latitude","status");
-//    }
 }
