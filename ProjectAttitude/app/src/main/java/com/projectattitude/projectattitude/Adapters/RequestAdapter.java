@@ -77,19 +77,20 @@ public class RequestAdapter extends ArrayAdapter<FollowRequest> {
 
                     try{//Update both users in database
                         //Update requester followed list
-                        User requester = UserController.getInstance().getActiveUser();
-                        requester.addFollowed(request.getRequester());
+                        User requestee = UserController.getInstance().getActiveUser();
+                        requestee.addFollowed(request.getRequester());
                         //Now update followee
                         ElasticSearchUserController.UpdateUserRequestFollowedTask updateUserRequestFollowedTask = new ElasticSearchUserController.UpdateUserRequestFollowedTask();
-                        updateUserRequestFollowedTask.execute(requester);
+                        updateUserRequestFollowedTask.execute(requestee);
 
                         //Update requestee in database
                         user.addFollow(request.getRequestee());
                         ElasticSearchUserController.UpdateUserRequestTask updateUserRequestTask = new ElasticSearchUserController.UpdateUserRequestTask();
                         updateUserRequestTask.execute(user);
                         //Now, delete request since request has been accepted
-                        ElasticSearchRequestController.DeleteRequestTask deleteRequestTask = new ElasticSearchRequestController.DeleteRequestTask();
-                        deleteRequestTask.execute(request);
+                        requestee.getRequests().remove(position);
+                        ElasticSearchRequestController.UpdateRequestsTask updateRequestsTask = new ElasticSearchRequestController.UpdateRequestsTask();
+                        updateRequestsTask.execute(requestee);
                     }
                     catch(Exception e){
                         Log.d("error", "Could not add delete request");
@@ -113,9 +114,18 @@ public class RequestAdapter extends ArrayAdapter<FollowRequest> {
             @Override
             public void onClick(View v) {
                 request = getItem(position);
-                //if denied, just delete request
-                ElasticSearchRequestController.DeleteRequestTask deleteRequestTask = new ElasticSearchRequestController.DeleteRequestTask();
-                deleteRequestTask.execute(request);
+                //if denied, just delete reques
+                User user = null;
+                try{
+                    ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+                    user = getUserTask.execute(request.getRequestee()).get();
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+                user.getRequests().remove(request);
+                ElasticSearchRequestController.UpdateRequestsTask updateRequestsTask = new ElasticSearchRequestController.UpdateRequestsTask();
+                updateRequestsTask.execute(user);
                 adapter.remove(getItem(position));
                 adapter.notifyDataSetChanged();
             }
