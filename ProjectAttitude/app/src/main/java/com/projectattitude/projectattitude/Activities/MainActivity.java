@@ -112,10 +112,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent){
         if(isNetworkAvailable()){
-            if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-                ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-                addUserTask.execute(UserController.getInstance().getActiveUser());
-            }
+            //if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
+//                ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
+//                addUserTask.execute(UserController.getInstance().getActiveUser());
+                ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+                updateUserTask.execute(UserController.getInstance().getActiveUser());
+            //}
         }
         }
     };
@@ -302,7 +304,22 @@ public class MainActivity extends AppCompatActivity {
                 if (moodList.size() > 0) {
                     intent.putExtra("mood", userController.getActiveUser().getMoodList().get(0));
                 }
-                intent.putExtra("user", user);
+
+                User user1 = new User();
+                ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+
+                try{
+                    user1 = getUserTask.execute(user.getUserName()).get();
+                    userController.setActiveUser(user1);
+                }
+
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+                intent.putExtra("user", user1);
+                //intent.putExtra("user", user);
                 startActivityForResult(intent, 3);
             }
         });
@@ -313,6 +330,8 @@ public class MainActivity extends AppCompatActivity {
         fabLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 fabMenu.close(true);
                 userController.clearCache(getApplicationContext());
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -328,7 +347,22 @@ public class MainActivity extends AppCompatActivity {
              public void onClick(View v) {
                  fabMenu.close(true);
                  Intent intent = new Intent(MainActivity.this, ViewNotificationsActivity.class);
-                 intent.putExtra("user", user);
+
+                 User user1 = new User();
+                 ElasticSearchUserController.GetUserTask getUserTask = new ElasticSearchUserController.GetUserTask();
+
+                 try{
+                     user1 = getUserTask.execute(user.getUserName()).get();
+                     userController.setActiveUser(user1);
+                 }
+
+                 catch (InterruptedException e) {
+                     e.printStackTrace();
+                 } catch (ExecutionException e) {
+                     e.printStackTrace();
+                 }
+//                 intent.putExtra("user", user);
+                 intent.putExtra("user", user1);
                  startActivityForResult(intent, 3);
              }
          });
