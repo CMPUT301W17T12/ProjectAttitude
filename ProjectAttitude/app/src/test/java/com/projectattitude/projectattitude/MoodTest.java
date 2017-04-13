@@ -25,7 +25,6 @@
 
 package com.projectattitude.projectattitude;
 
-import android.media.Image;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.projectattitude.projectattitude.Activities.MainActivity;
@@ -82,7 +81,42 @@ public class MoodTest extends ActivityInstrumentationTestCase2{
         assertEquals("Happy", mood.getEmotionState());
     }
 
-//TODO: Junit tests for locations
+    /**
+     * Tests if getting the mood's longitude works.
+     */
+    public void testGetLongitude(){
+        Mood mood = new Mood();
+        mood.setLongitude(30.123);
+        assertEquals(30.123, mood.getLongitude());
+    }
+
+    /**
+     * Tests if setting a mood's longitude works.
+     */
+    public void testSetLongitude(){
+        Mood mood = new Mood();
+        mood.setLongitude(30.123);
+        assertEquals(30.123, mood.getLongitude());
+    }
+
+
+    /**
+     * Tests if getting the mood's latitude works.
+     */
+    public void testGetLatitude(){
+        Mood mood = new Mood();
+        mood.setLatitude(30.123);
+        assertEquals(30.123, mood.getLatitude());
+    }
+
+    /**
+     * Tests if setting a mood's latitude works.
+     */
+    public void testSetLatitude(){
+        Mood mood = new Mood();
+        mood.setLatitude(30.123);
+        assertEquals(30.123, mood.getLatitude());
+    }
 
     /**
      * Tests if trigger can be obtained correctly.
@@ -123,23 +157,23 @@ public class MoodTest extends ActivityInstrumentationTestCase2{
     /**
      * Tests if getting the image works.
      */
-    public void testGetImage(){
+    public void testGetPhoto(){
         Mood mood = new Mood();
 
-        Image image = null;
-        mood.setImage(image);
-        assertEquals(image, mood.getImage());
+        String photo = "ABCD";
+        mood.setPhoto(photo);
+        assertEquals(photo, mood.getPhoto());
     }
 
     /**
      * Tests if setting the image works.
      */
-    public void testSetImage(){
+    public void testSetPhoto(){
         Mood mood = new Mood();
 
-        Image image = null;
-        mood.setImage(image);
-        assertEquals(image, mood.getImage());
+        String photo = "ABCD";
+        mood.setPhoto(photo);
+        assertEquals(photo, mood.getPhoto());
     }
 
     /**

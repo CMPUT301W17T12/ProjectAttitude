@@ -568,12 +568,8 @@ public class MainActivity extends AppCompatActivity {
      * @param i, the integer of the moodList to be removed
      */
     private void deleteMood(Integer i){
-        //Log.d("deleting", moodList.get(i).toString());
-        //Mood delMood = moodList.get(i);
-        Log.d("deleting", userController.getActiveUser().getMoodList().get(i).toString());
 
-       //Mood moodCheck = userController.getActiveUser().getMoodList().get(itemPosition);
-        //Log.d("moodCheckDelete", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
+        Log.d("deleting", userController.getActiveUser().getMoodList().get(i).toString());
 
         ArrayList<Mood> tmpList = userController.getActiveUser().getMoodList();
         for (int j = 0; j < tmpList.size(); j++) {
@@ -581,11 +577,9 @@ public class MainActivity extends AppCompatActivity {
                 Mood delMood = userController.getActiveUser().getMoodList().get(j);
                 Mood moodCheck = userController.getActiveUser().getMoodList().get(j);
                 Log.d("moodCheckDelete", moodCheck.getEmotionState() + " " + moodCheck.getMoodDate() + " " + moodCheck.getTrigger() + " " + moodCheck.getSocialSituation());
-                //moodList = controller.getMyMoodList().getMoodList();
-                //moodList.remove(delMood);
+
                 userController.getActiveUser().getMoodList().remove(delMood);
-                //controller.setMyMoodList(new MoodList(moodList));
-                //Log.d("deleting", moodList.get(i).toString());
+
                 userController.saveInFile(getApplicationContext());
                 Log.d("userController deleted", userController.getActiveUser().getMoodList().toString());
 
@@ -703,12 +697,6 @@ public class MainActivity extends AppCompatActivity {
                 //This to-do applies to the viewMoodActivity and EditMoodActivity result too
 
                 Log.d("userController Added", userController.getActiveUser().getMoodList().toString());
-
-                //update the user
-//                if(ElasticSearchUserController.getInstance().deleteUser(userController.getActiveUser())){
-//                    ElasticSearchUserController.AddUserTask addUserTask = new ElasticSearchUserController.AddUserTask();
-//                    addUserTask.execute(UserController.getInstance().getActiveUser());
-//                }
 
                 ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
                 updateUserTask.execute(UserController.getInstance().getActiveUser());

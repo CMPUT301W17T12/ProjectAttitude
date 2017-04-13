@@ -1,19 +1,15 @@
 package com.projectattitude.projectattitude.Activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.ArrayAdapter;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.projectattitude.projectattitude.Adapters.RequestAdapter;
-import com.projectattitude.projectattitude.Controllers.ElasticSearchRequestController;
 import com.projectattitude.projectattitude.Objects.FollowRequest;
 import com.projectattitude.projectattitude.Objects.User;
 import com.projectattitude.projectattitude.R;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -33,7 +29,6 @@ public class ViewNotificationsActivity extends AppCompatActivity {
 
         User user = (User)getIntent().getSerializableExtra("user");
 
-        //requests = new ArrayList<FollowRequest>();
         requestList = (ListView)findViewById(R.id.notification_list);
         requests = user.getRequests();
         RequestAdapter adapter = new RequestAdapter(this, requests);

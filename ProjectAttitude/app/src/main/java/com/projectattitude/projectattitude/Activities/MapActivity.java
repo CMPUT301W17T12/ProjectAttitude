@@ -29,7 +29,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -139,7 +138,6 @@ public class MapActivity extends AppCompatActivity
             map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
 
-//        mMap.setOnMyLocationButtonClickListener(this);
         enableMyLocation();
 
         //couldn't get ColorMap to work, so made one for the meantime
@@ -157,12 +155,6 @@ public class MapActivity extends AppCompatActivity
 
         //Taken from https://developers.google.com/maps/documentation/android-api/marker
         //On March 21st at 17:53
-//        map.addMarker(new MarkerOptions()   // adding a marker
-//                .position(new LatLng(53.5444, -113.4909))   // Edmonton location
-//                .title("Edmonton"));
-
-        //User user = (User) getIntent().getSerializableExtra("user");
-        //ArrayList<Mood> userMoodList = user.getMoodList();
 
         map.setOnInfoWindowClickListener(this);
 
@@ -209,31 +201,11 @@ public class MapActivity extends AppCompatActivity
                     Toast.makeText(MapActivity.this, "Could not find your location, please try again!",
                             Toast.LENGTH_LONG).show();
                 }
-
-
-//        Integer val = (Integer) cMap.get(mood.getEmotionState());
-
-        //User user = (User) getIntent().getSerializableExtra("user");
-        //ArrayList<Mood> userMoodList = user.getMoodList();
-//         ArrayList<Mood> userMoodList =  (ArrayList<Mood>) getIntent().getSerializableExtra("user");
-
-//         for(int i = 0;i < userMoodList.size();i++){ //TODO this will get EVERY mood from the user, which could be too many
-
-//             Mood mood = userMoodList.get(i);
-//             Integer[] color = hm.get(mood.getEmotionState());
-
-//             if(mood.getLongitude() == 0 && mood.getLatitude() == 0){
-//                 Log.d("MapMoods", "Mood: " + mood.getEmotionState() + "not mapped");
             }
             else{
 
                 Toast.makeText(MapActivity.this, "Please turn on GPS for locations!",
                         Toast.LENGTH_LONG).show();
-                //Integer val = (Integer) cMap.get(mood.getEmotionState());
-                //Log.d("MapMoodsColor", val.toString());
-//                 map.addMarker(new MarkerOptions()
-//                         .position(new LatLng(mood.getLatitude(), mood.getLongitude()))
-//                         .icon(getHue(color))
             }
         }
 
@@ -246,25 +218,15 @@ public class MapActivity extends AppCompatActivity
                 if (mood.getLongitude() == 0 && mood.getLatitude() == 0) {
                     Log.d("MapMoods", "Mood: " + mood.getEmotionState() + "not mapped");
                 } else {
-                    //Integer val = (Integer) cMap.get(mood.getEmotionState());
-                    //Log.d("MapMoodsColor", val.toString());
+
                     map.addMarker(new MarkerOptions()
                             .position(new LatLng(mood.getLatitude(), mood.getLongitude()))
-//                        .title(mood.getMaker() +" " + mood.getEmotionState())
                             .title(mood.getMaker())
                             .snippet(mood.getEmotionState())
                             .icon(hm.get(mood.getEmotionState())))
                             .setTag(mood);
 
                 }
-//            if(mood.getGeoLocation() != null){
-//                double latitude = mood.getGeoLocation().getLatitude();  //get lat
-//                double longitude = mood.getGeoLocation().getLongitude();    //get long
-//
-//                map.addMarker(new MarkerOptions()   // adding a marker for mood
-//                        .position(new LatLng(latitude, longitude))   // Mood location
-//                        .title(userMoodList.get(i).getTrigger()));  // named after the trigger
-//            }
             }
         }
 
@@ -272,8 +234,6 @@ public class MapActivity extends AppCompatActivity
             Toast.makeText(MapActivity.this, "MIts Fucked, nothing go passed",
                     Toast.LENGTH_LONG).show();
         }
-
-
     }
 
     /**
@@ -301,16 +261,6 @@ public class MapActivity extends AppCompatActivity
             mMap.setMyLocationEnabled(true);
         }
     }
-
-
-//    @Override
-//    public boolean onMyLocationButtonClick() {
-//        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-//        // Return false so that we don't consume the event and the default behavior still occurs
-//        // (the camera animates to the user's current position).
-//        return false;
-//    }
-
 
     /**
      * Ensures it has the proper locations
@@ -368,27 +318,6 @@ public class MapActivity extends AppCompatActivity
      * @return the distance between the user and the mood
      */
     public double calculateDistance(Double myLat, Double myLong, Double moodLat, Double moodLong){
-
-//        double myLatitude = myLocation.getLatitude();
-//        double myLongitude = myLocation.getLongitude();
-//        double moodLatitude = moodLocation.getLatitude();
-//        double moodLongitude = moodLocation.getLongitude();
-       // double earthRadius = 6371e3;
-
-        //double earthRadius = 6371;
-
-//        double dlong = (moodLongitude - myLongitude);
-//        double dlat = (moodLatitude - myLatitude);
-
-//        double dlong = (moodLong - myLong);
-//        double dlat = (moodLat - myLat);
-
-////        double a =(Math.sin(dlat/2)*Math.sin(dlat/2)) + Math.cos(myLatitude) * Math.cos(moodLatitude) * (Math.sin(dlong/2) * Math.sin(dlong/2));
-//        double a =(Math.sin(dlat/2)*Math.sin(dlat/2)) + Math.cos(myLat) * Math.cos(moodLat) * (Math.sin(dlong/2) * Math.sin(dlong/2));
-//        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-//
-        //Log.d("Distance", earthRadius*c + "");
-
         Location me   = new Location("");
         Location dest = new Location("");
 
@@ -397,8 +326,6 @@ public class MapActivity extends AppCompatActivity
 
         dest.setLatitude(moodLat);
         dest.setLongitude(moodLong);
-
-        //return earthRadius * c;
 
         double dist = me.distanceTo(dest);
         //Log.d("Distance",dist+"");
